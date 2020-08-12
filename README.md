@@ -8,7 +8,7 @@
   </p>
   <p>左老板 <a href="https://github.com/notadd/nt-addon-pay" target="blank">nt-addon-pay</a> 省去编写微信支付的一些ts代码</p>
   <p>zoujingli <a href="https://github.com/zoujingli/WeChatDeveloper" target="blank">WeChatDeveloper</a> 很不错的php支付sdk！看了这位老哥代码，做支付宝支付的时候清晰很多!</p>
-  <p>fym201 <a href="https://github.com/https://github.com/fym201/alipay-node-sdk" target="blank">WeChatDeveloper</a> 借用了一些代码~~</p>
+  <p>fym201 <a href="https://github.com/fym201/alipay-node-sdk" target="blank">WeChatDeveloper</a> 借用了一些代码~~</p>
   
 ## tips 
 
