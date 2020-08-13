@@ -1,0 +1,33 @@
+.ant-layout  {
+  height: 100vh;
+  background: rgb(239,243,249);
+  overflow: hidden;
+}
+
+body {
+  font-family: sans-serif;
+}
+
+.ant-layout-header {
+  background: #ffffff !important;
+  display: flex;
+  padding: 0 20px !important;
+}
+
+.flex-grow-0 {
+  flex-grow: 0;
+  display: flex;
+}
+
+.flex-align-items-center {
+  align-items: center;
+}
+
+.flex-grow-1 {
+  flex: 1;
+  display: flex;
+}
+
+.flex {
+  display: flex;
+}

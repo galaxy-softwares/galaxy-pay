@@ -6,12 +6,21 @@ import { AliTradePayService } from 'src/pay/module/ali/service/trade.pay.service
 import { AlipayConfig, AlipayBaseBizContent } from 'src/pay/module/ali/interfaces/base.interface';
 import { AliWapPayService } from 'src/pay/module/ali/service/wap.pay.service';
 import { OrderService } from 'src/admin/service/order.service';
-import { OrderChanle, OrderStatus } from 'src/common/entities/order.entity';
+import { OrderChannel, OrderStatus } from 'src/common/entities/order.entity';
 import { AlipayPrecreateResponse, AlipayTradeRefundResponse, AlipayTradeCreateResponse, AlipayTradeCloseResponse, AlipayTradeQueryResponse, AlipayPrecreateBizContent, AlipayCreateBizContent } from 'src/pay/module/ali/interfaces/trade.interface';
 import { AlipayAppBizContent } from 'src/pay/module/ali/interfaces/app.interface';
 import { AlipayPageBizContent } from 'src/pay/module/ali/interfaces/page.interface';
 import { AlipayWapBizContent } from 'src/pay/module/ali/interfaces/wap.interface';
 import { AlipayRefundBizContent } from 'src/pay/module/ali/interfaces/refund.interface';
+import { PayDto } from 'src/common/dtos/pay.dto';
+
+
+export interface PayParam {
+    appid: string;
+    callback_url: string;
+    return_url: string;
+    notify_url: string;
+}
 
 @Controller("alipay")
 export class AlipayController {
@@ -20,7 +29,7 @@ export class AlipayController {
         private readonly aliAppPayService: AliAppPayService,
         private readonly softwareService: SoftwareService,
         private readonly alitradePayService: AliTradePayService,
-        private readonly aliwapPayService: AliWapPayService,
+        // private readonly aliwapPayService: AliWapPayService,
         private readonly orderService: OrderService,
     ) {}
     
@@ -28,11 +37,11 @@ export class AlipayController {
      * 生成支付宝所需的配置参数
      * @param appid 
      */
-    private async generateAliPay(appid: string, body: AlipayBaseBizContent):Promise<AlipayConfig>  {
+    private async generateAliPay(param: PayDto, body: AlipayBaseBizContent):Promise<AlipayConfig>  {
         try {
-            const software = await this.softwareService.findSoftwarePay(appid)
-            const order = await this.orderService.findOrder(body.out_trade_no, OrderChanle.alipay)
-            const alipayConfig =  JSON.parse(software.alipay);
+            const software = await this.softwareService.findSoftwarePay(param.appid, OrderChannel.alipay)
+            const order = await this.orderService.findOrder(body.out_trade_no, OrderChannel.alipay)
+            const alipayConfig: AlipayConfig =  JSON.parse(software.alipay);
             if(alipayConfig) {
                 if (order) {
                     return alipayConfig;
@@ -40,11 +49,12 @@ export class AlipayController {
                     if (await this.orderService.create({
                         out_trade_no: body.out_trade_no,
                         order_money: body.total_amount,
-                        order_chanle: OrderChanle.alipay,
+                        order_channel: OrderChannel.alipay,
                         order_status: OrderStatus.UnPaid,
-                        request_url: '',
-                        callback_url: '',
-                        appid
+                        callback_url: param.callback_url,
+                        return_url: param.return_url,
+                        notify_url: param.notify_url,
+                        appid: param.appid
                     })) {
                         return alipayConfig;
                     }
@@ -57,13 +67,13 @@ export class AlipayController {
     
     /**
      * app支付
-     * @param param 
+     * @param param
      * @param body 
      */
     @Post("app")
-    async appPay(@Query("appid") appid:string, @Body() body: AlipayAppBizContent):Promise<string> {
-        const alipayConfig = await this.generateAliPay(appid, body);
-        return this.aliAppPayService.pay(alipayConfig, body);
+    async appPay(@Query() param: PayDto, @Body() body: AlipayAppBizContent):Promise<string> {
+        const alipayConfig = await this.generateAliPay(param, body);
+        return this.aliAppPayService.pay(param, body, alipayConfig);
     }  
 
     /**
@@ -72,9 +82,9 @@ export class AlipayController {
      * @param body 
      */
     @Post("page")
-    async pagePay(@Query("appid") appid:string, @Body() body: AlipayPageBizContent): Promise<string> {  
-        const alipayConfig = await this.generateAliPay(appid, body);
-        const result = this.aliPagePaySerice.pay(alipayConfig, body);
+    async pagePay(@Query() param: PayDto, @Body() body: AlipayPageBizContent): Promise<string> {  
+        const alipayConfig = await this.generateAliPay(param, body);
+        const result = this.aliPagePaySerice.pay(param, body, alipayConfig);
         return result
     }
 
@@ -84,9 +94,9 @@ export class AlipayController {
      * @param body 
      */
     @Post("query")
-    async tradePay(@Query("appid") appid:string, @Body() body): Promise<AlipayTradeQueryResponse> {  
-        const alipayConfig = await this.generateAliPay(appid, body);
-        const result = await this.alitradePayService.query(alipayConfig, body);
+    async tradePay(@Query() param: PayDto, @Body() body): Promise<AlipayTradeQueryResponse> {  
+        const alipayConfig = await this.generateAliPay(param, body);
+        const result = await this.alitradePayService.query(param, body, alipayConfig);
         return result
     }
 
@@ -96,8 +106,8 @@ export class AlipayController {
      * @param body 
      */
     @Post("precreate")
-    async precreate(@Query("appid") appid:string, @Body() body: AlipayPrecreateBizContent): Promise<AlipayPrecreateResponse> {
-        const alipayConfig= await this.generateAliPay(appid, body);
+    async precreate(@Query() param: PayDto, @Body() body: AlipayPrecreateBizContent): Promise<AlipayPrecreateResponse> {
+        const alipayConfig= await this.generateAliPay(param, body);
         const result = await this.alitradePayService.precreate(alipayConfig, body);
         return result
     }
@@ -107,12 +117,12 @@ export class AlipayController {
      * @param param 
      * @param body 
      */
-    @Post("wap")
-    async wap(@Query("appid") appid:string, @Body() body: AlipayWapBizContent): Promise<string> {
-        const alipayConfig = await this.generateAliPay(appid, body);
-        const result = this.aliwapPayService.pay(alipayConfig, body);
-        return result
-    }
+    // @Post("wap")
+    // async wap(@Query() param: PayDto, @Body() body: AlipayWapBizContent): Promise<string> {
+    //     const alipayConfig = await this.generateAliPay(param, body);
+    //     const result = this.aliwapPayService.pay(param, body, alipayConfig);
+    //     return result
+    // }
 
     /**
      * 支付宝退款接口
@@ -120,8 +130,8 @@ export class AlipayController {
      * @param body 
      */
     @Post("refund")
-    async refund(@Query("appid") appid:string, @Body() body: AlipayRefundBizContent): Promise<AlipayTradeRefundResponse> {
-        const alipayConfig = await this.generateAliPay(appid, body);
+    async refund(@Query() param: PayDto, @Body() body: AlipayRefundBizContent): Promise<AlipayTradeRefundResponse> {
+        const alipayConfig = await this.generateAliPay(param, body);
         const result = this.alitradePayService.refund(alipayConfig, body);
         return result
     }
@@ -132,8 +142,8 @@ export class AlipayController {
      * @param body 
      */
     @Post("create")
-    async create(@Query("appid") appid:string, @Body() body: AlipayCreateBizContent): Promise<AlipayTradeCreateResponse> {
-        const alipayConfig = await this.generateAliPay(appid, body);
+    async create(@Query() param: PayDto, @Body() body: AlipayCreateBizContent): Promise<AlipayTradeCreateResponse> {
+        const alipayConfig = await this.generateAliPay(param, body);
         const result = await this.alitradePayService.create(alipayConfig, body);
         return result
     }
@@ -144,8 +154,8 @@ export class AlipayController {
      * @param body 
      */
     @Post("close")
-    async close(@Query("appid") appid:string, @Body() body): Promise<AlipayTradeCloseResponse> {
-        const alipayConfig = await this.generateAliPay(appid, body);
+    async close(@Query() param: PayDto, @Body() body): Promise<AlipayTradeCloseResponse> {
+        const alipayConfig = await this.generateAliPay(param, body);
         const result = this.alitradePayService.close(alipayConfig, body);
         return result
     }

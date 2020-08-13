@@ -82,7 +82,6 @@ export class WeChatPayBaseService {
      * @param config 微信支付配置
      */
     processParams(params, config: WechatConfig) {
-        console.log(config);
         params.notify_url = config.notify_url
         params.appid = config.app_id;
         params.mch_id = config.mch_id;

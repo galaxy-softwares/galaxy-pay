@@ -4,6 +4,7 @@ import { Software } from 'src/common/entities/software.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SoftwareDto } from 'src/common/dtos/software.dto';
+import { OrderChannel } from 'src/common/entities/order.entity';
 
 @Injectable()
 export class SoftwareService extends BaseService<Software> {
@@ -19,8 +20,11 @@ export class SoftwareService extends BaseService<Software> {
    * 仅限给支付时使用
    * @param appid string
    */
-  async findSoftwarePay(appid: string) {
-    const data = await this.softwareRepository.findOne({appid});
+  async findSoftwarePay(appid: string, channel: OrderChannel) {
+    const data = await this.softwareRepository.findOne({
+      appid,
+      channel: channel
+    });
     return data;
   }
 
@@ -28,16 +32,24 @@ export class SoftwareService extends BaseService<Software> {
   * 
   * @param id string
   */
-  async findSoftware(id: string) {
-    const data = await this.softwareRepository.findOne({id});
+  async findSoftware(id: string, channel: OrderChannel) {
+    const data = await this.softwareRepository.findOne({
+      id,
+      channel
+    });
+    if(!data) {
+      throw new HttpException(`没有找到项目${channel}`, HttpStatus.BAD_REQUEST);
+    }
     try {
-      console.log(JSON.parse(data.alipay));
-      const alipay = this.addPrefix('alipay', JSON.parse(data.alipay));
-      const wechat = this.addPrefix('wechat', JSON.parse(data.wechat));
-      delete data.alipay;
-      delete data.wechat;
-      const software = {...data, ...alipay, ...wechat };
-      return software;
+      if (channel === OrderChannel.wechat) {
+        const wechat = JSON.parse(data.wechat);
+        delete data.wechat;
+        return {...data, ...wechat}
+      } else {
+        const alipay = JSON.parse(data.alipay);
+        delete data.alipay;
+        return {...data, ...alipay}
+      }
     } catch (e) {
       throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
     }
@@ -63,8 +75,8 @@ export class SoftwareService extends BaseService<Software> {
    * 创建项目
    * @param data SoftwareDto
    */
-  async create(url: string,data: SoftwareDto): Promise<Software> {
-    const software = this.softwareRepository.create(this.generateSoftware(url, data));
+  async create(data: SoftwareDto): Promise<Software> {
+    const software = this.softwareRepository.create(this.generateSoftware(data));
     return await this.softwareRepository.save(software);
   }
 
@@ -72,28 +84,30 @@ export class SoftwareService extends BaseService<Software> {
    * 生成项目参数
    * @param data SoftwareDto
    */
-  private generateSoftware(url: string, data: SoftwareDto): Software {
-    const alipay = {
-      app_id: data.alipay_app_id,
-      debug: data.alipay_debug,
-      private_key: data.alipay_private_key,
-      public_key: data.alipay_public_key,
-      notify_url: data.alipay_notify_url ? data.alipay_notify_url : `${url}/alipay_notify_url`,
-    }
-    const wechat = {
-      app_id: data.wechat_app_id,
-      debug: data.wechat_debug,
-      mch_id: data.wechat_mch_id,
-      mch_key: data.wechat_mch_key,
-      app_secret: data.wechat_app_secret,
-      ssl_cer: data.wechat_ssl_cer,
-      ssl_key: data.wechat_ssl_key,
-      notify_url: data.wechat_notify_url ? data.wechat_notify_url : `${url}/wechat_notify_url`,
+  private generateSoftware(data): Software {
+    let alipay = {};
+    let wechat = {};
+    if (data.channel === 'wechat') {
+      wechat = {
+        app_id: data.app_id,
+        debug: data.debug,
+        mch_id: data.mch_id,
+        mch_key: data.mch_key,
+        app_secret: data.app_secret,
+        ssl_cer: data.ssl_cer,
+        ssl_key: data.ssl_key,
+      }
+    } else {
+      alipay = {
+        app_id: data.app_id,
+        debug: data.debug,
+        private_key: data.private_key,
+        public_key: data.public_key,
+      }
     }
     const software: any = {
       name: data.name,
       domain_url: data.domain_url,
-      callback_url: data.call_back,
       alipay: JSON.stringify(alipay),
       wechat: JSON.stringify(wechat),
     };
@@ -109,8 +123,8 @@ export class SoftwareService extends BaseService<Software> {
    * 更新项目
    * @param data SoftwareDto
    */
-  async update(url:string, data: SoftwareDto): Promise<Software> {
-    const software = this.softwareRepository.create(this.generateSoftware(url, data));
+  async update(data: SoftwareDto): Promise<Software> {
+    const software = this.softwareRepository.create(this.generateSoftware(data));
     return await this.softwareRepository.save(software);
   }
 

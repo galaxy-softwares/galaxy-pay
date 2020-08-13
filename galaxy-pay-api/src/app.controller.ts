@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Request, Res, Inject, Req } from '@nestjs/common';
+import { Controller, Get, Post, Request, Res, Inject, Req, HttpService } from '@nestjs/common';
 import { SoftwareService } from './admin/service/software.service';
 import { AliSignUtil } from './pay/module/ali/util/sign.util';
 import { OrderService } from './admin/service/order.service';
 import { WeChatSignUtil } from './pay/module/wechat/utils/sign.util';
-import { OrderChanle } from './common/entities/order.entity';
+import { OrderChannel } from './common/entities/order.entity';
 import { AlipayConfig } from './pay/module/ali/interfaces/base.interface';
 
 @Controller()
@@ -13,30 +13,32 @@ export class AppController {
     private readonly aliSignUtil: AliSignUtil,
     private readonly orderService: OrderService,
     @Inject(WeChatSignUtil) protected readonly signUtil: WeChatSignUtil,
+    @Inject(HttpService) protected readonly httpService: HttpService,
     ) {}
 
   @Get()
   async getHello() {
     return '我那个晓得！';
   }
-  
+
   @Post("alipay_notify_url")
   async return(@Request() req) {
     try {
       const data  = req.body;
-      const order = await this.orderService.findOrder(data.out_trade_no, OrderChanle.alipay)
-      const software = await this.softwareService.findSoftwarePay(order.appid)
+      const order = await this.orderService.findOrder(data.out_trade_no, OrderChannel.alipay)
+      const software = await this.softwareService.findSoftwarePay(order.appid, OrderChannel.alipay)
       const alipayConfig: AlipayConfig = JSON.parse(software.alipay);
       const signResult = this.aliSignUtil.responSignVerify(data, alipayConfig.public_key);
       if (signResult) {
-        const status = await this.orderService.paySuccess(data.out_trade_no, OrderChanle.alipay);
+        const status = await this.orderService.paySuccess(data.out_trade_no, OrderChannel.alipay);
         if (status) {
-          console.log('订单状态修改成功！')
           // 从order中拿到callback_url 然后发送过去~
+          const result = await this.httpService.post(order.callback_url, JSON.stringify(order)).toPromise();
+          console.log(result);
         }
       }
     } catch(e) {
-      console.log(e.toString());
+      // console.log(e.toString());
     }
   }
 
@@ -50,13 +52,13 @@ export class AppController {
       data[item] = xml[item][0];
     }
     try {
-      const order = await this.orderService.findOrder(data.out_trade_no, OrderChanle.wechat)
+      const order = await this.orderService.findOrder(data.out_trade_no, OrderChannel.wechat)
       if (!order) {
         res.end(this.returCode(false, '订单不存在'));
       } else if(order.order_status == '1') {
         res.end(this.returCode(true, 'OK'))
       }
-      const software = await this.softwareService.findSoftwarePay(order.appid)
+      const software = await this.softwareService.findSoftwarePay(order.appid, OrderChannel.wechat)
       const wechatConfig = JSON.parse(software.wechat);
       // 先拿到微信得签名
       const dataSign = data.sign;
@@ -71,10 +73,11 @@ export class AppController {
       ) {
         res.end(this.returCode(false, '签名验证失败'));
       }
-      const status = await this.orderService.paySuccess(data.out_trade_no, OrderChanle.wechat);
+      const status = await this.orderService.paySuccess(data.out_trade_no, OrderChannel.wechat);
       if (!status) {
         res.end(this.returCode(false, '订单状态修改失败！'));
       }
+      this.httpService.post(order.callback_url, order)
       res.end(this.returCode(true, 'OK'));
     } catch(e) {
       res.end(this.returCode(false, e.toString()));

@@ -49,8 +49,6 @@ export class AliSignUtil {
     * @returns {Boolean}
     */
     signVerify(str: string, sign: string, publicKey: string): boolean {
-
-        console.log(str);
         const verify = crypto.createVerify('RSA-SHA256');
         verify.update(str, 'utf8');
         const result = verify.verify(publicKey, sign, 'base64');

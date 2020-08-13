@@ -11,22 +11,22 @@ import { AliTradePayService } from './service/trade.pay.service';
     imports: [HttpModule],
     controllers: [],
     providers: [
-       AliWapPayService,
        AliPagePayService,
        AliAppPayService,
        AliParamsUtil,
        AliRequestUtil,
        AliSignUtil,
+       AliWapPayService,
        AliTradePayService,
     ],
     exports: [
-       AliWapPayService,
        AliPagePayService,
        AliAppPayService,
        AliParamsUtil,
        AliRequestUtil,
        AliSignUtil,
        AliTradePayService,
+       AliWapPayService,
     ]
 })
 export class AliPayModule {

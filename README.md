@@ -44,7 +44,11 @@ $ npm run start:dev
 
 ```
 
-curl http://127.0.0.1:3100/alipay/page?appid=appid -X POST -H "Content-Type:application/json" -d '{"data":{"total_amount": 10,"out_trade_no":"202081214281597213730","subject": "支付测试得~~~"}}'  (😂随手打的伪代码，没有测试~~~)
+curl --location --request POST 'http://127.0.0.1:3100/alipay/page?appid=APPID' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'total_amount=100' \
+--data-urlencode 'out_trade_no=1123112312312321' \
+--data-urlencode 'subject=不晓得'
 
 ```
 

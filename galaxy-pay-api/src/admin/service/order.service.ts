@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { BaseService } from './base.service';
-import { Order, OrderStatus, OrderChanle } from 'src/common/entities/order.entity';
+import { Order, OrderStatus, OrderChannel } from 'src/common/entities/order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -12,6 +12,10 @@ export class OrderService extends BaseService<Order> {
         private readonly orderRepository: Repository<Order>,
       ) {
         super(orderRepository);
+    }
+
+    async find(): Promise<Array<Order>> {
+       return await this.orderRepository.find(); 
     }
 
     /**
@@ -27,13 +31,13 @@ export class OrderService extends BaseService<Order> {
     }
 
     /**
-     * 寻找未支付订单 为支付宝或者微信回调使用。
+     * 寻找订单 为支付宝或者微信回调使用。
      * @param out_trade_no 
      */
-    async findOrder(out_trade_no: string, chanle: OrderChanle) {
+    async findOrder(out_trade_no: string, channel: OrderChannel) {
         return this.orderRepository.findOne({
             out_trade_no,
-            order_chanle: chanle
+            order_channel: channel
         })
     }
 
@@ -42,11 +46,11 @@ export class OrderService extends BaseService<Order> {
      * @param out_trade_no 
      * 
      */
-    async paySuccess(out_trade_no: string, chanle: OrderChanle): Promise<boolean> {
+    async paySuccess(out_trade_no: string, channel: OrderChannel): Promise<boolean> {
         const order = await this.orderRepository.findOne({
             out_trade_no,
             order_status: OrderStatus.UnPaid,
-            order_chanle: chanle
+            order_channel: channel
         })
         if (order) {
             order.order_status = OrderStatus.Success;

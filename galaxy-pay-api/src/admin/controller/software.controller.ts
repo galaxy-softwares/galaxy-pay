@@ -19,20 +19,20 @@ export class SoftwareController {
         return this.softwareService.find();
     }
 
-    @Get(":id")
-    detail(@Param("id") id) {
-        return this.softwareService.findSoftware(id);
+    @Get(":id/:channel")
+    detail(@Param() param) {
+        return this.softwareService.findSoftware(param.id, param.channel);
     }
 
     @Post()
     async create(@Request() req, @Body() data): Promise<any> {
         // 获取本机得域名
-        return await this.softwareService.create(`${req.headers['x-forwarded-proto']}${req.headers.host}`, data);
+        return await this.softwareService.create(data);
     }
 
     @Put()
     async update(@Request() req, @Body() data) {
         // 获取本机得域名
-        return await this.softwareService.update(`${req.headers['x-forwarded-proto']}${req.headers.host}`, data);
+        return await this.softwareService.update(data);
     }
 }

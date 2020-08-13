@@ -11,7 +11,7 @@ export class AliPayBaseService {
     protected alipay_gate_way_sandbox = "https://openapi.alipaydev.com/gateway.do?";
 
     public param: AlipayRequestParam = {
-        app_id: "nope",
+        app_id: "",
         method: "",
         format: 'JSON',
         charset: 'utf-8',
@@ -27,26 +27,23 @@ export class AliPayBaseService {
         @Inject(AliRequestUtil) protected readonly requestUtil: AliRequestUtil,
         @Inject(AliParamsUtil) protected readonly paramsUtil: AliParamsUtil,
         @Inject(AliSignUtil) protected readonly singinUtil: AliSignUtil,
-        @Inject(AliRequestUtil) protected readonly aliRequestUtil: AliRequestUtil,
     ) {
     }
 
     /**
      * 对请求参数进行组装、编码、签名，返回已组装好签名的参数字符串
      * @param params 请求参数
-     * @param config 对应的支付配置
+     * @param private_key 支付密钥
      * 
      * @returns {String}
      */
-    processParams(params: AlipayRequestParam, config: AlipayConfig): string {
-        params.app_id = config.app_id;
-        params.notify_url = config.notify_url;
+    processParams(params: AlipayRequestParam, private_key: string): string {
         const ret = this.paramsUtil.encodeParams(params);
-        const sign = this.singinUtil.sign(ret.unencode, config.private_key);
+        const sign = this.singinUtil.sign(ret.unencode, private_key);
         if (params.method === "alipay.trade.app.pay") {
             return ret.encode + '&sign=' + encodeURIComponent(sign);
         } else {
-            return (config.debug ? this.alipay_gate_way_sandbox : this.alipay_gate_way) + ret.encode + '&sign=' + encodeURIComponent(sign);
+            return (true ? this.alipay_gate_way_sandbox : this.alipay_gate_way) + ret.encode + '&sign=' + encodeURIComponent(sign);
         }
     }
 

@@ -8,7 +8,7 @@ import { WechatConfig, Param } from "src/pay/module/wechat/interfaces/base.inter
 import { WeChatMicroPayService } from "src/pay/module/wechat/service/micro.pay.service";
 import { WeChatAppPayService } from "src/pay/module/wechat/service/app.pay.service";
 import { OrderService } from "src/admin/service/order.service";
-import { OrderStatus, OrderChanle } from "src/common/entities/order.entity";
+import { OrderStatus, OrderChannel } from "src/common/entities/order.entity";
 import { WeChatOtherPayOrderReqParam, WeChatAppPayOrderReqParam, WeChatMicroPayOrderReqParam } from "src/pay/module/wechat/interfaces/order.interface";
 
 @Controller("wechat")
@@ -26,27 +26,28 @@ export class WechatController {
     
     /**
      * 生成微信所需的配置参数
-     * @param appid
+     * @param param
      * @Param body
      */
-    private async generateWechatConfig(appid: string, body):Promise<WechatConfig>  {
+    private async generateWechatConfig(param: any, body):Promise<WechatConfig>  {
         try {           
-            const order = await this.orderService.findOrder(body.out_trade_no, OrderChanle.wechat)
-            const software = await this.softwareService.findSoftwarePay(appid);
+            const order = await this.orderService.findOrder(body.out_trade_no, OrderChannel.wechat)
+            const software = await this.softwareService.findSoftwarePay(param.appid, OrderChannel.wechat);
             const wechatConfig = JSON.parse(software.wechat);
             if (wechatConfig) {
                 // 如果数据库中有这个订单
                 if (order) {
                     return wechatConfig;
                 } else {
-                    console.log(body);
                     if (await this.orderService.create({
                         out_trade_no: body.out_trade_no,
                         order_money: body.total_fee / 100,
-                        order_chanle: OrderChanle.wechat,
+                        order_chanel: OrderChannel.wechat,
                         order_status: OrderStatus.UnPaid,
-                        callback_url: wechatConfig.callback_url ? '' : '',
-                        appid
+                        callback_url: param.callback_url,
+                        return_url: param.return_url,
+                        notify_url: param.notify_url,
+                        appid: param.appid
                     })) {
                         return wechatConfig
                     }
@@ -76,7 +77,6 @@ export class WechatController {
      */
     @Post("app")
     async app(@Query("appid") appid, @Body() body: WeChatAppPayOrderReqParam) {
-        console.log(appid);
         const wechatConfig = await this.generateWechatConfig(appid, body);
         const result = await this.wechatAppPayService.pay(wechatConfig, body);
         return result

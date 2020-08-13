@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { AliPayBaseService } from "./base.service";
 import { AlipayConfig } from "../interfaces/base.interface";
 import { AlipayAppBizContent } from "../interfaces/app.interface";
+import { PayParam } from "src/api/controller/alipay.controller";
 
 @Injectable()
 export class AliAppPayService extends AliPayBaseService {
@@ -11,15 +12,17 @@ export class AliAppPayService extends AliPayBaseService {
      * @param config AlipayConfig
      * @param data
      */
-    async pay(config: AlipayConfig, body: AlipayAppBizContent): Promise<any> {
+    async pay(param: PayParam, body: AlipayAppBizContent, config: AlipayConfig): Promise<any> {
         body.product_code = "QUICK_MSECURITY_PAY";
-        const param = {
+        const data = {
+            app_id: config.app_id,
+            notify_url: param.notify_url,
             method: "alipay.trade.app.pay",
             biz_content: JSON.stringify({
                 ...body
             }),
         }
-        this.param = {...this.param, ...param}
-        return this.processParams(this.param, config);
+        this.param = {...this.param, ...data}
+        return this.processParams(this.param, config.private_key);
     }
 }

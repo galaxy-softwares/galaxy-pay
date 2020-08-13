@@ -1,5 +1,6 @@
 import { Entity, Column } from 'typeorm';
 import { Base } from './base.entity'
+import { OrderChannel } from './order.entity';
 
 @Entity()
 export class Software extends Base {
@@ -10,15 +11,12 @@ export class Software extends Base {
   @Column()
   name: string;
 
+
+
   @Column({
     comment: "请求白名单地址，仅限一个url谢谢！"
   })
   domain_url: string;
-
-  @Column({
-    comment: "支付完成之后本系统对其他系统的异步回调"
-  })
-  callback_url: string;
 
   @Column({
     type: "text",
@@ -29,4 +27,12 @@ export class Software extends Base {
     type: "text",
   })
   alipay: string;
+
+  @Column({
+    comment:"支付宝还是微信",
+    type: 'enum', 
+    enum: OrderChannel, 
+    default: OrderChannel.alipay
+  })
+  channel: OrderChannel
 }

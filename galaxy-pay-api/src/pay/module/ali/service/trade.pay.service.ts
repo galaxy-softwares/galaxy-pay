@@ -3,6 +3,7 @@ import { AliPayBaseService } from "./base.service";
 import { AlipayConfig } from "../interfaces/base.interface";
 import { AlipayTradeQueryResponse, AlipayTradeQueryResponseData, AlipayTradeRefundResponse, AlipayTradeRefundResponseData, AlipayPrecreateResponse, AlipayTradeCreateResponse, AlipayTradeCreateResponseData, AlipayTradeCloseResponse, AlipayTradeCloseResponseData, AlipayPrecreateResponseData, AlipayCreateBizContent, AlipayPrecreateBizContent } from "../interfaces/trade.interface";
 import { AlipayRefundBizContent } from "../interfaces/refund.interface";
+import { PayParam } from "src/api/controller/alipay.controller";
 
 @Injectable()
 export class AliTradePayService extends AliPayBaseService {
@@ -12,16 +13,18 @@ export class AliTradePayService extends AliPayBaseService {
      * @param config AlipayConfig
      * @param body
      */
-    async query(config: AlipayConfig, body): Promise<AlipayTradeQueryResponse> {
-        const param = {
+    async query(param: PayParam, body, config: AlipayConfig): Promise<AlipayTradeQueryResponse> {
+        const data = {
+            app_id: config.app_id,
             method: "alipay.trade.query",
+            notify_url: param.notify_url,
             biz_content: JSON.stringify({
                 ...body
             }),
         }
-        this.param = Object.assign(this.param, param);
+        this.param = {...this.param, ...data};
         try {
-            const { alipay_trade_query_response } = await this.requestUtil.post<AlipayTradeQueryResponseData>(this.processParams(this.param, config), config);
+            const { alipay_trade_query_response } = await this.requestUtil.post<AlipayTradeQueryResponseData>(this.processParams(this.param, config.private_key), config);
             return alipay_trade_query_response;
         } catch (e) {
             throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
@@ -35,14 +38,16 @@ export class AliTradePayService extends AliPayBaseService {
      */
     async refund(config: AlipayConfig, body: AlipayRefundBizContent): Promise<AlipayTradeRefundResponse> {
         const param = {
+            app_id: config.app_id,
             method: "alipay.trade.refund",
+            notify_url: config.notify_url,
             biz_content: JSON.stringify({
                 ...body
             }),
         }
-        this.param = Object.assign(this.param, param);
+        this.param = {...this.param, ...param};
         try {
-            const { alipay_trade_refund_response } = await this.requestUtil.post<AlipayTradeRefundResponseData>(this.processParams(this.param, config), config);
+            const { alipay_trade_refund_response } = await this.requestUtil.post<AlipayTradeRefundResponseData>(this.processParams(this.param, config.private_key), config);
             return alipay_trade_refund_response;
         } catch (e) {
             throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
@@ -57,14 +62,16 @@ export class AliTradePayService extends AliPayBaseService {
     async create(config: AlipayConfig, body: AlipayCreateBizContent): Promise<AlipayTradeCreateResponse> {
         body.product_code = "FACE_TO_FACE_PAYMENT";
         const param = {
+            app_id: config.app_id,
             method: "alipay.trade.create",
+            notify_url: config.notify_url,
             biz_content: JSON.stringify({
                 ...body
             }),
         }
         this.param = Object.assign(this.param, param);
         try {
-            const  { alipay_trade_create_response } = await this.requestUtil.post<AlipayTradeCreateResponseData>(this.processParams(this.param, config), config);
+            const  { alipay_trade_create_response } = await this.requestUtil.post<AlipayTradeCreateResponseData>(this.processParams(this.param, config.private_key), config);
             return alipay_trade_create_response;
         } catch (e) {
             throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
@@ -80,13 +87,14 @@ export class AliTradePayService extends AliPayBaseService {
         const param = {
             app_id: config.app_id,
             method: "alipay.trade.create",
+            notify_url: config.notify_url,
             biz_content: JSON.stringify({
                 ...body,
             }),
         }
         this.param = {...this.param, ...param}
         try {
-            const { alipay_trade_close_response } = await this.requestUtil.post<AlipayTradeCloseResponseData>(this.processParams(this.param, config), config);
+            const { alipay_trade_close_response } = await this.requestUtil.post<AlipayTradeCloseResponseData>(this.processParams(this.param, config.private_key), config);
             return alipay_trade_close_response;
         } catch (e) {
             throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
@@ -102,6 +110,7 @@ export class AliTradePayService extends AliPayBaseService {
         body.product_code = "FACE_TO_FACE_PAYMENT";
         const param = {
             app_id: config.app_id,
+            notify_url: config.notify_url,
             method: "alipay.trade.precreate",
             biz_content: JSON.stringify({
                 ...body
@@ -109,7 +118,7 @@ export class AliTradePayService extends AliPayBaseService {
         }
         this.param = {...this.param, ...param}
         try {
-            const { alipay_trade_precreate_response } = await this.requestUtil.post<AlipayPrecreateResponseData>(this.processParams(this.param, config), config);
+            const { alipay_trade_precreate_response } = await this.requestUtil.post<AlipayPrecreateResponseData>(this.processParams(this.param, config.private_key), config);
             return alipay_trade_precreate_response;
         } catch (e) {
             throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);

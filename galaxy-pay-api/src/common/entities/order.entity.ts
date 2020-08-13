@@ -6,7 +6,7 @@ export enum OrderStatus {
     Success = '1',
 }
 
-export enum OrderChanle {
+export enum OrderChannel {
     wechat  = "wechat",
     alipay = "alipay",
 }
@@ -28,9 +28,20 @@ export class Order extends Base {
   order_status: OrderStatus;
 
   @Column({
-    comment: '回调地址',
+    comment: '支付完成之后，本系统对你的系统回调通知',
   })
   callback_url:string;
+
+  @Column({
+    comment: '支付完成之后对应的支付宝或者微信同步回调地址',
+    default: '',
+  })
+  return_url:string;
+
+  @Column({
+    comment: '支付完成之后对应的支付宝或者微信异步回调地址',
+  })
+  notify_url:string;
 
   @Column({
     comment: "订单金额"
@@ -40,9 +51,9 @@ export class Order extends Base {
   @Column({
     comment:"订单通道（支付宝还是微信）",
     type: 'enum', 
-    enum: OrderChanle, 
-    default: OrderChanle.alipay
+    enum: OrderChannel, 
+    default: OrderChannel.alipay
   })
-  order_chanle: OrderChanle
+  order_channel: OrderChannel
 
 }

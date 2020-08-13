@@ -13,6 +13,7 @@ import { SoftwareService } from './service/software.service';
 import { SoftwareController } from './controller/software.controller';
 import { Order } from 'src/common/entities/order.entity';
 import { OrderService } from './service/order.service';
+import { OrderController } from './controller/order.controller';
 
 
 @Module({
@@ -26,7 +27,7 @@ import { OrderService } from './service/order.service';
     }),
     PassportModule.register({ defaultStrategy: 'jwt' })
   ],
-  controllers: [AuthController, SoftwareController],
+  controllers: [AuthController, SoftwareController, OrderController],
   providers: [AuthService, SoftwareService, UserService, OrderService, JwtAuthGuard, JwtStrategy],
   exports: [SoftwareService, OrderService]
 })
