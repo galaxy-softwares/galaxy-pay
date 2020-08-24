@@ -38,7 +38,7 @@ export class AppController {
         }
       }
     } catch(e) {
-      // console.log(e.toString());
+      console.log(e.toString());
     }
   }
 

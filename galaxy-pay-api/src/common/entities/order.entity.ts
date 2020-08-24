@@ -29,6 +29,7 @@ export class Order extends Base {
 
   @Column({
     comment: '支付完成之后，本系统对你的系统回调通知',
+    default: ""
   })
   callback_url:string;
 
@@ -52,7 +53,6 @@ export class Order extends Base {
     comment:"订单通道（支付宝还是微信）",
     type: 'enum', 
     enum: OrderChannel, 
-    default: OrderChannel.alipay
   })
   order_channel: OrderChannel
 

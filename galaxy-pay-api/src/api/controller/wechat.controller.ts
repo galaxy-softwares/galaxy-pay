@@ -10,6 +10,7 @@ import { WeChatAppPayService } from "src/pay/module/wechat/service/app.pay.servi
 import { OrderService } from "src/admin/service/order.service";
 import { OrderStatus, OrderChannel } from "src/common/entities/order.entity";
 import { WeChatOtherPayOrderReqParam, WeChatAppPayOrderReqParam, WeChatMicroPayOrderReqParam } from "src/pay/module/wechat/interfaces/order.interface";
+import { PayDto } from "src/common/dtos/pay.dto";
 
 @Controller("wechat")
 export class WechatController {
@@ -29,10 +30,11 @@ export class WechatController {
      * @param param
      * @Param body
      */
-    private async generateWechatConfig(param: any, body):Promise<WechatConfig>  {
+    private async generateWechatConfig(param: PayDto, body):Promise<WechatConfig>  {
         try {           
-            const order = await this.orderService.findOrder(body.out_trade_no, OrderChannel.wechat)
             const software = await this.softwareService.findSoftwarePay(param.appid, OrderChannel.wechat);
+            const order = await this.orderService.findOrder(body.out_trade_no, OrderChannel.wechat)
+            console.log(order);
             const wechatConfig = JSON.parse(software.wechat);
             if (wechatConfig) {
                 // 如果数据库中有这个订单
@@ -64,8 +66,8 @@ export class WechatController {
      * @param body 详情见WeChatAppletPayService接口
      */
     @Post("applet")
-    async appletpay(@Query() param: Param, @Body() body: WeChatOtherPayOrderReqParam) {
-        const wechatConfig = await this.generateWechatConfig(param.appid, body);
+    async appletpay(@Query() param: PayDto, @Body() body: WeChatOtherPayOrderReqParam) {
+        const wechatConfig = await this.generateWechatConfig(param, body);
         const result = await this.wechatAppletPayService.pay(wechatConfig, body);
         return result
     }
@@ -76,8 +78,8 @@ export class WechatController {
      * @param body 详情见WeChatAppletPayService接口
      */
     @Post("app")
-    async app(@Query("appid") appid, @Body() body: WeChatAppPayOrderReqParam) {
-        const wechatConfig = await this.generateWechatConfig(appid, body);
+    async app(@Query() param: PayDto, @Body() body: WeChatAppPayOrderReqParam) {
+        const wechatConfig = await this.generateWechatConfig(param, body);
         const result = await this.wechatAppPayService.pay(wechatConfig, body);
         return result
     }
@@ -88,8 +90,8 @@ export class WechatController {
      * @param body 
      */
     @Post("jsapi")
-    async jsapi(@Query("appid") appid, @Body() body: WeChatOtherPayOrderReqParam) {
-        const wechatConfig = await this.generateWechatConfig(appid, body);
+    async jsapi(@Query() param: PayDto, @Body() body: WeChatOtherPayOrderReqParam) {
+        const wechatConfig = await this.generateWechatConfig(param, body);
         const result = await this.wechatJSAPIPayService.pay(wechatConfig, body);
         return result
     }
@@ -100,8 +102,8 @@ export class WechatController {
      * @param body 
      */
     @Post("native")
-    async native(@Query("appid") appid, @Body() body: WeChatOtherPayOrderReqParam) {
-        const wechatConfig = await this.generateWechatConfig(appid, body);
+    async native(@Query() param: PayDto, @Body() body: WeChatOtherPayOrderReqParam) {
+        const wechatConfig = await this.generateWechatConfig(param, body);
         const result = await this.wechatNativePayService.pay(wechatConfig, body);
         return result
     }
@@ -112,8 +114,8 @@ export class WechatController {
      * @param body 
      */
     @Post("h5")
-    async h5pay(@Query("appid") appid, @Body() body: WeChatOtherPayOrderReqParam) {
-        const wechatConfig = await this.generateWechatConfig(appid, body);
+    async h5pay(@Query() param: PayDto, @Body() body: WeChatOtherPayOrderReqParam) {
+        const wechatConfig = await this.generateWechatConfig(param, body);
         const result = await this.wechatWapPayService.pay(wechatConfig, body);
         return result
     }
@@ -124,8 +126,8 @@ export class WechatController {
      * @param data 
      */
     @Post("micro")
-    async micro(@Query("appid") appid, @Body() body: WeChatMicroPayOrderReqParam) {
-        const wechatConfig = await this.generateWechatConfig(appid, body);
+    async micro(@Query() param: PayDto, @Body() body: WeChatMicroPayOrderReqParam) {
+        const wechatConfig = await this.generateWechatConfig(param, body);
         const result = await this.wechatMicroPayService.pay(wechatConfig, body);
         return result
     }

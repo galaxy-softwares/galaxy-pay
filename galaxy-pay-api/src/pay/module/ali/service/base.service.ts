@@ -43,7 +43,7 @@ export class AliPayBaseService {
         if (params.method === "alipay.trade.app.pay") {
             return ret.encode + '&sign=' + encodeURIComponent(sign);
         } else {
-            return (true ? this.alipay_gate_way_sandbox : this.alipay_gate_way) + ret.encode + '&sign=' + encodeURIComponent(sign);
+            return (false ? this.alipay_gate_way_sandbox : this.alipay_gate_way) + ret.encode + '&sign=' + encodeURIComponent(sign);
         }
     }
 
