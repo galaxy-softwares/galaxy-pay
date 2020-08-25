@@ -1,6 +1,5 @@
 import { Module, HttpModule } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AdminModule } from './admin/admin.module';
 import { CommonModule } from './common/common.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -9,6 +8,8 @@ import { Software } from './common/entities/software.entity';
 import { ApiModule } from './api/api.module';
 import { PayModule } from './pay/pay.module';
 import { Order } from './common/entities/order.entity';
+
+
 @Module({
   imports: [
     HttpModule,
@@ -28,6 +29,6 @@ import { Order } from './common/entities/order.entity';
     ApiModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule {}

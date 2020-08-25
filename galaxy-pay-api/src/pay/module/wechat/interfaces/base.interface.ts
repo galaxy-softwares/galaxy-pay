@@ -34,6 +34,7 @@ export interface WechatConfig {
     ssl_key: string;
     debug: boolean;
     notify_url: string;
+    return_url: string;
 }
 
 export interface Param {

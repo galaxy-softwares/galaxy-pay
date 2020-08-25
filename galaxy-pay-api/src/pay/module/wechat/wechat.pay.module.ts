@@ -1,4 +1,4 @@
-import { Module, HttpModule } from '@nestjs/common';
+import { Module, HttpModule, Global } from '@nestjs/common';
 import { WeChatAppletPayService } from './service/applet.pay.service';
 import { WeChatPayBaseService } from './service/base.service';
 import { WeChatRequestUtil } from './utils/request.util';
@@ -31,9 +31,9 @@ import { WeChatWapPayService } from './service/wap.pay.service';
     ],
     exports: [
         WeChatAppletPayService,
+        WeChatAppPayService,
         WeChatRequestUtil,
         WeChatPayBaseService,
-        WeChatAppPayService,
         WeChatNativePayService,
         WeChatJSAPIPayService,
         WeChatMicroPayService,

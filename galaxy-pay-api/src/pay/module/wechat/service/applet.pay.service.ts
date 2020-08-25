@@ -17,6 +17,7 @@ export class WeChatAppletPayService extends WeChatPayBaseService {
      */
     async pay(wechatConfig: WechatConfig, params: WeChatOtherPayOrderReqParam): Promise<any> {
         params.trade_type = WeChatTradeType.JSAPI;
+        
         const result =  await this.requestUtil.post<WeChatOtherPayOrderRes>(this.unifiedOrderUrl, this.processParams(params, wechatConfig));
         if (result.return_code !== 'SUCCESS') {
             throw new HttpException(result.return_msg, HttpStatus.BAD_REQUEST);

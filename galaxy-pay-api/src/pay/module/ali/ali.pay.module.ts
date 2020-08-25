@@ -1,4 +1,4 @@
-import { Module, HttpModule } from '@nestjs/common';
+import { Module, HttpModule, Global } from '@nestjs/common';
 import { AliWapPayService } from './service/wap.pay.service';
 import { AliParamsUtil } from './util/params.util';
 import { AliRequestUtil } from './util/request.util';

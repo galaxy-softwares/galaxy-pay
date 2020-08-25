@@ -3,7 +3,6 @@ import { AliPayBaseService } from "./base.service";
 import { AlipayConfig } from "../interfaces/base.interface";
 import { AlipayTradeQueryResponse, AlipayTradeQueryResponseData, AlipayTradeRefundResponse, AlipayTradeRefundResponseData, AlipayPrecreateResponse, AlipayTradeCreateResponse, AlipayTradeCreateResponseData, AlipayTradeCloseResponse, AlipayTradeCloseResponseData, AlipayPrecreateResponseData, AlipayCreateBizContent, AlipayPrecreateBizContent } from "../interfaces/trade.interface";
 import { AlipayRefundBizContent } from "../interfaces/refund.interface";
-import { PayParam } from "src/api/controller/alipay.controller";
 
 @Injectable()
 export class AliTradePayService extends AliPayBaseService {
@@ -13,11 +12,11 @@ export class AliTradePayService extends AliPayBaseService {
      * @param config AlipayConfig
      * @param body
      */
-    async query(param: PayParam, body, config: AlipayConfig): Promise<AlipayTradeQueryResponse> {
+    async query(body, config: AlipayConfig): Promise<AlipayTradeQueryResponse> {
         const data = {
             app_id: config.app_id,
             method: "alipay.trade.query",
-            notify_url: param.notify_url,
+            notify_url: config.notify_url,
             biz_content: JSON.stringify({
                 ...body
             }),
@@ -36,7 +35,7 @@ export class AliTradePayService extends AliPayBaseService {
      * @param config AlipayConfig
      * @param body AlipayRefundBizContent
      */
-    async refund(config: AlipayConfig, body: AlipayRefundBizContent): Promise<AlipayTradeRefundResponse> {
+    async refund(body: AlipayRefundBizContent, config: AlipayConfig): Promise<AlipayTradeRefundResponse> {
         const param = {
             app_id: config.app_id,
             method: "alipay.trade.refund",
@@ -59,7 +58,7 @@ export class AliTradePayService extends AliPayBaseService {
      * @param config AlipayConfig
      * @param body
      */
-    async create(config: AlipayConfig, body: AlipayCreateBizContent): Promise<AlipayTradeCreateResponse> {
+    async create(body: AlipayCreateBizContent, config: AlipayConfig): Promise<AlipayTradeCreateResponse> {
         body.product_code = "FACE_TO_FACE_PAYMENT";
         const param = {
             app_id: config.app_id,
@@ -83,7 +82,7 @@ export class AliTradePayService extends AliPayBaseService {
      * @param config AlipayConfig
      * @param body 
      */
-    async close(config: AlipayConfig, body): Promise<AlipayTradeCloseResponse> {
+    async close(body, config: AlipayConfig): Promise<AlipayTradeCloseResponse> {
         const param = {
             app_id: config.app_id,
             method: "alipay.trade.create",
@@ -106,7 +105,7 @@ export class AliTradePayService extends AliPayBaseService {
      * @param config AlipayConfig
      * @param body AlipayPageBizContent
      */
-    async precreate(config: AlipayConfig, body: AlipayPrecreateBizContent): Promise<AlipayPrecreateResponse> {
+    async precreate(body: AlipayPrecreateBizContent, config: AlipayConfig): Promise<AlipayPrecreateResponse> {
         body.product_code = "FACE_TO_FACE_PAYMENT";
         const param = {
             app_id: config.app_id,

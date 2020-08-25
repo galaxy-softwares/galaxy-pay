@@ -31,8 +31,6 @@ export class WeChatAppPayService extends WeChatPayBaseService {
             throw new HttpException(result.return_msg, HttpStatus.BAD_REQUEST);
         }
         // 请求微信服务器之后，返回的参数还需要再做一次加密
-        
-        console.log(result, '123123123');
         const data = {
             appid: result.appid,
             partnerid: result.mch_id,
@@ -41,7 +39,6 @@ export class WeChatAppPayService extends WeChatPayBaseService {
             noncestr: result.nonce_str,
             timestamp: Date.parse(new Date().toString()) / 1000,
         }
-        
         return {...data, ...{ sign: this.signUtil.sign(data, wechatConfig.mch_key) }}
     }
 
