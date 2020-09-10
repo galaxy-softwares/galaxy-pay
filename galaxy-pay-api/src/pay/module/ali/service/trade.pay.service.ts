@@ -11,6 +11,8 @@ export class AliTradePayService extends AliPayBaseService {
      * 支付宝查询接口
      * @param config AlipayConfig
      * @param body
+     * 
+     * 
      */
     async query(body, config: AlipayConfig): Promise<AlipayTradeQueryResponse> {
         const data = {

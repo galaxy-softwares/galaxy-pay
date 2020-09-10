@@ -1,12 +1,14 @@
-import { Controller, Get, Post, Request, Res, Inject, Req, HttpService } from '@nestjs/common';
+import { Controller, Get, Post, Request, Res, Inject, Req, HttpService, UseGuards } from '@nestjs/common';
 import { SoftwareService } from './admin/service/software.service';
 import { AliSignUtil } from './pay/module/ali/util/sign.util';
 import { OrderService } from './admin/service/order.service';
 import { WeChatSignUtil } from './pay/module/wechat/utils/sign.util';
 import { OrderChannel } from './common/entities/order.entity';
 import { AlipayConfig } from './pay/module/ali/interfaces/base.interface';
+import { PayGuard } from './common/guard/pay.guard';
 
 @Controller()
+@UseGuards(PayGuard)
 export class AppController {
   constructor(
     private readonly softwareService: SoftwareService,
@@ -17,7 +19,8 @@ export class AppController {
     ) {}
 
   @Get()
-  async getHello() {
+  async getHello(@Request() req) {
+    // console.log(req);
     return '我那个晓得！';
   }
 

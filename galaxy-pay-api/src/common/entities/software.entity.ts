@@ -11,7 +11,10 @@ export class Software extends Base {
   @Column()
   name: string;
 
-
+  @Column({
+    comment: "此乃系统随机生成的字符串切记要好好保存！"
+  })
+  app_secret: string;
 
   @Column({
     comment: "请求白名单地址，仅限一个url谢谢！"

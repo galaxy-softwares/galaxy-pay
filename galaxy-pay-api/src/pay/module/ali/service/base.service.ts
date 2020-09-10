@@ -3,7 +3,7 @@ import { AliRequestUtil } from '../util/request.util';
 import { AliParamsUtil } from '../util/params.util';
 import { AliSignUtil } from '../util/sign.util';
 import * as moment from 'moment';
-import { AlipayRequestParam, AlipayConfig } from '../interfaces/base.interface';
+import { AlipayRequestParam } from '../interfaces/base.interface';
 
 @Injectable()
 export class AliPayBaseService {

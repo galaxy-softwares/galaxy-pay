@@ -38,7 +38,7 @@ export class SoftwareService extends BaseService<Software> {
       channel
     });
     if(!data) {
-      throw new HttpException(`没有找到项目${channel}`, HttpStatus.BAD_REQUEST);
+      throw new HttpException(`没有找到项目`, HttpStatus.BAD_REQUEST);
     }
     try {
       if (channel === OrderChannel.wechat) {
@@ -54,6 +54,7 @@ export class SoftwareService extends BaseService<Software> {
       throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
     }
   }
+
   /**
    * 查询项目（因为不会有太多的项目索性不做分页查询!）
    */

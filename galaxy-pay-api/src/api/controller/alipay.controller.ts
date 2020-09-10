@@ -23,10 +23,7 @@ export class AlipayController {
         private readonly alitradePayService: AliTradePayService,
         private readonly aliwapPayService: AliWapPayService,
         private readonly apiAlipayService: ApiAlipayService,
-        
     ) {}
-    
-
     
     /**
      * app支付

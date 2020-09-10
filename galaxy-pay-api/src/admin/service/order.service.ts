@@ -31,10 +31,10 @@ export class OrderService extends BaseService<Order> {
     }
 
     /**
-     * 寻找订单 为支付宝或者微信回调使用。
+     * 寻找订单
      * @param out_trade_no 
      */
-    async findOrder(out_trade_no: string, channel: OrderChannel) {
+    async findOrder(out_trade_no: string, channel: OrderChannel, ) {
         return this.orderRepository.findOne({
             out_trade_no,
             order_channel: channel
