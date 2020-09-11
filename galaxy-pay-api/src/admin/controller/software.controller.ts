@@ -21,7 +21,7 @@ export class SoftwareController {
 
     @Get(":id/:channel")
     detail(@Param() param) {
-        return this.softwareService.findSoftware(param.id, param.channel);
+        return this.softwareService.findSoftware(param.id);
     }
 
     @Post()

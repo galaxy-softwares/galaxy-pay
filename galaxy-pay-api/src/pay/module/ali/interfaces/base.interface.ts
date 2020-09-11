@@ -2,9 +2,9 @@ export interface AlipayConfig {
     app_id: string;
     private_key: string;
     public_key: string;
-    debug: boolean;
-    return_url?: string;
-    notify_url?: string;
+    return_url: string;
+    callback_url: string;
+    notify_url: string;
 }
 
 /**
@@ -30,7 +30,7 @@ export interface AlipayRequestParam {
  * 公共请求
  */
 export interface AlipayBaseBizContent {
-  total_amount: number;
+  total_amount: string;
   out_trade_no: string;
   subject: string;
   product_code: string;

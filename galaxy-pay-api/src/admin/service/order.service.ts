@@ -34,10 +34,9 @@ export class OrderService extends BaseService<Order> {
      * 寻找订单
      * @param out_trade_no 
      */
-    async findOrder(out_trade_no: string, channel: OrderChannel, ) {
+    async findOrder(out_trade_no: string) {
         return this.orderRepository.findOne({
             out_trade_no,
-            order_channel: channel
         })
     }
 
@@ -60,5 +59,14 @@ export class OrderService extends BaseService<Order> {
         }
         return false;
     }
+
+    /**
+     * 更更新订单
+     * @param data 
+     */
+    async update(data: Order): Promise<Order> {
+        const order = this.orderRepository.create(data);
+        return await this.orderRepository.save(order);
+      }
     
 }

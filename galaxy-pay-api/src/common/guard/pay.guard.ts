@@ -1,4 +1,4 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, HttpException, HttpStatus } from '@nestjs/common';
 import { SoftwareService } from 'src/admin/service/software.service';
 import { OrderChannel } from '../entities/order.entity';
 
@@ -8,10 +8,13 @@ export class PayGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean>{
     const request = context.switchToHttp().getRequest();
-    const { query: { appid }, headers: { host } } = request;
-    console.log(host);
-    const data = await this.softwareService.findSoftwarePay(appid, OrderChannel.alipay);
-    console.log(data);
+    const { body: { appid }, headers: { host } } = request;
+    const payConfig = await this.softwareService.findSoftwarePay(appid);
+    console.log(payConfig);
+    if (host === payConfig.domain_url) {
+      throw new HttpException(`很抱歉，你的请求域名不在当前允许范围内！`, HttpStatus.FORBIDDEN);
+    }
+    request.payConfig = payConfig;
     return true;
   }
 }

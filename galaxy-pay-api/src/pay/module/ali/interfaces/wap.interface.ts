@@ -8,7 +8,7 @@ export interface AlipayWapBizContent extends AlipayBaseBizContent {
   time_expire?:string;
   auth_token?: string;
   goods_type?: string;
-  quit_url: string;
+  quit_url?: string;
   passback_params?: string;
   promo_params?: string;
   extend_params?: {

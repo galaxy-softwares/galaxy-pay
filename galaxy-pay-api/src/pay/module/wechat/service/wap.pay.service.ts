@@ -16,7 +16,6 @@ export class WeChatWapPayService extends WeChatPayBaseService {
      * @param params H5支付接口请求参数
      */
     async pay(wechatConfig: WechatConfig, params: WeChatOtherPayOrderReqParam): Promise<WeChatOtherPayOrderRes> {
-        params.trade_type = WeChatTradeType.MWEB;
         return await this.requestUtil.post<WeChatOtherPayOrderRes>(this.unifiedOrderUrl, this.processParams(params, wechatConfig));
     }
 }

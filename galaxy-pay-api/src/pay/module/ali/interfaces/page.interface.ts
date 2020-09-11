@@ -49,7 +49,7 @@ export interface AlipayPageBizContent extends AlipayBaseBizContent {
       }
       settle_period_time: string;
     }
-    invoice_info: {
+    invoice_info?: {
       key_info: {
         is_support_invoice: boolean;
         invoice_merchant_name: boolean;
@@ -57,7 +57,7 @@ export interface AlipayPageBizContent extends AlipayBaseBizContent {
       },
       details: string;
     }
-    agreement_sign_params: {
+    agreement_sign_params?: {
       personal_product_code: string;
       sign_scene?: string;
       external_agreement_no?: string;

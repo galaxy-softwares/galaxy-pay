@@ -12,7 +12,7 @@ export class AliWapPayService extends AliPayBaseService {
      * @param body AlipayPageBizContent
      */
     pay(body: AlipayWapBizContent, config: AlipayConfig): string {
-        body.product_code = "QUICK_WAP_WAY";
+        
         const data = {
             appid: config.app_id,
             notify_url: config.notify_url,

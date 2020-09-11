@@ -16,7 +16,6 @@ export class WeChatJSAPIPayService extends WeChatPayBaseService {
      * @param params JSAPI支付接口请求参数
      */
     async pay(wechatConfig: WechatConfig, params: WeChatOtherPayOrderReqParam): Promise<WeChatOtherPayOrderRes> {
-        params.trade_type = WeChatTradeType.JSAPI;
         return await this.requestUtil.post<WeChatOtherPayOrderRes>(this.unifiedOrderUrl, this.processParams(params, wechatConfig));
     }
 }

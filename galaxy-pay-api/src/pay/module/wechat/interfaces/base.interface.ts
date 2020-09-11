@@ -35,6 +35,7 @@ export interface WechatConfig {
     debug: boolean;
     notify_url: string;
     return_url: string;
+    callback_url: string;
 }
 
 export interface Param {

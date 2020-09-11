@@ -108,7 +108,6 @@ export class AliTradePayService extends AliPayBaseService {
      * @param body AlipayPageBizContent
      */
     async precreate(body: AlipayPrecreateBizContent, config: AlipayConfig): Promise<AlipayPrecreateResponse> {
-        body.product_code = "FACE_TO_FACE_PAYMENT";
         const param = {
             app_id: config.app_id,
             notify_url: config.notify_url,

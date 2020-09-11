@@ -6,6 +6,7 @@ import { WeChatSignUtil } from './pay/module/wechat/utils/sign.util';
 import { OrderChannel } from './common/entities/order.entity';
 import { AlipayConfig } from './pay/module/ali/interfaces/base.interface';
 import { PayGuard } from './common/guard/pay.guard';
+import { PayConfig } from './common/decorator/pay.config.decorator';
 
 @Controller()
 @UseGuards(PayGuard)
@@ -19,8 +20,7 @@ export class AppController {
     ) {}
 
   @Get()
-  async getHello(@Request() req) {
-    // console.log(req);
+  async getHello() {
     return '我那个晓得！';
   }
 
@@ -28,9 +28,8 @@ export class AppController {
   async return(@Request() req) {
     try {
       const data  = req.body;
-      const order = await this.orderService.findOrder(data.out_trade_no, OrderChannel.alipay)
-      const software = await this.softwareService.findSoftwarePay(order.appid, OrderChannel.alipay)
-      const alipayConfig: AlipayConfig = JSON.parse(software.alipay);
+      const order = await this.orderService.findOrder(data.out_trade_no)
+      const alipayConfig = await this.softwareService.findSoftwarePay(order.appid)
       const signResult = this.aliSignUtil.responSignVerify(data, alipayConfig.public_key);
       if (signResult) {
         const status = await this.orderService.paySuccess(data.out_trade_no, OrderChannel.alipay);
@@ -55,14 +54,13 @@ export class AppController {
       data[item] = xml[item][0];
     }
     try {
-      const order = await this.orderService.findOrder(data.out_trade_no, OrderChannel.wechat)
+      const order = await this.orderService.findOrder(data.out_trade_no)
       if (!order) {
         res.end(this.returCode(false, '订单不存在'));
       } else if(order.order_status == '1') {
         res.end(this.returCode(true, 'OK'))
       }
-      const software = await this.softwareService.findSoftwarePay(order.appid, OrderChannel.wechat)
-      const wechatConfig = JSON.parse(software.wechat);
+      const wechatConfig = await this.softwareService.findSoftwarePay(order.appid)
       // 先拿到微信得签名
       const dataSign = data.sign;
       // 不进行签名验证

@@ -20,28 +20,59 @@ export class SoftwareService extends BaseService<Software> {
    * 仅限给支付时使用
    * @param appid string
    */
-  async findSoftwarePay(appid: string, channel: OrderChannel) {
-    const data = await this.softwareRepository.findOne({
-      appid,
-      channel: channel
-    });
-    return data;
+  async findSoftwarePay(appid: string) {
+    try {
+      const data = await this.softwareRepository.findOne({
+        appid
+      });
+      if (data.channel === OrderChannel.wechat) {
+        return JSON.parse(data.wechat);
+      } else {
+        return JSON.parse(data.alipay);
+      }
+    } catch (e) {
+      throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
+    }
   }
 
   /**
   * 
   * @param id string
   */
-  async findSoftware(id: string, channel: OrderChannel) {
+  // async findSoftware(id: string, channel: OrderChannel) {
+  //   const data = await this.softwareRepository.findOne({
+  //     id,
+  //     channel
+  //   });
+  //   if(!data) {
+  //     throw new HttpException(`没有找到项目`, HttpStatus.BAD_REQUEST);
+  //   }
+  //   try {
+  //     if (channel === OrderChannel.wechat) {
+  //       const wechat = JSON.parse(data.wechat);
+  //       delete data.wechat;
+  //       return {...data, ...wechat}
+  //     } else {
+  //       const alipay = JSON.parse(data.alipay);
+  //       delete data.alipay;
+  //       return {...data, ...alipay}
+  //     }
+  //   } catch (e) {
+  //     throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
+  //   }
+  // }
+
+
+  // 用于修改使用
+  async findSoftware(appid: string) {
     const data = await this.softwareRepository.findOne({
-      id,
-      channel
+      appid
     });
     if(!data) {
       throw new HttpException(`没有找到项目`, HttpStatus.BAD_REQUEST);
     }
     try {
-      if (channel === OrderChannel.wechat) {
+      if (data.channel === OrderChannel.wechat) {
         const wechat = JSON.parse(data.wechat);
         delete data.wechat;
         return {...data, ...wechat}

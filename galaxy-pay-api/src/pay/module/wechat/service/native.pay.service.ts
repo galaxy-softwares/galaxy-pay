@@ -16,7 +16,6 @@ export class WeChatNativePayService extends WeChatPayBaseService {
      * @param params 扫码支付接口请求参数
      */
     async pay(wechatConfig: WechatConfig, params: WeChatOtherPayOrderReqParam): Promise<WeChatOtherPayOrderRes> {
-        params.trade_type = WeChatTradeType.NATIVE;
         return await this.requestUtil.post<WeChatOtherPayOrderRes>(this.unifiedOrderUrl, this.processParams(params, wechatConfig));
     }
 }

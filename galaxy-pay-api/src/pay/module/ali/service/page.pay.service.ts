@@ -13,15 +13,14 @@ export class AliPagePayService extends AliPayBaseService {
      * @param data AlipayPageBizContent
      * @param config AlipayConfig
      */
-    pay(body: AlipayPageBizContent, config: AlipayConfig){
-        body.product_code = "FAST_INSTANT_TRADE_PAY";
+    pay(biz_content: AlipayPageBizContent, config: AlipayConfig){
         const data = {
             app_id: config.app_id,
             notify_url: config.notify_url,
             return_url: config.return_url,
             method: "alipay.trade.page.pay",
             biz_content: JSON.stringify({
-                ...body
+                ...biz_content
             }),
         }
         this.param = {...this.param, ...data}
