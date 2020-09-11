@@ -44,11 +44,12 @@ $ npm run start:dev
 
 ```
 
-curl --location --request POST 'http://127.0.0.1:3100/alipay/page?appid=APPID' \
+curl --location --request POST 'http://127.0.0.1:3100/alipay/app' \
 --header 'Content-Type: application/x-www-form-urlencoded' \
---data-urlencode 'total_amount=100' \
---data-urlencode 'out_trade_no=1123112312312321' \
---data-urlencode 'subject=不晓得'
+--data-urlencode 'appid=j5Se66PgGopFwkfyEv6xMVBYtacbiOCI' \
+--data-urlencode 'money=0.01' \
+--data-urlencode 'out_trade_no=1599799645' \
+--data-urlencode 'body=不知道'
 
 ```
 
