@@ -16,6 +16,7 @@ import { OrderService } from './service/order.service';
 import { OrderController } from './controller/order.controller';
 import { RefundService } from './service/refund.service';
 import { Refund } from 'src/common/entities/refund.entity';
+import { FileController } from './controller/file.controller';
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import { Refund } from 'src/common/entities/refund.entity';
     }),
     PassportModule.register({ defaultStrategy: 'jwt' })
   ],
-  controllers: [AuthController, SoftwareController, OrderController],
+  controllers: [AuthController, SoftwareController, OrderController, FileController],
   providers: [AuthService, SoftwareService, UserService,RefundService, OrderService, JwtAuthGuard, JwtStrategy],
   exports: [SoftwareService, OrderService, RefundService]
 })

@@ -58,7 +58,7 @@ export class Order extends Base {
 
   @Column({
     comment: "支付订单号",
-    default: "",
+    default: "",  
   })
   trade_no: string;
 }

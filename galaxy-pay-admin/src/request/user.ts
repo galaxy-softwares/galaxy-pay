@@ -11,5 +11,5 @@ export const userUpdateInfo = (id, data) => request<UserInfo>('put', `/user/${id
 export const uploadFile = (file) => {
     const data = new FormData();
     data.append("file", file);
-    return request('post', '/file/uploadImage', data)
+    return request('post', '/file/uploadP12', data)
 }

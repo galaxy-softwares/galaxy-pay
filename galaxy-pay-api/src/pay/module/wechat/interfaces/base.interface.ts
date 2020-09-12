@@ -30,8 +30,7 @@ export interface WechatConfig {
     mch_id: string;
     mch_key: string;
     app_secret: string;
-    ssl_cer: string;
-    ssl_key: string;
+    apiclient_cert: string;
     debug: boolean;
     notify_url: string;
     return_url: string;

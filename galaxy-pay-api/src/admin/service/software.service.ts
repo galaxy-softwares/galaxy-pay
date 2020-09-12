@@ -141,6 +141,7 @@ export class SoftwareService extends BaseService<Software> {
         callback_url: data.callback_url,
         return_url: data.return_url,
         notify_url: data.notify_url,
+        apiclient_cert: data.apiclient_cert,
       }
     } else {
       alipay = {

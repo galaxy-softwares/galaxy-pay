@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from "react";
 import { Form, Input, Tabs, Radio } from 'antd';
-import { QuestionCircleOutlined, ProfileOutlined } from '@ant-design/icons';
+import { QuestionCircleOutlined, CloudUploadOutlined } from '@ant-design/icons';
 import { FormInstance } from "antd/es/form";
+import { UploadFile } from "./uploadFile";
 const { TabPane } = Tabs;
 
 
@@ -17,6 +18,15 @@ interface SoftwareFromProps {
 }
 
 export const SoftwareFrom: React.FC<SoftwareFromProps> = ({form, channel, edit}) => {
+
+    const handleChange = (data) => {
+        if (data) {
+            form.setFieldsValue({
+                apiclient_cert: data.path
+            })
+        }
+    }
+
     return (
         <div>
             <Form preserve={false} {...layout} form={form}>
@@ -63,8 +73,12 @@ export const SoftwareFrom: React.FC<SoftwareFromProps> = ({form, channel, edit})
                     <Form.Item name="app_secret" label="APP_KEY" rules={[{ required: true, message: '项目名称不能为空'}]}>
                         <Input placeholder="开发者支付密钥"/>
                     </Form.Item>
-                    <Form.Item name="pem12" label="pem12">
-                        <Input placeholder="证书文件，特定操作需要, u1s1 老朽可不给你校验！"/>
+                    <Form.Item name="apiclient_cert" label="apiclient_cert">
+                        <Input placeholder="证书文件，特定操作需要, u1s1 老朽可不给你校验！" addonAfter={
+                            <UploadFile uploadSuccess={handleChange} accept={'*'} uploadFail={null}>
+                                <CloudUploadOutlined />
+                            </UploadFile>
+                        }/>
                     </Form.Item>
                 </> : <>
                     <Form.Item name="app_id" label="APPID" rules={[{ required: true, message: '项目名称不能为空'}]}>

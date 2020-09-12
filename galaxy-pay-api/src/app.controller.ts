@@ -5,7 +5,7 @@ import { OrderService } from './admin/service/order.service';
 import { WeChatSignUtil } from './pay/module/wechat/utils/sign.util';
 import { OrderChannel } from './common/entities/order.entity';
 import { RefundService } from './admin/service/refund.service';
-
+import path = require('path');
 @Controller()
 export class AppController {
   constructor(
@@ -18,6 +18,7 @@ export class AppController {
 
   @Get()
   async getHello() {
+    console.log(path.join(__dirname, '../src/upload'));
     return '我那个晓得！';
   }
 

@@ -5,12 +5,15 @@ import { WeChatNativePayService } from "src/pay/module/wechat/service/native.pay
 import { WeChatWapPayService } from "src/pay/module/wechat/service/wap.pay.service";
 import { WeChatMicroPayService } from "src/pay/module/wechat/service/micro.pay.service";
 import { WeChatAppPayService } from "src/pay/module/wechat/service/app.pay.service";
-import { WechatPayDto } from "src/common/dtos/pay.dto";
+import { WechatPayDto, WechatRefundPayDto } from "src/common/dtos/pay.dto";
 import { ApiWechatService } from './service/api.wechat.service';
 import { PayConfig } from "src/common/decorator/pay.config.decorator";
 import { WechatConfig } from "src/pay/module/wechat/interfaces/base.interface";
 import { WeChatTradeType } from "src/pay/module/wechat/enums/trade-type.enum";
 import { PayGuard } from "src/common/guard/pay.guard";
+import * as fs from 'fs';
+import * as https from 'https';
+import * as path from 'path';
 
 @Controller("wechat")
 @UseGuards(PayGuard)
@@ -25,7 +28,6 @@ export class WechatController {
         private readonly apiWechatSerice: ApiWechatService,
     ) {}
     
-
     /**
      * 微信小程序支付
      * @param param 
@@ -56,13 +58,34 @@ export class WechatController {
         await this.apiWechatSerice.generateWechatOrder(body, payConfig);
         const payBody = {
             trade_type: WeChatTradeType.APP,
-            notify_url: body.notify_url ? body.notify_url : payConfig.notify_url,
+            notify_url: payConfig.notify_url,
             body: body.body,
             out_trade_no: body.out_trade_no,
             total_fee: body.money,
             spbill_create_ip: "",
         }
         const result = await this.wechatAppPayService.pay(payConfig, payBody);
+        return result
+    }
+
+    @Post("refund")
+    async refund(@Body() body: WechatRefundPayDto,  @PayConfig() payConfig: WechatConfig) {
+       
+        await this.apiWechatSerice.generateWechatRefund(body, payConfig);
+        const payBody = {
+            transaction_id: body.trade_no,
+            out_refund_no: body.out_trade_no,
+            total_fee: body.money,
+            refund_fee: body.refund_money,
+            refund_desc: body.refund_reason,
+            notify_url: payConfig.notify_url,
+        }
+        const httpConfig = new https.Agent({
+            pfx: fs.readFileSync(path.join(__dirname,  payConfig.apiclient_cert)),
+            passphrase: payConfig.mch_id,
+        });
+        console.log(httpConfig);
+        const result = await this.wechatAppPayService.refund(payBody, payConfig, httpConfig);
         return result
     }
 
