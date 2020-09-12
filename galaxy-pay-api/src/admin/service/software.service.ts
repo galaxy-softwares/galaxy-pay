@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SoftwareDto } from 'src/common/dtos/software.dto';
 import { OrderChannel } from 'src/common/entities/order.entity';
+import { WechatConfig } from 'src/pay/module/wechat/interfaces/base.interface';
 
 @Injectable()
 export class SoftwareService extends BaseService<Software> {
@@ -40,6 +41,24 @@ export class SoftwareService extends BaseService<Software> {
       } else {
         return JSON.parse(data.alipay);
       }
+    } catch (e) {
+      throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  /**
+   * 根据微信appid 查找到对应的微(s)信(b)配置
+   * @param wxappid 
+   */
+  public async findSoftwareByWxAppid(wxappid: string): Promise<WechatConfig> {
+    try {
+      const data = await this.softwareRepository.find({
+        channel: OrderChannel.wechat,
+      });
+      const result = data.find((item) => {
+        return wxappid == JSON.parse(item.wechat).app_id;
+      })
+      return JSON.parse(result.wechat);
     } catch (e) {
       throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
     }
@@ -141,6 +160,7 @@ export class SoftwareService extends BaseService<Software> {
         callback_url: data.callback_url,
         return_url: data.return_url,
         notify_url: data.notify_url,
+        refund_notify_url: data.refund_notify_url,
         apiclient_cert: data.apiclient_cert,
       }
     } else {

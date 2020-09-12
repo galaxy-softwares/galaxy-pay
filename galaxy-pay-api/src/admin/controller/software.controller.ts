@@ -22,14 +22,27 @@ export class SoftwareController {
     }
 
     @Post()
-    async create(@Request() req, @Body() data): Promise<any> {
-        // 获取本机得域名
+    async create(@Request() request, @Body() data): Promise<any> {
+        const { headers: { host } } = request;
+        if (data.channel == 'wechat') {
+            data.notify_url = `${host}/wechat_notify_url`;
+            data.refund_notify_url = `${host}/wechat_refund_notify_url`;
+        } else {
+            data.notify_url = `${host}/alipay_notify_url`;
+        }
         return await this.softwareService.create(data);
     }
 
     @Put()
-    async update(@Request() req, @Body() data) {
+    async update(@Request() request, @Body() data) {
         // 获取本机得域名
+        const { headers: { host } } = request;
+        if (data.channel == 'wechat') {
+            data.notify_url = `${host}/wechat_notify_url`;
+            data.refund_notify_url = `${host}/wechat_refund_notify_url`;
+        } else {
+            data.notify_url = `${host}/alipay_notify_url`;
+        }
         return await this.softwareService.update(data);
     }
 }

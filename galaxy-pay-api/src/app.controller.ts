@@ -1,11 +1,11 @@
-import { Controller, Get, Post,  Request, Res, Inject, Req, HttpService, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post,  Request, Res, Inject, Req, HttpService } from '@nestjs/common';
 import { SoftwareService } from './admin/service/software.service';
 import { AliSignUtil } from './pay/module/ali/util/sign.util';
 import { OrderService } from './admin/service/order.service';
 import { WeChatSignUtil } from './pay/module/wechat/utils/sign.util';
 import { OrderChannel } from './common/entities/order.entity';
-import { RefundService } from './admin/service/refund.service';
 import path = require('path');
+import { WeChatNotifyParserUtil } from './pay/module/wechat/utils/notify-parser.util';
 @Controller()
 export class AppController {
   constructor(
@@ -14,6 +14,7 @@ export class AppController {
     private readonly orderService: OrderService,
     @Inject(WeChatSignUtil) protected readonly signUtil: WeChatSignUtil,
     @Inject(HttpService) protected readonly httpService: HttpService,
+    @Inject(WeChatNotifyParserUtil) private readonly weChatNotifyParserUtil: WeChatNotifyParserUtil
     ) {}
 
   @Get()
@@ -23,7 +24,7 @@ export class AppController {
   }
 
   @Post("alipay_notify_url")
-  async return(@Request() req) {
+  async alipay_notify_url(@Request() req) {
     console.log("支付异步通知");
     const data  = req.body;
     const order = await this.orderService.findOrder(data.out_trade_no)
@@ -34,20 +35,24 @@ export class AppController {
       const status = await this.orderService.paySuccess(data.out_trade_no, OrderChannel.alipay, data.trade_no);
       if (status) {
         // 从order中拿到callback_url 然后发送过去~
-        // const result = await this.httpService.post(order.callback_url, JSON.stringify(order)).toPromise();
+        const result = await this.httpService.post(order.callback_url, JSON.stringify(order)).toPromise();
       }
     }
   }
 
-  @Post("wechat_notify_url")
-  async notify(@Req() req, @Res() res) {
+  @Post("refund_notify_url")
+  async refund_notify_url(@Req() req, @Res() res) {
     res.set('Content-Type', 'text/html');
     res.status(200);
-    const { xml } = req.body;
-    const data: any = {};
-    for(const item in xml) {
-      data[item] = xml[item][0];
-    }
+    const data = await this.weChatNotifyParserUtil.parseRefundNotify(req);
+    console.log(data);
+  }
+
+  @Post("wechat_notify_url")
+  async wechat_notify_url(@Req() req, @Res() res) {
+    res.set('Content-Type', 'text/html');
+    res.status(200);
+    const data = await this.weChatNotifyParserUtil.parsePayNotify(req);
     try {
       const order = await this.orderService.findOrder(data.out_trade_no)
       if (!order) {
@@ -69,7 +74,7 @@ export class AppController {
       ) {
         res.end(this.returCode(false, '签名验证失败'));
       }
-      const status = await this.orderService.paySuccess(data.out_trade_no, OrderChannel.wechat, data.trade_no);
+      const status = await this.orderService.paySuccess(data.out_trade_no, OrderChannel.wechat, data.transaction_id);
       if (!status) {
         res.end(this.returCode(false, '订单状态修改失败！'));
       }

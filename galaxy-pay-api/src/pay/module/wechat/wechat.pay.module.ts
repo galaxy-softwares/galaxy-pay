@@ -11,6 +11,7 @@ import { WeChatNativePayService } from './service/native.pay.service';
 import { WeChatJSAPIPayService } from './service/jsapi.pay.service';
 import { WeChatMicroPayService } from './service/micro.pay.service';
 import { WeChatWapPayService } from './service/wap.pay.service';
+import { WeChatNotifyParserUtil } from './utils/notify-parser.util';
 
 @Module({
     imports: [HttpModule],
@@ -27,6 +28,7 @@ import { WeChatWapPayService } from './service/wap.pay.service';
         XmlUtil,
         WeChatSignUtil,
         RandomUtil,
+        WeChatNotifyParserUtil,
         { provide: WeChatPayCertificateAgentProvider, useValue: "certificateAgent" },
     ],
     exports: [
@@ -39,7 +41,8 @@ import { WeChatWapPayService } from './service/wap.pay.service';
         WeChatMicroPayService,
         WeChatWapPayService,
         WeChatSignUtil,
-        XmlUtil
+        XmlUtil,
+        WeChatNotifyParserUtil
     ]
 })
 export class WechatPayModule {

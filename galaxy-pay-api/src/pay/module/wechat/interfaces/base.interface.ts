@@ -35,6 +35,7 @@ export interface WechatConfig {
     notify_url: string;
     return_url: string;
     callback_url: string;
+    refund_notify_url: string;
 }
 
 export interface Param {

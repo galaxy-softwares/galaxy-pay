@@ -85,5 +85,6 @@ export class WechatRefundPayDto {
   refund_reason: string;
   
   callback_url?: string;
-  notify_url?: string;
+  
+  refund_notify_url?: string;
 }
