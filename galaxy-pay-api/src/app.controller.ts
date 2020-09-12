@@ -3,15 +3,17 @@ import { SoftwareService } from './admin/service/software.service';
 import { AliSignUtil } from './pay/module/ali/util/sign.util';
 import { OrderService } from './admin/service/order.service';
 import { WeChatSignUtil } from './pay/module/wechat/utils/sign.util';
-import { OrderChannel } from './common/entities/order.entity';
-import path = require('path');
+import { OrderChannel, OrderStatus } from './common/entities/order.entity';
 import { WeChatNotifyParserUtil } from './pay/module/wechat/utils/notify-parser.util';
+import { WeChatPayNotifyRes, WeChatRefundNotifyRes } from './pay/module/wechat/interfaces/notify.interface';
+import { RefundService } from './admin/service/refund.service';
 @Controller()
 export class AppController {
   constructor(
     private readonly softwareService: SoftwareService,
     private readonly aliSignUtil: AliSignUtil,
     private readonly orderService: OrderService,
+    private readonly refundSerivce: RefundService,
     @Inject(WeChatSignUtil) protected readonly signUtil: WeChatSignUtil,
     @Inject(HttpService) protected readonly httpService: HttpService,
     @Inject(WeChatNotifyParserUtil) private readonly weChatNotifyParserUtil: WeChatNotifyParserUtil
@@ -19,7 +21,6 @@ export class AppController {
 
   @Get()
   async getHello() {
-    console.log(path.join(__dirname, '../src/upload'));
     return '我那个晓得！';
   }
 
@@ -35,30 +36,49 @@ export class AppController {
       const status = await this.orderService.paySuccess(data.out_trade_no, OrderChannel.alipay, data.trade_no);
       if (status) {
         // 从order中拿到callback_url 然后发送过去~
-        const result = await this.httpService.post(order.callback_url, JSON.stringify(order)).toPromise();
+        const callbackResut = await this.httpService.post(order.callback_url, JSON.stringify(order)).toPromise();
+        console.log(callbackResut);
       }
     }
   }
 
-  @Post("refund_notify_url")
+  @Post("wechat_refund_notify_url")
   async refund_notify_url(@Req() req, @Res() res) {
     res.set('Content-Type', 'text/html');
     res.status(200);
-    const data = await this.weChatNotifyParserUtil.parseRefundNotify(req);
-    console.log(data);
+    try {
+      const data = await this.weChatNotifyParserUtil.receiveReqData<WeChatRefundNotifyRes>(req, 'pay');
+      const payConfig = await this.softwareService.findSoftwareByWxAppid(data.appid);
+      const result = await this.weChatNotifyParserUtil.parseRefundNotify(data, payConfig.mch_key);
+      if (result) {
+        const refundOrder = await this.refundSerivce.findOrder(data.out_refund_no);
+        if(refundOrder.order_status == OrderStatus.UnPaid) {
+          const status = await this.orderService.paySuccess(data.out_trade_no, OrderChannel.wechat, data.transaction_id);
+          if (!status) {
+            res.end(this.weChatNotifyParserUtil.generateFailMessage("订单状态修改失败！"))
+          }
+          const callbackResut = await this.httpService.post(refundOrder.callback_url, JSON.stringify(refundOrder)).toPromise();
+          console.log(callbackResut);
+        } else {
+          res.end(this.weChatNotifyParserUtil.generateSuccessMessage())
+        }
+      }
+    } catch (e) {
+      res.end(this.weChatNotifyParserUtil.generateFailMessage(e.toString()))
+    }
   }
 
   @Post("wechat_notify_url")
   async wechat_notify_url(@Req() req, @Res() res) {
     res.set('Content-Type', 'text/html');
     res.status(200);
-    const data = await this.weChatNotifyParserUtil.parsePayNotify(req);
+    const data = await this.weChatNotifyParserUtil.receiveReqData<WeChatPayNotifyRes>(req, 'pay');
     try {
       const order = await this.orderService.findOrder(data.out_trade_no)
       if (!order) {
-        res.end(this.returCode(false, '订单不存在'));
+        res.end(this.weChatNotifyParserUtil.generateFailMessage("没有查询到订单！"))
       } else if(order.order_status == '1') {
-        res.end(this.returCode(true, 'OK'))
+        res.end(this.weChatNotifyParserUtil.generateSuccessMessage())
       }
       const wechatConfig = await this.softwareService.findSoftwarePayConfig(order.appid)
       // 先拿到微信得签名
@@ -67,32 +87,19 @@ export class AppController {
       delete data.sign;
       const sign = this.signUtil.sign(data, wechatConfig.mch_key)
       //  还要判断是支付类型！！！！！！！
-      if (
-        (sign !== dataSign)
-        || (data.return_code !== 'SUCCESS')
-        || (data.result_code !== 'SUCCESS')
-      ) {
-        res.end(this.returCode(false, '签名验证失败'));
+      if ((sign !== dataSign)|| (data.return_code !== 'SUCCESS')|| (data.result_code !== 'SUCCESS')) {
+        res.end(this.weChatNotifyParserUtil.generateFailMessage("签名验证失败"))
       }
       const status = await this.orderService.paySuccess(data.out_trade_no, OrderChannel.wechat, data.transaction_id);
       if (!status) {
-        res.end(this.returCode(false, '订单状态修改失败！'));
+        res.end(this.weChatNotifyParserUtil.generateFailMessage("订单状态修改失败！"))
       }
-      this.httpService.post(order.callback_url, order)
-      res.end(this.returCode(true, 'OK'));
+      const callbackResut = await this.httpService.post(order.callback_url, JSON.stringify(order)).toPromise();
+      console.log(callbackResut);
+      res.end(this.weChatNotifyParserUtil.generateSuccessMessage())
     } catch(e) {
-      res.end(this.returCode(false, e.toString()));
+      res.end(this.weChatNotifyParserUtil.generateFailMessage(e.toString()))
     }
   }
 
-  /**
-   * 返回给微信服务器
-   * @param boolean $returnCode
-   * @param string $msg
-   */
-  private returCode(returnCode = true, message: string = null) {
-    const code = returnCode ? 'SUCCESS': 'FAIL';
-    const msg = message ? `${message}` : 'OK';
-    return `<xml><return_code><![CDATA[${code}]]></return_code><return_msg><![CDATA[${msg}]]></return_msg></xml>`;
-  }
 }

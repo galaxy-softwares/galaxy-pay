@@ -35,9 +35,13 @@ export class RefundService extends BaseService<Refund> {
      * @param out_trade_no 
      */
     async findOrder(out_trade_no: string) {
-        return this.refundRepository.findOne({
-            out_trade_no,
-        })
+        try {
+            return this.refundRepository.findOne({
+                out_trade_no,
+            })
+        } catch (error) {
+            throw new HttpException("没有找到退款订单！", HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
