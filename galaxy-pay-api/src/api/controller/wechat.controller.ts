@@ -36,7 +36,7 @@ export class WechatController {
         await this.apiWechatSerice.generateWechatOrder(body, payConfig);
         const payBody = {
             trade_type: WeChatTradeType.APP,
-            notify_url: body.notify_url ? body.notify_url : payConfig.notify_url,
+            notify_url: payConfig.notify_url,
             body: body.body,
             out_trade_no: body.out_trade_no,
             total_fee: body.money,
@@ -76,7 +76,7 @@ export class WechatController {
         await this.apiWechatSerice.generateWechatOrder(body, payConfig);
         const payBody = {
             trade_type: WeChatTradeType.JSAPI,
-            notify_url: body.notify_url ? body.notify_url : payConfig.notify_url,
+            notify_url: payConfig.notify_url,
             body: body.body,
             out_trade_no: body.out_trade_no,
             total_fee: body.money,
@@ -96,7 +96,7 @@ export class WechatController {
         await this.apiWechatSerice.generateWechatOrder(body, payConfig);
         const payBody = {
             trade_type: WeChatTradeType.NATIVE,
-            notify_url: body.notify_url ? body.notify_url : payConfig.notify_url,
+            notify_url: payConfig.notify_url,
             body: body.body,
             out_trade_no: body.out_trade_no,
             total_fee: body.money,
@@ -116,7 +116,7 @@ export class WechatController {
         await this.apiWechatSerice.generateWechatOrder(body, payConfig);
         const payBody = {
             trade_type: WeChatTradeType.MWEB,
-            notify_url: body.notify_url ? body.notify_url : payConfig.notify_url,
+            notify_url: payConfig.notify_url,
             body: body.body,
             out_trade_no: body.out_trade_no,
             total_fee: body.money,
@@ -136,7 +136,7 @@ export class WechatController {
         await this.apiWechatSerice.generateWechatOrder(body, payConfig);
         const payBody = {
             trade_type: WeChatTradeType.MWEB,
-            notify_url: body.notify_url ? body.notify_url : payConfig.notify_url,
+            notify_url: payConfig.notify_url,
             body: body.body,
             out_trade_no: body.out_trade_no,
             total_fee: body.money,
@@ -146,5 +146,4 @@ export class WechatController {
         const result = await this.wechatMicroPayService.pay(payConfig, payBody);
         return result
     }
-    
 }

@@ -1,8 +1,8 @@
 import { AlipayBaseBizContent } from "./base.interface";
 
-export interface AlipayRefundBizContent extends AlipayBaseBizContent {
+export interface AlipayRefundBizContent {
   trade_no: string;
-  refund_amount: number,
+  refund_amount: string,
   refund_currency?: string;
   refund_reason?: string;
   out_request_no?: string;

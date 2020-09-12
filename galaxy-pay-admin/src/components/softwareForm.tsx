@@ -12,10 +12,11 @@ const layout = {
 
 interface SoftwareFromProps {
     form: FormInstance;
-    chanle: string;
+    channel: string;
+    edit: boolean,
 }
 
-export const SoftwareFrom: React.FC<SoftwareFromProps> = ({form, chanle}) => {
+export const SoftwareFrom: React.FC<SoftwareFromProps> = ({form, channel, edit}) => {
     return (
         <div>
             <Form preserve={false} {...layout} form={form}>
@@ -30,13 +31,26 @@ export const SoftwareFrom: React.FC<SoftwareFromProps> = ({form, chanle}) => {
                 <Form.Item name="domain_url" label="授权域名">
                     <Input placeholder="非授权域名禁止发送支付请求，可为空！"/>
                 </Form.Item>
-                <Form.Item name="chanle" label="支付通道">
-                <Radio.Group>
+                <Form.Item name="callback_url" label="异步回调地址" rules={[{ required: true, message: '异步回调地址不能为空'}]}>
+                    <Input placeholder="当支付完成时回调此地址"/>
+                </Form.Item>
+                <Form.Item name="return_url" label="返回域名">
+                    <Input placeholder="当支付完成时返回此域名，可为空，一般用户h5 pc 支付使用！"/>
+                </Form.Item>
+                <Form.Item name="channel" label="支付通道">
+                <Radio.Group disabled={edit}>
                     <Radio value="wechat">微信</Radio>
                     <Radio value="alipay">支付宝</Radio>
                     </Radio.Group>
                 </Form.Item>
-                { chanle === 'wechat' ?  <>
+                {
+                        edit == true ? <>
+                        <Form.Item name="app_secret" label="app_secret" >
+                            <Input disabled placeholder="系统生成密钥请保管好不能泄漏！用于加密使用！"/>
+                        </Form.Item>
+                        </> : <></>
+                }
+                { channel === 'wechat' ?  <>
                     <Form.Item name="app_id" label="APPID" rules={[{ required: true, message: '项目名称不能为空'}]}>
                         <Input placeholder="微信开放平台审核通过应用的APPID"/>
                     </Form.Item>
@@ -49,11 +63,8 @@ export const SoftwareFrom: React.FC<SoftwareFromProps> = ({form, chanle}) => {
                     <Form.Item name="app_secret" label="APP_KEY" rules={[{ required: true, message: '项目名称不能为空'}]}>
                         <Input placeholder="开发者支付密钥"/>
                     </Form.Item>
-                    <Form.Item name="ssl_cer" label="apiclient_cert.pem">
-                        <Input placeholder="微信支付证书CER文件，特定操作需要验证证书"/>
-                    </Form.Item>
-                    <Form.Item name="ssl_key" label="apiclient_key.pem">
-                        <Input placeholder="微信支付证书KEY文件，特定操作需要验证证书"/>
+                    <Form.Item name="pem12" label="pem12">
+                        <Input placeholder="证书文件，特定操作需要, u1s1 老朽可不给你校验！"/>
                     </Form.Item>
                 </> : <>
                     <Form.Item name="app_id" label="APPID" rules={[{ required: true, message: '项目名称不能为空'}]}>

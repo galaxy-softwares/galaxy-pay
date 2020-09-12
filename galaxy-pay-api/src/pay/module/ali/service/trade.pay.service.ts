@@ -37,7 +37,7 @@ export class AliTradePayService extends AliPayBaseService {
      * @param config AlipayConfig
      * @param body AlipayRefundBizContent
      */
-    async refund(body: AlipayRefundBizContent, config: AlipayConfig): Promise<AlipayTradeRefundResponse> {
+    async refund(body: AlipayRefundBizContent, config: AlipayConfig): Promise<any> {
         const param = {
             app_id: config.app_id,
             method: "alipay.trade.refund",

@@ -22,6 +22,16 @@ export class SoftwareService extends BaseService<Software> {
    */
   async findSoftwarePay(appid: string) {
     try {
+      return await this.softwareRepository.findOne({
+        appid
+      });
+    } catch (e) {
+      throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  public async findSoftwarePayConfig(appid: string) {
+    try {
       const data = await this.softwareRepository.findOne({
         appid
       });
@@ -64,7 +74,7 @@ export class SoftwareService extends BaseService<Software> {
 
 
   // 用于修改使用
-  async findSoftware(appid: string) {
+  async findSoftware(appid: string, channel: OrderChannel) {
     const data = await this.softwareRepository.findOne({
       appid
     });
@@ -128,6 +138,9 @@ export class SoftwareService extends BaseService<Software> {
         app_secret: data.app_secret,
         ssl_cer: data.ssl_cer,
         ssl_key: data.ssl_key,
+        callback_url: data.callback_url,
+        return_url: data.return_url,
+        notify_url: data.notify_url,
       }
     } else {
       alipay = {
@@ -135,6 +148,9 @@ export class SoftwareService extends BaseService<Software> {
         debug: data.debug,
         private_key: data.private_key,
         public_key: data.public_key,
+        callback_url: data.callback_url,
+        return_url: data.return_url,
+        notify_url: data.notify_url,
       }
     }
     const software: any = {
@@ -174,20 +190,5 @@ export class SoftwareService extends BaseService<Software> {
     }
     return newObject;
   }
-  // /**
-  //  * 
-  //  * @param number string 删掉几位
-  //  * @param object 对象
-  //  */
-  // deletePrefix(number: number, object: any) {
-  //   const newObject = {}
-  //   for (const name in object) {
-  //     if (typeof object[name] != "object") {
-  //       const newName = name.substring(number);
-  //       newObject[newName] = object[name];
-  //     }
-  //   }
-  //   return newObject;
-  // }
   
 }

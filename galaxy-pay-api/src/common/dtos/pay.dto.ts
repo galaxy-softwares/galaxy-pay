@@ -19,13 +19,29 @@ export class AliPayDto {
    * 请参考 https://opendocs.alipay.com/apis/api_1/alipay.trade.pay
    */
   biz_count?: Object;
-  callback_url?: string;
-  return_url?: string;
-  notify_url?: string;
   /**
    * 销售产品码
    */
   product_code?: string;
+}
+
+export class AliRefundDto {
+  @IsNotEmpty({ message: 'appid不能为空' })
+  appid: string;
+
+  @IsNotEmpty({ message: '退款订单不能为空！' })
+  trade_no: string;
+
+  @IsNotEmpty({ message: '订单金额不能为空'})
+  money: string;
+
+  @IsNotEmpty({ message: '退款金额不能为空'})
+  refund_money: string;
+
+  refund_reason?: string;
+
+  callback_url?: string;
+  notify_url?: string;
 }
 
 

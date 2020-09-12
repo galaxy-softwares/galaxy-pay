@@ -2,9 +2,6 @@ import { Controller, Get, UsePipes, UseGuards, Post, Body, Param, Put, Request }
 import { SoftwareService } from '../service/software.service';
 import { JwtAuthGuard } from '../service/jwt-auth.guard';
 import { ValidationPipe } from 'src/common/pipe/validation.pipe';
-import { Software } from 'src/common/entities/software.entity';
-import dns = require('dns');
-
 
 @Controller("software")
 @UsePipes(new ValidationPipe())
@@ -21,7 +18,7 @@ export class SoftwareController {
 
     @Get(":id/:channel")
     detail(@Param() param) {
-        return this.softwareService.findSoftware(param.id);
+        return this.softwareService.findSoftware(param.id, param.channel);
     }
 
     @Post()

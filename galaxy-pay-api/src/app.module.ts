@@ -8,6 +8,7 @@ import { Software } from './common/entities/software.entity';
 import { ApiModule } from './api/api.module';
 import { PayModule } from './pay/pay.module';
 import { Order } from './common/entities/order.entity';
+import { Refund } from './common/entities/refund.entity';
 
 
 @Module({
@@ -20,7 +21,7 @@ import { Order } from './common/entities/order.entity';
       username: 'root',
       password: 'root',
       database: 'test',
-      entities: [User, Software, Order],
+      entities: [User, Software, Order, Refund],
       synchronize: true,
     }),
     AdminModule,

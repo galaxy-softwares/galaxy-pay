@@ -3,19 +3,19 @@ import { BaseService } from './base.service';
 import { Order, OrderStatus, OrderChannel } from 'src/common/entities/order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-
+import { Refund } from 'src/common/entities/refund.entity';
 
 @Injectable()
-export class OrderService extends BaseService<Order> {
+export class RefundService extends BaseService<Refund> {
     constructor(
-        @InjectRepository(Order)
-        private readonly orderRepository: Repository<Order>,
+        @InjectRepository(Refund)
+        private readonly refundRepository: Repository<Refund>,
       ) {
-        super(orderRepository);
+        super(refundRepository);
     }
 
-    async find(): Promise<Array<Order>> {
-       return await this.orderRepository.find(); 
+    async find(): Promise<Array<Refund>> {
+       return await this.refundRepository.find(); 
     }
 
     /**
@@ -24,7 +24,7 @@ export class OrderService extends BaseService<Order> {
      */
     async create(data): Promise<Order> {
         try {
-            return await this.orderRepository.save(data);
+            return await this.refundRepository.save(data);
         } catch (e) {
             throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
         } 
@@ -35,26 +35,25 @@ export class OrderService extends BaseService<Order> {
      * @param out_trade_no 
      */
     async findOrder(out_trade_no: string) {
-        return this.orderRepository.findOne({
+        return this.refundRepository.findOne({
             out_trade_no,
         })
     }
 
     /**
-     * 判断支付是否完成
+     * 判断退款是否完成
      * @param out_trade_no 
      * 
      */
-    async paySuccess(out_trade_no: string, channel: OrderChannel, trade_no: string): Promise<boolean> {
-        const order = await this.orderRepository.findOne({
+    async refundSuccess(out_trade_no: string, channel: OrderChannel): Promise<boolean> {
+        const order = await this.refundRepository.findOne({
             out_trade_no,
             order_status: OrderStatus.UnPaid,
-            order_channel: channel,
+            order_channel: channel
         })
         if (order) {
-            order.trade_no = trade_no;
             order.order_status = OrderStatus.Success;
-            if (await this.orderRepository.save(order)) {
+            if (await this.refundRepository.save(order)) {
                 return true;
             }
         }
@@ -65,9 +64,9 @@ export class OrderService extends BaseService<Order> {
      * 更更新订单
      * @param data 
      */
-    async update(data: Order): Promise<Order> {
-        const order = this.orderRepository.create(data);
-        return await this.orderRepository.save(order);
+    async update(data: Refund): Promise<Refund> {
+        const order = this.refundRepository.create(data);
+        return await this.refundRepository.save(order);
       }
     
 }

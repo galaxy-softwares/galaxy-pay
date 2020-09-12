@@ -14,11 +14,12 @@ import { SoftwareController } from './controller/software.controller';
 import { Order } from 'src/common/entities/order.entity';
 import { OrderService } from './service/order.service';
 import { OrderController } from './controller/order.controller';
-
+import { RefundService } from './service/refund.service';
+import { Refund } from 'src/common/entities/refund.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Software, Order]),
+    TypeOrmModule.forFeature([User, Software, Order, Refund]),
     JwtModule.register({
         secretOrPrivateKey: '1AGy4bCUoECDZ4yI6h8DxHDwgj84EqStMNyab8nPChQ=',
         signOptions: {
@@ -28,7 +29,7 @@ import { OrderController } from './controller/order.controller';
     PassportModule.register({ defaultStrategy: 'jwt' })
   ],
   controllers: [AuthController, SoftwareController, OrderController],
-  providers: [AuthService, SoftwareService, UserService, OrderService, JwtAuthGuard, JwtStrategy],
-  exports: [SoftwareService, OrderService]
+  providers: [AuthService, SoftwareService, UserService,RefundService, OrderService, JwtAuthGuard, JwtStrategy],
+  exports: [SoftwareService, OrderService, RefundService]
 })
 export class AdminModule {}

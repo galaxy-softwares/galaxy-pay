@@ -12,7 +12,8 @@ import { setVisible } from '../../state/actions/modal.action';
 const Software: FC = () => {
     const [ form ] = Form.useForm();
     const [data, setData]= useState([]);
-    const [chanle, setChanle]= useState('wechat');
+    const [isEdit, setIsEdit] = useState(false);
+    const [channel, setChannel]= useState('wechat');
     const dispatch = useDispatch();
     const [modalTitle, setModalTitle]= useState("项目创建");
     const initSoftware = useCallback( async () => {
@@ -61,9 +62,10 @@ const Software: FC = () => {
                 <>
                     <a onClick={  async () => {
                         setModalTitle("修改项目");
-                        const { status, data } = await softwareDetail(record.id, record.chanle);
+                        const { status, data } = await softwareDetail(record.appid, record.channel);
                         if (status == 200) {
-                            setChanle(record.chanle)
+                            setChannel(record.channel)
+                            setIsEdit(true);
                             dispatch(setVisible(true))
                             form.setFieldsValue({...data})
                         }
@@ -108,16 +110,16 @@ const Software: FC = () => {
             openNotification({
                 key: 'softwareCreate',
                 type: 'success',
-                message: `${form.name} 创建完成！`,
-                description: '项目创建成功!',
+                message: `${form.name} 修改成功`,
+                description: '项目修改成功!',
                 duration: 3,
             })
         } else {
             openNotification({
                 key: 'softwareCreate',
                 type: 'success',
-                message: `${form.name} 创建完成！`,
-                description: '项目创建成功!',
+                message: `${form.name} 修改成功`,
+                description: '项目修改成功!',
                 duration: 3,
             })
         }
@@ -133,7 +135,6 @@ const Software: FC = () => {
                 form.validateFields()
                 .then((values: any) => {
                     if (values.id) {
-                        console.log(1111);
                         update(values)
                     } else {
                         create(values)
@@ -144,7 +145,7 @@ const Software: FC = () => {
                     console.log('Validate Failed:', info);
                 });
             }}>
-                <SoftwareFrom form={form} chanle={chanle} />
+                <SoftwareFrom form={form} channel={channel} edit={isEdit} />
             </ModalFrom>
             <Table columns={columns} dataSource={data} rowKey={(record, index) => index}  />
         </div>

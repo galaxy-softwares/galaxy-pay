@@ -8,7 +8,10 @@ import { AlipayRequestParam } from '../interfaces/base.interface';
 @Injectable()
 export class AliSignUtil {
     
-
+    /**
+     * 潜拷贝
+     * @param obj 
+     */
     copy (obj) {
         const ret = {};
         for(const k in obj) {
@@ -58,10 +61,8 @@ export class AliSignUtil {
     responSignVerify(response, public_key: string): boolean {
         const ret: any = this.copy(response);
         const sign = ret['sign'];
-
         delete ret.sign;
         delete ret.sign_type;
-
         const response_type = [
             'alipay_trade_app_pay_response',
             'alipay_trade_create_response',

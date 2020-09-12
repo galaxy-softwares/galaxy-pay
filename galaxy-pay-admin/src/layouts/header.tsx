@@ -16,7 +16,6 @@ const { Header } = Layout;
 
 const RenderAction = () => {
     const { path } = useSelector((state: AppState) => state.menuReducer)
-    console.log(path);
     const { username, avatar } = useSelector((state: AppState) => state.userReducer)
     const history = useHistory()
     const dispatch = useDispatch()

@@ -1,19 +1,9 @@
 import { Entity, Column } from 'typeorm';
 import { Base } from './base.entity'
-
-export enum OrderStatus {
-    UnPaid  = '0',
-    Success = '1',
-}
-
-export enum OrderChannel {
-    wechat  = "wechat",
-    alipay = "alipay",
-}
-
+import { OrderStatus, OrderChannel } from './order.entity';
 
 @Entity()
-export class Order extends Base {
+export class Refund extends Base {
 
   @Column()
   appid: string;
@@ -24,7 +14,7 @@ export class Order extends Base {
   })
   out_trade_no: string;
 
-  @Column({ comment: '订单状态', type: 'enum', enum: OrderStatus, default: OrderStatus.UnPaid})
+  @Column({ comment: '退款订单状态', type: 'enum', enum: OrderStatus, default: OrderStatus.UnPaid})
   order_status: OrderStatus;
 
   @Column({
@@ -32,12 +22,6 @@ export class Order extends Base {
     default: ""
   })
   callback_url:string;
-
-  @Column({
-    comment: '支付完成之后对应的支付宝或者微信同步回调地址',
-    default: '',
-  })
-  return_url:string;
 
   @Column({
     comment: '支付完成之后对应的支付宝或者微信异步回调地址',
@@ -50,15 +34,15 @@ export class Order extends Base {
   order_money: string;
 
   @Column({
+    comment: "退款金额"
+  })
+  refund_money: string;
+
+  @Column({
     comment:"订单通道（支付宝还是微信）",
     type: 'enum', 
     enum: OrderChannel, 
   })
   order_channel: OrderChannel
 
-  @Column({
-    comment: "支付订单号",
-    default: "",
-  })
-  trade_no: string;
 }
