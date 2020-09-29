@@ -41,9 +41,9 @@ export class AliPayBaseService {
         const ret = this.paramsUtil.encodeParams(params);
         const sign = this.singinUtil.sign(ret.unencode, private_key);
         if (params.method === "alipay.trade.app.pay") {
-            return ret.encode + '&sign=' + encodeURIComponent(sign);
+            return `${ret.encode}&sign=`+ encodeURIComponent(sign);
         } else {
-            return (false ? this.alipay_gate_way_sandbox : this.alipay_gate_way) + ret.encode + '&sign=' + encodeURIComponent(sign);
+            return `${this.alipay_gate_way }${ret.encode}&sign=` + encodeURIComponent(sign);
         }
     }
 

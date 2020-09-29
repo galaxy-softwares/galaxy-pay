@@ -1,10 +1,11 @@
 import { Module, HttpModule, Global } from '@nestjs/common';
 import { PayModule } from 'src/pay/pay.module';
 import { AdminModule } from 'src/admin/admin.module';
-import { ApiAlipayService } from './controller/service/api.alipay.service';
 import { ApiWechatService } from './controller/service/api.wechat.service';
 import { AlipayController } from './controller/alipay.controller';
 import { WechatController } from './controller/wechat.controller';
+import { TransformService } from './controller/service/transform.service';
+import { ApiOrderSerivce } from './controller/service/api.order.service';
 
 @Global()
 @Module({
@@ -14,6 +15,6 @@ import { WechatController } from './controller/wechat.controller';
     AdminModule
   ],
   controllers: [AlipayController, WechatController],
-  providers: [ApiAlipayService, ApiWechatService],
+  providers: [ApiWechatService, TransformService, ApiOrderSerivce],
 })
 export class ApiModule {}

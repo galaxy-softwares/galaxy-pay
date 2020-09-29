@@ -68,6 +68,11 @@ export class WechatController {
         return result
     }
 
+    /**
+     * 微信退款接口
+     * @param body 
+     * @param payConfig 
+     */
     @Post("refund")
     async refund(@Body() body: WechatRefundPayDto,  @PayConfig() payConfig: WechatConfig) {
         await this.apiWechatSerice.generateWechatRefund(body, payConfig);

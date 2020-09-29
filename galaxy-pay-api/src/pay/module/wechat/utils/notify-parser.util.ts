@@ -36,7 +36,7 @@ export class WeChatNotifyParserUtil {
      *
      * @param req 退款结果通知请求
      */
-    public async parseRefundNotify(result, secretKey): Promise<WeChatRefundNotifyRes> {
+    public async parseRefundNotify(result, secretKey: string): Promise<WeChatRefundNotifyRes> {
         if (result.return_code === 'FAIL') {
             return result;
         }

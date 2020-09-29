@@ -30,10 +30,6 @@ export class SoftwareDto {
   @IsNotEmpty({ message: '微信开发者密钥不能为空' })
   wechat_app_secret: string;
 
-  wechat_ssl_cer: string;
-
-  wechat_ssl_key: string;
-
   @IsNotEmpty({ message: '微信回调地址不能为空' })
   wechat_notify_url: string;
   

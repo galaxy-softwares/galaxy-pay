@@ -43,7 +43,7 @@ export class ApiWechatService {
 
 
     /**
-     * 支付宝退款
+     * 微信退款
      */
     public async generateWechatRefund(body: WechatRefundPayDto, wechatConfig: WechatConfig,) {
         try {

@@ -1,26 +1,27 @@
-import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
-import { AliPayDto, AliRefundDto } from "src/common/dtos/pay.dto";
-import { WechatConfig } from "src/pay/module/wechat/interfaces/base.interface";
-import { OrderChannel, OrderStatus, Order } from "src/common/entities/order.entity";
-import { SoftwareService } from "src/admin/service/software.service";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { OrderService } from "src/admin/service/order.service";
-import { AlipayBaseBizContent, AlipayConfig } from "src/pay/module/ali/interfaces/base.interface";
 import { RefundService } from "src/admin/service/refund.service";
+import { AliPayDto, AliPayRefundDto, WechatPayDto, WechatRefundPayDto } from "src/common/dtos/pay.dto";
+import { OrderChannel, OrderStatus } from "src/common/entities/order.entity";
+import { AlipayConfig } from "src/pay/module/ali/interfaces/base.interface";
+import { WechatConfig } from "src/pay/module/wechat/interfaces/base.interface";
+
 
 @Injectable()
-export class ApiAlipayService {
+export class ApiOrderSerivce {
     constructor(
         private readonly orderService: OrderService,
         private readonly refundService: RefundService,
     ) {
+        
     }
 
     /**
-     * 支付宝订单创建
-     * @param alipayConfig
-     * @param body 
+     * 支付订单生成
+     * @param body WechatPayDto | AliPayDto
+     * @param payConfig WechatConfig | AlipayConfig
      */
-    public async generateAliOrder(alipayConfig: AlipayConfig, body: AliPayDto) {
+    public async generateOrder(body: WechatPayDto | AliPayDto, payConfig: WechatConfig | AlipayConfig) {
         try {
             const order = await this.orderService.findOrder(body.out_trade_no);
             if (order) {
@@ -32,9 +33,9 @@ export class ApiAlipayService {
                     order_money: body.money,
                     order_channel: OrderChannel.alipay,
                     order_status: OrderStatus.UnPaid,
-                    callback_url: alipayConfig.callback_url,
-                    return_url: alipayConfig.return_url,
-                    notify_url: alipayConfig.notify_url,
+                    callback_url: payConfig.callback_url,
+                    return_url: payConfig.return_url,
+                    notify_url: payConfig.notify_url,
                     appid: body.appid
                 });
             }
@@ -44,9 +45,11 @@ export class ApiAlipayService {
     }
 
     /**
-     * 支付宝退款
+     * 支付退款订单生成
+     * @param body WechatRefundPayDto | AliPayRefundDto
+     * @param payConfig WechatConfig | AlipayConfig
      */
-    public async generateAliRefund(alipayConfig: AlipayConfig, body: AliRefundDto) {
+    public async generateRefundOrder(body: WechatRefundPayDto | AliPayRefundDto, payConfig: WechatConfig | AlipayConfig)  {
         try {
             const order = await this.refundService.findOrder(body.trade_no);
             if (order) {
@@ -59,9 +62,9 @@ export class ApiAlipayService {
                     refund_money: body.refund_money,
                     order_channel: OrderChannel.alipay,
                     order_status: OrderStatus.UnPaid,
-                    callback_url: alipayConfig.callback_url,
-                    return_url: alipayConfig.return_url,
-                    notify_url: "https://bkyg-test.utools.club/alipay_refund_notify_url",
+                    callback_url: payConfig.callback_url,
+                    return_url: payConfig.return_url,
+                    notify_url: payConfig.notify_url,
                     appid: body.appid
                 });
             }
@@ -69,5 +72,4 @@ export class ApiAlipayService {
             throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
         }
     }
-
 }

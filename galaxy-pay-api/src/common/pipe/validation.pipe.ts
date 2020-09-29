@@ -22,7 +22,7 @@ export class ValidationPipe implements PipeTransform<any> {
           const error = errors.shift()
           const constraints = error.constraints
           Object.keys(constraints).forEach(key => {
-            throw new HttpException(constraints[key], HttpStatus.FORBIDDEN);
+            throw new HttpException(constraints[key], 200);
           })
         }
         return object

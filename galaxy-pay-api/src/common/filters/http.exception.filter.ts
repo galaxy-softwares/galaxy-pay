@@ -14,11 +14,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
       code: exception.status,
     };
     
-    const status =
-      exception instanceof HttpException
+    const status = exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
- 
+        
     response.status(status);
     response.header('Content-Type', 'application/json; charset=utf-8');
     response.send(errorResponse);

@@ -25,7 +25,7 @@ export class AliPayDto {
   product_code?: string;
 }
 
-export class AliRefundDto {
+export class AliPayRefundDto {
   @IsNotEmpty({ message: 'appid不能为空' })
   appid: string;
 
