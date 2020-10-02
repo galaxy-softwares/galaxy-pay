@@ -1,5 +1,5 @@
 export interface AlipayConfig {
-    app_id: string;
+    appid: string;
     private_key: string;
     public_key: string;
     return_url: string;

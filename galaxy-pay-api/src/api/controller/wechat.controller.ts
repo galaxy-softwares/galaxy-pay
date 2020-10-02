@@ -6,7 +6,6 @@ import { WeChatWapPayService } from "src/pay/module/wechat/service/wap.pay.servi
 import { WeChatMicroPayService } from "src/pay/module/wechat/service/micro.pay.service";
 import { WeChatAppPayService } from "src/pay/module/wechat/service/app.pay.service";
 import { WechatPayDto, WechatRefundPayDto } from "src/common/dtos/pay.dto";
-import { ApiWechatService } from './service/api.wechat.service';
 import { PayConfig } from "src/common/decorator/pay.config.decorator";
 import { WechatConfig } from "src/pay/module/wechat/interfaces/base.interface";
 import { WeChatTradeType } from "src/pay/module/wechat/enums/trade-type.enum";
@@ -14,6 +13,8 @@ import { PayGuard } from "src/common/guard/pay.guard";
 import * as fs from 'fs';
 import * as https from 'https';
 import * as path from 'path';
+import { ApiOrderSerivce } from "./service/api.order.service";
+import { OrderChannel } from "src/common/entities/order.entity";
 
 @Controller("wechat")
 @UseGuards(PayGuard)
@@ -24,9 +25,10 @@ export class WechatController {
         private readonly wechatNativePayService: WeChatNativePayService,
         private readonly wechatWapPayService: WeChatWapPayService,
         private readonly wechatMicroPayService: WeChatMicroPayService,
+        private readonly apiOrderService: ApiOrderSerivce,
         private readonly wechatAppPayService: WeChatAppPayService,
-        private readonly apiWechatSerice: ApiWechatService,
-    ) {}
+    ) {
+    }
     
     /**
      * 微信小程序支付
@@ -35,7 +37,7 @@ export class WechatController {
      */
     @Post("applet")
     async appletpay(@Body() body: WechatPayDto,  @PayConfig() payConfig: WechatConfig) {
-        await this.apiWechatSerice.generateWechatOrder(body, payConfig);
+        await this.apiOrderService.generateOrder(body, payConfig, true);
         const payBody = {
             trade_type: WeChatTradeType.APP,
             notify_url: payConfig.notify_url,
@@ -55,7 +57,7 @@ export class WechatController {
      */
     @Post("app")
     async app(@Body() body: WechatPayDto,  @PayConfig() payConfig: WechatConfig) {
-        await this.apiWechatSerice.generateWechatOrder(body, payConfig);
+        await this.apiOrderService.generateOrder(body, payConfig);
         const payBody = {
             trade_type: WeChatTradeType.APP,
             notify_url: payConfig.notify_url,
@@ -75,7 +77,7 @@ export class WechatController {
      */
     @Post("refund")
     async refund(@Body() body: WechatRefundPayDto,  @PayConfig() payConfig: WechatConfig) {
-        await this.apiWechatSerice.generateWechatRefund(body, payConfig);
+        await this.apiOrderService.generateRefundOrder(body, payConfig);
         const payBody = {
             transaction_id: body.trade_no,
             out_refund_no: body.out_trade_no,
@@ -100,7 +102,7 @@ export class WechatController {
      */
     @Post("jsapi")
     async jsapi(@Body() body: WechatPayDto,  @PayConfig() payConfig: WechatConfig) {
-        await this.apiWechatSerice.generateWechatOrder(body, payConfig);
+        await this.apiOrderService.generateOrder(body, payConfig);
         const payBody = {
             trade_type: WeChatTradeType.JSAPI,
             notify_url: payConfig.notify_url,
@@ -120,7 +122,7 @@ export class WechatController {
      */
     @Post("native")
     async native(@Body() body: WechatPayDto,  @PayConfig() payConfig: WechatConfig) {
-        await this.apiWechatSerice.generateWechatOrder(body, payConfig);
+        await this.apiOrderService.generateOrder(body, payConfig);
         const payBody = {
             trade_type: WeChatTradeType.NATIVE,
             notify_url: payConfig.notify_url,
@@ -140,7 +142,7 @@ export class WechatController {
      */
     @Post("h5")
     async h5pay(@Body() body: WechatPayDto,  @PayConfig() payConfig: WechatConfig) {
-        await this.apiWechatSerice.generateWechatOrder(body, payConfig);
+        await this.apiOrderService.generateOrder(body, payConfig);
         const payBody = {
             trade_type: WeChatTradeType.MWEB,
             notify_url: payConfig.notify_url,
@@ -160,7 +162,7 @@ export class WechatController {
      */
     @Post("micro")
     async micro(@Body() body: WechatPayDto,  @PayConfig() payConfig: WechatConfig) {
-        await this.apiWechatSerice.generateWechatOrder(body, payConfig);
+        await this.apiOrderService.generateOrder(body, payConfig);
         const payBody = {
             trade_type: WeChatTradeType.MWEB,
             notify_url: payConfig.refund_notify_url,

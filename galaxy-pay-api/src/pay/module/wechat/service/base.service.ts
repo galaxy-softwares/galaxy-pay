@@ -69,7 +69,7 @@ export class WeChatPayBaseService {
      *
      * @param params 查询退款请求参数
      */
-    public async queryRefund(params: WeChatBaseQueryRefundReqParam, wechatConfig): Promise<WeChatBaseQueryRefundRes> {
+    public async queryRefund(params: WeChatBaseQueryRefundReqParam, wechatConfig:WechatConfig): Promise<WeChatBaseQueryRefundRes> {
         if (!params.out_trade_no && !params.transaction_id && !params.out_refund_no && !params.refund_id) {
             throw new HttpException('参数有误，out_trade_no、transaction_id、out_refund_no 和 refund_id 四选一', HttpStatus.BAD_REQUEST);
         }
@@ -83,7 +83,7 @@ export class WeChatPayBaseService {
      */
     processParams(params, config: WechatConfig) {
         params.notify_url = config.notify_url;
-        params.appid = config.app_id;
+        params.appid = config.appid;
         params.mch_id = config.mch_id;
         params.nonce_str = this.randomUtil.genRandomStr();
         params.sign_type =  'MD5';

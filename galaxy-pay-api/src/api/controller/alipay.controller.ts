@@ -29,7 +29,8 @@ export class AlipayController {
         private readonly refundService: RefundService,
         private readonly transformService: TransformService,
         @Inject(HttpService) protected readonly httpService: HttpService,
-    ) {}
+    ) {
+    }
     
     /**
      * app支付
@@ -55,7 +56,8 @@ export class AlipayController {
      * @param payConfig AlipayConfig
      */
     @Post("page")
-    async pagePay(@Body() body: AliPayDto,  @PayConfig() payConfig: AlipayConfig): Promise<string> {  
+    async pagePay(@Body() body: AliPayDto,  @PayConfig() payConfig: AlipayConfig): Promise<string> {
+        
         await this.apiOrderService.generateOrder(body, payConfig);
         const param = this.transformService.transformAlipayParams<AlipayPageBizContent>({
             product_code: "FAST_INSTANT_TRADE_PAY",

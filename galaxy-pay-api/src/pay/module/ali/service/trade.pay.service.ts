@@ -14,7 +14,7 @@ export class AliTradePayService extends AliPayBaseService {
      */
     // async query(body, config: AlipayConfig): Promise<AlipayTradeQueryResponse> {
     //     const data = {
-    //         app_id: config.app_id,
+    //         app_id: config.appid,
     //         method: "alipay.trade.query",
     //         notify_url: config.notify_url,
     //         biz_content: JSON.stringify({
@@ -68,7 +68,7 @@ export class AliTradePayService extends AliPayBaseService {
      */
     // async close(body, config: AlipayConfig): Promise<AlipayTradeCloseResponse> {
     //     const param = {
-    //         app_id: config.app_id,
+    //         app_id: config.appid,
     //         method: "alipay.trade.create",
     //         notify_url: config.notify_url,
     //         biz_content: JSON.stringify({

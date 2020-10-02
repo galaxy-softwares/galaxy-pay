@@ -14,7 +14,7 @@ import Order from './view/order';
 const Routers = [
     { path: "/", name: "Software", component: Software, auth: true },
     { path: "/Order", name: "Order", component: Order, auth: true },
-]
+];
 
 const App:FC = () => {
   return (

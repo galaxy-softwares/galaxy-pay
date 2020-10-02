@@ -10,10 +10,10 @@ import { ValidationPipe } from './pipe/validation.pipe';
             provide: APP_PIPE,
             useClass: ValidationPipe,
         },
-        {
-            provide: APP_INTERCEPTOR,
-            useClass: ResponseInterceptor,
-          },
+        // {
+        //     provide: APP_INTERCEPTOR,
+        //     useClass: ResponseInterceptor,
+        // },
     ],
 })
 export class CommonModule {}

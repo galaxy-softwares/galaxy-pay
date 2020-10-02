@@ -1,4 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
+import { OrderChannel } from '../entities/order.entity';
 
 export class AliPayDto {
 
@@ -23,26 +24,20 @@ export class AliPayDto {
    * 销售产品码
    */
   product_code?: string;
+
+  channel: OrderChannel.alipay;
 }
 
-export class AliPayRefundDto {
-  @IsNotEmpty({ message: 'appid不能为空' })
-  appid: string;
+export class AliPayRefundDto extends AliPayDto {
 
   @IsNotEmpty({ message: '退款订单不能为空！' })
   trade_no: string;
-
-  @IsNotEmpty({ message: '订单金额不能为空'})
-  money: string;
 
   @IsNotEmpty({ message: '退款金额不能为空'})
   refund_money: string;
 
   @IsNotEmpty({ message: '退款愿意不能为空'})
   refund_reason?: string;
-
-  callback_url?: string;
-  notify_url?: string;
 }
 
 
@@ -62,29 +57,21 @@ export class WechatPayDto {
   callback_url?: string;
   return_url?: string;
   notify_url?: string;
+
+  channel: OrderChannel.wechat;
 }
 
 
-export class WechatRefundPayDto {
-  @IsNotEmpty({ message: 'appid不能为空' })
-  appid: string;
-
-  @IsNotEmpty({ message: '订单不能为空' })
-  out_trade_no: string;
+export class WechatRefundPayDto extends WechatPayDto {
 
   @IsNotEmpty({ message: '退款订单不能为空！' })
   trade_no: string;
-
-  @IsNotEmpty({ message: '订单金额不能为空'})
-  money: number;
 
   @IsNotEmpty({ message: '退款金额不能为空'})
   refund_money: number;
 
   @IsNotEmpty({ message: '退款原因不能为空！'})
   refund_reason: string;
-  
-  callback_url?: string;
   
   refund_notify_url?: string;
 }

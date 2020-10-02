@@ -24,7 +24,7 @@ export class TransformService  {
     public transformAlipayParams<T>(body: T, config: AlipayConfig, method: string): AlipayRequestParam {
         try {
             const data = {
-                app_id: config.app_id,
+                app_id: config.appid,
                 notify_url: config.notify_url,
                 return_url: config.return_url,
                 method: method,

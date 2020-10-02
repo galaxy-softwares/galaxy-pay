@@ -11,6 +11,12 @@ export enum OrderChannel {
     alipay = "alipay",
 }
 
+export enum OrderType {
+  refund  = "refund",
+  pay = "pay",
+  withdrawal = "withdrawal"
+}
+
 
 @Entity()
 export class Order extends Base {
@@ -23,6 +29,9 @@ export class Order extends Base {
     unique: true
   })
   out_trade_no: string;
+
+  @Column({ comment: '订单类型 退款 提现 付款', type: 'enum', enum: OrderType, default: OrderType.pay})
+  order_type: string;
 
   @Column({ comment: '订单状态', type: 'enum', enum: OrderStatus, default: OrderStatus.UnPaid})
   order_status: OrderStatus;
@@ -45,9 +54,22 @@ export class Order extends Base {
   notify_url:string;
 
   @Column({
-    comment: "订单金额"
+    comment: "订单金额",
+    default: '',
   })
   order_money: string;
+
+  @Column({
+    comment: "退款金额",
+    default: ''
+  })
+  order_refund_money: string;
+
+  @Column({
+    comment: "提现金额",
+    default: '0',
+  })  
+  order_withdrawal_money: string;
 
   @Column({
     comment:"订单通道（支付宝还是微信）",

@@ -3,7 +3,7 @@ import { BaseService } from './base.service';
 import { Order, OrderStatus, OrderChannel } from 'src/common/entities/order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AliPayDto, WechatPayDto } from 'src/common/dtos/pay.dto';
+import { Software } from 'src/common/entities/software.entity';
 
 
 @Injectable()
@@ -15,8 +15,8 @@ export class OrderService extends BaseService<Order> {
         super(orderRepository);
     }
 
-    async find(): Promise<Array<Order>> {
-       return await this.orderRepository.find(); 
+    async find(): Promise<any> {
+        return await this.orderRepository.createQueryBuilder("order").leftJoinAndMapOne('order.software', Software, 'software', 'order.appid=software.appid').getMany();
     }
 
     /**

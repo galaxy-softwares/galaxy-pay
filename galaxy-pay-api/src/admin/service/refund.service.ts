@@ -56,7 +56,7 @@ export class RefundService extends BaseService<Refund> {
             order_channel: channel
         })
         if (order) {
-            order.order_status = OrderStatus.Success;
+            order.order_status = OrderStatus.UnPaid;
             if (await this.refundRepository.save(order)) {
                 return true;
             }

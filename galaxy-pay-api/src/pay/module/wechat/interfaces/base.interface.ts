@@ -26,12 +26,11 @@ export interface WeChatBaseResponse {
  * 微信支付配置信息
  */
 export interface WechatConfig {
-    app_id: string;
+    appid: string;
     mch_id: string;
     mch_key: string;
     app_secret: string;
     apiclient_cert: string;
-    debug: boolean;
     notify_url: string;
     return_url: string;
     callback_url: string;

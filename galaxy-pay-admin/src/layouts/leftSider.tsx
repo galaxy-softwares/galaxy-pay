@@ -19,10 +19,10 @@ const menuList = [
         path: '/'
     },
     {
-        title: '订单列表',
+        title: '订单',
         icon: <CopyOutlined />,
         path: '/order'
-    }
+    },
 ]
 
 const LeftSider: FC = () => {

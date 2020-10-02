@@ -61,7 +61,7 @@ export const SoftwareFrom: React.FC<SoftwareFromProps> = ({form, channel, edit})
                         </> : <></>
                 }
                 { channel === 'wechat' ?  <>
-                    <Form.Item name="app_id" label="APPID" rules={[{ required: true, message: '项目名称不能为空'}]}>
+                    <Form.Item name="appid" label="APPID" rules={[{ required: true, message: '项目名称不能为空'}]}>
                         <Input placeholder="微信开放平台审核通过应用的APPID"/>
                     </Form.Item>
                     <Form.Item name="mch_id" label="MCHID" rules={[{ required: true, message: '项目名称不能为空'}]}>
@@ -81,7 +81,7 @@ export const SoftwareFrom: React.FC<SoftwareFromProps> = ({form, channel, edit})
                         }/>
                     </Form.Item>
                 </> : <>
-                    <Form.Item name="app_id" label="APPID" rules={[{ required: true, message: '项目名称不能为空'}]}>
+                    <Form.Item name="appid" label="APPID" rules={[{ required: true, message: '项目名称不能为空'}]}>
                         <Input placeholder="支付宝开放平台审核通过的应用APPID"/>
                     </Form.Item>
                     <Form.Item name="public_key" label="支付宝公钥" rules={[{ required: true, message: '项目名称不能为空'}]}>

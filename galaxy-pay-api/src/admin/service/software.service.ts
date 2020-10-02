@@ -56,7 +56,7 @@ export class SoftwareService extends BaseService<Software> {
         channel: OrderChannel.wechat,
       });
       const result = data.find((item) => {
-        return wxappid == JSON.parse(item.wechat).app_id;
+        return wxappid == JSON.parse(item.wechat).appid;
       })
       return JSON.parse(result.wechat);
     } catch (e) {
@@ -150,7 +150,7 @@ export class SoftwareService extends BaseService<Software> {
     let wechat = {};
     if (data.channel === 'wechat') {
       wechat = {
-        app_id: data.app_id,
+        appid: data.appid,
         debug: data.debug,
         mch_id: data.mch_id,
         mch_key: data.mch_key,
@@ -165,7 +165,7 @@ export class SoftwareService extends BaseService<Software> {
       }
     } else {
       alipay = {
-        app_id: data.app_id,
+        appid: data.appid,
         debug: data.debug,
         private_key: data.private_key,
         public_key: data.public_key,

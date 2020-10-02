@@ -16,8 +16,8 @@ export class SoftwareDto {
   @IsNotEmpty({ message: '请求地址不能为空' })
   domain_url: string;
 
-  @IsNotEmpty({ message: '微信app_id不能为空' })
-  wechat_app_id: string;
+  @IsNotEmpty({ message: '微信appid不能为空' })
+  wechat_appid: string;
 
   wechat_debug: boolean;
 
@@ -33,8 +33,8 @@ export class SoftwareDto {
   @IsNotEmpty({ message: '微信回调地址不能为空' })
   wechat_notify_url: string;
   
-  @IsNotEmpty({ message: '支付宝app_id 不能为空' })
-  alipay_app_id: string;
+  @IsNotEmpty({ message: '支付宝appid不能为空' })
+  alipay_appid: string;
 
   alipay_debug: boolean;
 
