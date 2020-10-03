@@ -19,7 +19,7 @@ const menuList = [
         path: '/'
     },
     {
-        title: '订单',
+        title: '账单',
         icon: <CopyOutlined />,
         path: '/order'
     },

@@ -10,7 +10,6 @@ export class FileController {
     @UseInterceptors(FileInterceptor('file'))
     uploadFile(@UploadedFile() file) {
         const fileType = (file.mimetype).split("/")[1];
-        console.log(fileType);
 
         if (fileType !== "x-pkcs12") {
             throw new HttpException('文件格式不正确！', HttpStatus.BAD_REQUEST);

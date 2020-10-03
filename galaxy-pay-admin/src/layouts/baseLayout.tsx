@@ -12,11 +12,7 @@ const BaseLayout: FC = ({children}) => {
             <Layout>
                 <Headers />
                 <Content>
-                    <div className="content">
-                        <Card>
-                            {children}
-                        </Card>
-                    </div>
+                    {children}
                 </Content>
             </Layout>
         </Layout>

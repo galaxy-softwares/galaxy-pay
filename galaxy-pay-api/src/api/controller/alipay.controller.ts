@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Inject, HttpService } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Inject, HttpService, HttpException, HttpStatus } from '@nestjs/common';
 import { AliPagePayService } from 'src/pay/module/ali/service/page.pay.service';
 import { AliAppPayService } from 'src/pay/module/ali/service/app.pay.service';
 import { AliTradePayService } from 'src/pay/module/ali/service/trade.pay.service';
@@ -8,14 +8,13 @@ import { AlipayPrecreateBizContent, AlipayPrecreateResponse, AlipayTradeCreateRe
 import { AliPayDto, AliPayRefundDto } from 'src/common/dtos/pay.dto';
 import { PayConfig } from 'src/common/decorator/pay.config.decorator';
 import { PayGuard } from 'src/common/guard/pay.guard';
-import { RefundService } from 'src/admin/service/refund.service';
-import { OrderChannel } from 'src/common/entities/order.entity';
 import { TransformService } from './service/transform.service';
 import { AlipayAppBizContent } from 'src/pay/module/ali/interfaces/app.interface';
-import { ApiOrderSerivce } from './service/api.order.service';
+import { ApiTradeSerivce } from './service/api.trade.service';
 import { AlipayPageBizContent } from 'src/pay/module/ali/interfaces/page.interface';
 import { AlipayWapBizContent } from 'src/pay/module/ali/interfaces/wap.interface';
 import { AlipayRefundBizContent } from 'src/pay/module/ali/interfaces/refund.interface';
+import { TradeChannel } from 'src/common/enum/trade.enum';
 
 @Controller("alipay")
 @UseGuards(PayGuard)
@@ -25,8 +24,7 @@ export class AlipayController {
         private readonly aliAppPayService: AliAppPayService,
         private readonly alitradePayService: AliTradePayService,
         private readonly aliwapPayService: AliWapPayService,
-        private readonly apiOrderService: ApiOrderSerivce,
-        private readonly refundService: RefundService,
+        private readonly apiTradeService: ApiTradeSerivce,
         private readonly transformService: TransformService,
         @Inject(HttpService) protected readonly httpService: HttpService,
     ) {
@@ -39,7 +37,7 @@ export class AlipayController {
      */
     @Post("app")
     async appPay(@Body() body: AliPayDto, @PayConfig() payConfig: AlipayConfig) {
-        await this.apiOrderService.generateOrder(body, payConfig);
+        await this.apiTradeService.generateOrder(body, payConfig);
         const biz_count = this.transformService.transformAlipayParams<AlipayAppBizContent>({
             product_code: "QUICK_MSECURITY_PAY",
             subject: body.body,
@@ -58,7 +56,7 @@ export class AlipayController {
     @Post("page")
     async pagePay(@Body() body: AliPayDto,  @PayConfig() payConfig: AlipayConfig): Promise<string> {
         
-        await this.apiOrderService.generateOrder(body, payConfig);
+        await this.apiTradeService.generateOrder(body, payConfig);
         const param = this.transformService.transformAlipayParams<AlipayPageBizContent>({
             product_code: "FAST_INSTANT_TRADE_PAY",
             subject: body.body,
@@ -88,7 +86,7 @@ export class AlipayController {
      */
     @Post("precreate")
     async precreate(@Body() body: AliPayDto,  @PayConfig() payConfig: AlipayConfig): Promise<AlipayPrecreateResponse> {
-        await this.apiOrderService.generateOrder(body, payConfig);
+        await this.apiTradeService.generateOrder(body, payConfig);
         const param = this.transformService.transformAlipayParams<AlipayPrecreateBizContent>({
             product_code: "FACE_TO_FACE_PAYMENT",
             subject: body.body,
@@ -106,7 +104,7 @@ export class AlipayController {
      */
     @Post("wap")
     async wap(@Body() body: AliPayDto,  @PayConfig() payConfig: AlipayConfig): Promise<string> {
-        await this.apiOrderService.generateOrder(body, payConfig);
+        await this.apiTradeService.generateOrder(body, payConfig);
         const param = this.transformService.transformAlipayParams<AlipayWapBizContent>({
             product_code: "FACE_TO_FACE_PAYMENT",
             subject: body.body,
@@ -124,20 +122,19 @@ export class AlipayController {
      */
     @Post("refund")
     async refund(@Body() body: AliPayRefundDto,  @PayConfig() payConfig: AlipayConfig): Promise<any> {
-        await this.apiOrderService.generateRefundOrder(body, payConfig);
+        await this.apiTradeService.generateRefundOrder(body, payConfig);
         const param = this.transformService.transformAlipayParams<AlipayRefundBizContent>({
             trade_no: body.trade_no,
-            refund_amount: body.refund_money,
-            refund_reason: body.refund_reason,
+            refund_amount: body.money,
+            refund_reason: body.body,
         }, payConfig, 'alipay.trade.refund');
         const refundResult = await this.alitradePayService.refund(param, payConfig.private_key, payConfig.public_key);
-        if (refundResult.code == '1000') {
-          const order = await this.refundService.findOrder(refundResult.trade_no);
-          const status = await this.refundService.refundSuccess(order.out_trade_no, OrderChannel.alipay);
-          if (status) {
-            const result = await this.httpService.post(order.callback_url, JSON.stringify(order)).toPromise();
-            console.log(result);
-          }
+        if (refundResult.code == '10000') {
+            if(await this.apiTradeService.refundSuccess(body.out_trade_no, body.trade_no, TradeChannel.alipay)) {
+                return "退款成功！";
+            }
+        } else {
+            throw new HttpException("订单退款失败！请稍后重试！", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -148,7 +145,7 @@ export class AlipayController {
      */
     @Post("create")
     async create(@Body() body: AliPayDto,  @PayConfig() payConfig: AlipayConfig): Promise<AlipayTradeCreateResponse> {
-        await this.apiOrderService.generateOrder(body, payConfig);
+        await this.apiTradeService.generateOrder(body, payConfig);
         const param = this.transformService.transformAlipayParams<AlipayWapBizContent>({
             product_code: "FACE_TO_FACE_PAYMENT",
             subject: body.body,

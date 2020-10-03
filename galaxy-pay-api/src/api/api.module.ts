@@ -4,7 +4,7 @@ import { AdminModule } from 'src/admin/admin.module';
 import { AlipayController } from './controller/alipay.controller';
 import { WechatController } from './controller/wechat.controller';
 import { TransformService } from './controller/service/transform.service';
-import { ApiOrderSerivce } from './controller/service/api.order.service';
+import { ApiTradeSerivce } from './controller/service/api.trade.service';
 
 @Global()
 @Module({
@@ -14,6 +14,6 @@ import { ApiOrderSerivce } from './controller/service/api.order.service';
     AdminModule
   ],
   controllers: [AlipayController, WechatController],
-  providers: [TransformService, ApiOrderSerivce],
+  providers: [TransformService, ApiTradeSerivce],
 })
 export class ApiModule {}

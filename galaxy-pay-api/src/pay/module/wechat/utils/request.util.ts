@@ -27,7 +27,6 @@ export class WeChatRequestUtil {
             }
             return this.xmlUtil.parseObjFromXml<T>(data);
         } catch (error) {
-            console.log(error);
             throw new HttpException('微信支付请求接口时出现网络异常：'+ error.toString(), HttpStatus.BAD_REQUEST);
         }
     }

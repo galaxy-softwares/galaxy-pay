@@ -4,8 +4,8 @@ import { Software } from 'src/common/entities/software.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SoftwareDto } from 'src/common/dtos/software.dto';
-import { OrderChannel } from 'src/common/entities/order.entity';
 import { WechatConfig } from 'src/pay/module/wechat/interfaces/base.interface';
+import { TradeChannel } from 'src/common/enum/trade.enum';
 
 @Injectable()
 export class SoftwareService extends BaseService<Software> {
@@ -36,7 +36,7 @@ export class SoftwareService extends BaseService<Software> {
       const data = await this.softwareRepository.findOne({
         appid
       });
-      if (data.channel === OrderChannel.wechat) {
+      if (data.channel === TradeChannel.wechat) {
         return JSON.parse(data.wechat);
       } else {
         return JSON.parse(data.alipay);
@@ -53,7 +53,7 @@ export class SoftwareService extends BaseService<Software> {
   public async findSoftwareByWxAppid(wxappid: string): Promise<WechatConfig> {
     try {
       const data = await this.softwareRepository.find({
-        channel: OrderChannel.wechat,
+        channel: TradeChannel.wechat,
       });
       const result = data.find((item) => {
         return wxappid == JSON.parse(item.wechat).appid;
@@ -93,7 +93,7 @@ export class SoftwareService extends BaseService<Software> {
 
 
   // 用于修改使用
-  async findSoftware(appid: string, channel: OrderChannel) {
+  async findSoftware(appid: string, channel: TradeChannel) {
     const data = await this.softwareRepository.findOne({
       appid
     });
@@ -101,7 +101,7 @@ export class SoftwareService extends BaseService<Software> {
       throw new HttpException(`没有找到项目`, HttpStatus.BAD_REQUEST);
     }
     try {
-      if (data.channel === OrderChannel.wechat) {
+      if (data.channel === TradeChannel.wechat) {
         const wechat = JSON.parse(data.wechat);
         delete data.wechat;
         return {...data, ...wechat}

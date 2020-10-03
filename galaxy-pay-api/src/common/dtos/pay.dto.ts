@@ -1,5 +1,5 @@
-import { IsNotEmpty } from 'class-validator';
-import { OrderChannel } from '../entities/order.entity';
+import { IsNotEmpty, IsString } from 'class-validator';
+import { TradeChannel } from '../enum/trade.enum';
 
 export class AliPayDto {
 
@@ -25,19 +25,23 @@ export class AliPayDto {
    */
   product_code?: string;
 
-  channel: OrderChannel.alipay;
 }
 
-export class AliPayRefundDto extends AliPayDto {
+export class AliPayRefundDto {
+  @IsNotEmpty({ message: 'appid不能为空' })
+  appid: string;
 
-  @IsNotEmpty({ message: '退款订单不能为空！' })
+  @IsNotEmpty({ message: '支付流水号不能为空！' })
   trade_no: string;
 
-  @IsNotEmpty({ message: '退款金额不能为空'})
-  refund_money: string;
+  @IsNotEmpty({ message: '订单号不能为空！' })
+  out_trade_no: string;
 
-  @IsNotEmpty({ message: '退款愿意不能为空'})
-  refund_reason?: string;
+  @IsNotEmpty({ message: '退款金额不能为空'})
+  money: string;
+
+  @IsNotEmpty({ message: '退款原因不能为空'})
+  body?: string;
 }
 
 
@@ -58,7 +62,6 @@ export class WechatPayDto {
   return_url?: string;
   notify_url?: string;
 
-  channel: OrderChannel.wechat;
 }
 
 

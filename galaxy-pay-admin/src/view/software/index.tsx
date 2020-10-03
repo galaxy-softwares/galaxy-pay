@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState, useCallback } from 'react'
-import {Table, notification } from 'antd';
+import {Table, notification, Card } from 'antd';
 import { ModalFrom } from "../../components/modalForm";
 import "./index.less";
 import { Form, Tag } from 'antd';
@@ -147,7 +147,11 @@ const Software: FC = () => {
             }}>
                 <SoftwareFrom form={form} channel={channel} edit={isEdit} />
             </ModalFrom>
-            <Table columns={columns} dataSource={data} rowKey={(record, index) => index}  />
+            <Card>
+                <Table columns={columns} dataSource={data} rowKey={(record, index) => index} pagination={{ 
+                    hideOnSinglePage: true,
+                }}  />
+            </Card>
         </div>
     )
 }

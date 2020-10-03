@@ -13,8 +13,7 @@ import { PayGuard } from "src/common/guard/pay.guard";
 import * as fs from 'fs';
 import * as https from 'https';
 import * as path from 'path';
-import { ApiOrderSerivce } from "./service/api.order.service";
-import { OrderChannel } from "src/common/entities/order.entity";
+import { ApiTradeSerivce } from "./service/api.trade.service";
 
 @Controller("wechat")
 @UseGuards(PayGuard)
@@ -25,7 +24,7 @@ export class WechatController {
         private readonly wechatNativePayService: WeChatNativePayService,
         private readonly wechatWapPayService: WeChatWapPayService,
         private readonly wechatMicroPayService: WeChatMicroPayService,
-        private readonly apiOrderService: ApiOrderSerivce,
+        private readonly apiTradeService: ApiTradeSerivce,
         private readonly wechatAppPayService: WeChatAppPayService,
     ) {
     }
@@ -37,7 +36,7 @@ export class WechatController {
      */
     @Post("applet")
     async appletpay(@Body() body: WechatPayDto,  @PayConfig() payConfig: WechatConfig) {
-        await this.apiOrderService.generateOrder(body, payConfig, true);
+        await this.apiTradeService.generateOrder(body, payConfig);
         const payBody = {
             trade_type: WeChatTradeType.APP,
             notify_url: payConfig.notify_url,
@@ -57,7 +56,7 @@ export class WechatController {
      */
     @Post("app")
     async app(@Body() body: WechatPayDto,  @PayConfig() payConfig: WechatConfig) {
-        await this.apiOrderService.generateOrder(body, payConfig);
+        await this.apiTradeService.generateOrder(body, payConfig);
         const payBody = {
             trade_type: WeChatTradeType.APP,
             notify_url: payConfig.notify_url,
@@ -77,7 +76,7 @@ export class WechatController {
      */
     @Post("refund")
     async refund(@Body() body: WechatRefundPayDto,  @PayConfig() payConfig: WechatConfig) {
-        await this.apiOrderService.generateRefundOrder(body, payConfig);
+        await this.apiTradeService.generateRefundOrder(body, payConfig);
         const payBody = {
             transaction_id: body.trade_no,
             out_refund_no: body.out_trade_no,
@@ -90,7 +89,6 @@ export class WechatController {
             pfx: fs.readFileSync(path.join(__dirname,  payConfig.apiclient_cert)),
             passphrase: payConfig.mch_id,
         });
-        console.log(httpConfig);
         const result = await this.wechatAppPayService.refund(payBody, payConfig, httpConfig);
         return result
     }
@@ -102,7 +100,7 @@ export class WechatController {
      */
     @Post("jsapi")
     async jsapi(@Body() body: WechatPayDto,  @PayConfig() payConfig: WechatConfig) {
-        await this.apiOrderService.generateOrder(body, payConfig);
+        await this.apiTradeService.generateOrder(body, payConfig);
         const payBody = {
             trade_type: WeChatTradeType.JSAPI,
             notify_url: payConfig.notify_url,
@@ -122,7 +120,7 @@ export class WechatController {
      */
     @Post("native")
     async native(@Body() body: WechatPayDto,  @PayConfig() payConfig: WechatConfig) {
-        await this.apiOrderService.generateOrder(body, payConfig);
+        await this.apiTradeService.generateOrder(body, payConfig);
         const payBody = {
             trade_type: WeChatTradeType.NATIVE,
             notify_url: payConfig.notify_url,
@@ -142,7 +140,7 @@ export class WechatController {
      */
     @Post("h5")
     async h5pay(@Body() body: WechatPayDto,  @PayConfig() payConfig: WechatConfig) {
-        await this.apiOrderService.generateOrder(body, payConfig);
+        await this.apiTradeService.generateOrder(body, payConfig);
         const payBody = {
             trade_type: WeChatTradeType.MWEB,
             notify_url: payConfig.notify_url,
@@ -162,7 +160,7 @@ export class WechatController {
      */
     @Post("micro")
     async micro(@Body() body: WechatPayDto,  @PayConfig() payConfig: WechatConfig) {
-        await this.apiOrderService.generateOrder(body, payConfig);
+        await this.apiTradeService.generateOrder(body, payConfig);
         const payBody = {
             trade_type: WeChatTradeType.MWEB,
             notify_url: payConfig.refund_notify_url,

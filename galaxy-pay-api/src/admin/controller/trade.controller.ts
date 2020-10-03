@@ -1,5 +1,5 @@
 import { Controller, ValidationPipe, UseGuards, UsePipes, Get } from '@nestjs/common';
-import { OrderService } from '../service/order.service';
+import { TradeService } from '../service/trade.service';
 import { JwtAuthGuard } from '../service/jwt-auth.guard';
 
 @Controller("order")
@@ -8,11 +8,11 @@ import { JwtAuthGuard } from '../service/jwt-auth.guard';
 export class OrderController {
 
     constructor(
-        private readonly orderService: OrderService,
+        private readonly tradeService: TradeService,
     ) {}
     
     @Get()
     async find() {
-        return this.orderService.find();
+        return this.tradeService.find();
     }
 }

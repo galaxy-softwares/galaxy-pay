@@ -11,16 +11,14 @@ import { JwtStrategy } from './service/jwt.strategy';
 import { AuthController } from './controller/auth.controller';
 import { SoftwareService } from './service/software.service';
 import { SoftwareController } from './controller/software.controller';
-import { Order } from 'src/common/entities/order.entity';
-import { OrderService } from './service/order.service';
-import { OrderController } from './controller/order.controller';
-import { RefundService } from './service/refund.service';
-import { Refund } from 'src/common/entities/refund.entity';
+import { Trade } from 'src/common/entities/trade.entity';
+import { TradeService } from './service/trade.service';
+import { OrderController } from './controller/trade.controller';
 import { FileController } from './controller/file.controller';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Software, Order, Refund]),
+    TypeOrmModule.forFeature([User, Software, Trade]),
     JwtModule.register({
         secretOrPrivateKey: '1AGy4bCUoECDZ4yI6h8DxHDwgj84EqStMNyab8nPChQ=',
         signOptions: {
@@ -30,7 +28,7 @@ import { FileController } from './controller/file.controller';
     PassportModule.register({ defaultStrategy: 'jwt' })
   ],
   controllers: [AuthController, SoftwareController, OrderController, FileController],
-  providers: [AuthService, SoftwareService, UserService,RefundService, OrderService, JwtAuthGuard, JwtStrategy],
-  exports: [SoftwareService, OrderService, RefundService]
+  providers: [AuthService, SoftwareService, UserService, TradeService, JwtAuthGuard, JwtStrategy],
+  exports: [SoftwareService, TradeService]
 })
 export class AdminModule {}

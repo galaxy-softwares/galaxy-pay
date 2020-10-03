@@ -1,6 +1,6 @@
 import { Entity, Column } from 'typeorm';
+import { TradeChannel } from '../enum/trade.enum';
 import { Base } from './base.entity'
-import { OrderChannel } from './order.entity';
 
 @Entity()
 export class Software extends Base {
@@ -34,8 +34,8 @@ export class Software extends Base {
   @Column({
     comment:"支付宝还是微信",
     type: 'enum', 
-    enum: OrderChannel, 
-    default: OrderChannel.alipay
+    enum: TradeChannel, 
+    default: TradeChannel.alipay
   })
-  channel: OrderChannel
+  channel: TradeChannel
 }
