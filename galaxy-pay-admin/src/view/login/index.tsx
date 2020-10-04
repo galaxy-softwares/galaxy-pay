@@ -13,7 +13,6 @@ const Login: FC = () => {
         const { data, status } = await login(form)
         if (status) {
             localStorage.setItem('token', data.token)
-            localStorage.setItem('git_token', data.git_token)
             history.push('/')
         }
     };
@@ -23,7 +22,7 @@ const Login: FC = () => {
             <strong>大家好，我是登录标题</strong>
             <Form
                 name="basic"
-                initialValues={{ username: 'admin',password: 123456 }}
+                initialValues={{ username: 'admin',password: "123456" }}
                 onFinish={handleUserLogin}
             >
                 <Form.Item

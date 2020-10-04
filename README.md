@@ -12,7 +12,7 @@
   
 ## tips 
 
-1. 项目正在开发中，随时可能进行大改，还有很多的功能没有实现。(退款等等)
+1. 支付宝代码不会有太大的调整，支付宝还有几个接口没写。微信xml解析后期变动会比较大。等把微信的接口改完就开始编写接口文档。
 2. 一个人开发精力有限，更新比较慢，bug可能比较多。也欢迎各位大佬提交代码。
 3. 如果你有啥好的想法或者点子可以添加我的qq： 523431532（微信同号）
 
@@ -33,6 +33,10 @@ $ npm install
 # development
 $ npm run start
 
+// 数据登陆账号插入
+INSERT INTO `user` VALUES (1, '2020-08-13 17:48:54.426045', '2020-08-13 17:48:54.426045', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '523431532@qq.com');
+
+
 # watch mode
 $ npm run start:dev
 
@@ -43,15 +47,20 @@ $ npm run start:dev
 需要先去配置后台配置对应的支付参数，拿到系统生成的APPID。然后你就可以愉快的去发送请求了~
 
 ```
-
-curl --location --request POST 'http://127.0.0.1:3100/alipay/app' \
+curl --location --request POST 'http://127.0.0.1:3100/alipay/page' \
 --header 'Content-Type: application/x-www-form-urlencoded' \
 --data-urlencode 'appid=j5Se66PgGopFwkfyEv6xMVBYtacbiOCI' \
 --data-urlencode 'money=0.01' \
---data-urlencode 'out_trade_no=1599799645' \
---data-urlencode 'body=不知道'
-
+--data-urlencode 'out_trade_no=1241234234234253454' \
+--data-urlencode 'body=不知道' \
+--data-urlencode 'notify_url=https://pay-test.utools.club/alipay_notify_url' \
+--data-urlencode 'return_url=https://pay-test.utools.club'
 ```
+
+
+## 最后
+
+to be or not to be, this is a question.
 
 
 ## License
