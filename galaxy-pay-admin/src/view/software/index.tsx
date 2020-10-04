@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState, useCallback } from 'react'
-import {Table, notification, Card } from 'antd';
+import { Table, notification, Card } from 'antd';
 import { ModalFrom } from "../../components/modalForm";
 import "./index.less";
 import { Form, Tag } from 'antd';
@@ -13,7 +13,7 @@ const Software: FC = () => {
     const [ form ] = Form.useForm();
     const [data, setData]= useState([]);
     const [isEdit, setIsEdit] = useState(false);
-    const [channel, setChannel]= useState('wechat');
+    const [channel, setChannel]= useState('');
     const dispatch = useDispatch();
     const [modalTitle, setModalTitle]= useState("项目创建");
     const initSoftware = useCallback( async () => {
@@ -52,7 +52,7 @@ const Software: FC = () => {
             dataIndex: 'channel',
             key: 'channel',
             render: (text: string) => {
-                return text == 'wechat' ? <Tag color="#87d068">微信</Tag>: <Tag color="#108ee9">支付宝</Tag>
+                return text === 'wechat' ? <Tag color="#87d068">微信</Tag>: <Tag color="#108ee9">支付宝</Tag>
             },
         },
         {
@@ -63,7 +63,7 @@ const Software: FC = () => {
                     <a onClick={  async () => {
                         setModalTitle("修改项目");
                         const { status, data } = await softwareDetail(record.appid, record.channel);
-                        if (status == 200) {
+                        if (status === 200) {
                             setChannel(record.channel)
                             setIsEdit(true);
                             dispatch(setVisible(true))
@@ -80,8 +80,8 @@ const Software: FC = () => {
     }
 
     const create = async (form) => {
-        const  { status, data }  = await softwareCreateInfo(form);
-        if (status == 201) {
+        const  { status }  = await softwareCreateInfo(form);
+        if (status === 201) {
             openNotification({
                 key: 'softwareCreate',
                 type: 'success',
@@ -106,7 +106,7 @@ const Software: FC = () => {
 
     const update = async (form) => {
         const  { status, data }  = await softwareUpdateInfo(form);
-        if (status == 201) {
+        if (status === 201) {
             openNotification({
                 key: 'softwareCreate',
                 type: 'success',
@@ -131,7 +131,10 @@ const Software: FC = () => {
 
     return (
         <div>
-            <ModalFrom title={modalTitle} onCreate={() => {
+            <ModalFrom title={modalTitle} onClose={ () => {
+                setIsEdit(false);
+                setChannel('');
+            }} onCreate={() => {
                 form.validateFields()
                 .then((values: any) => {
                     if (values.id) {

@@ -19,17 +19,29 @@ interface SoftwareFromProps {
 
 export const SoftwareFrom: React.FC<SoftwareFromProps> = ({form, channel, edit}) => {
 
+
+    const [formChannel, setFormChannel] = useState(channel);
+
     const handleChange = (data) => {
         if (data) {
             form.setFieldsValue({
-                apiclient_cert: data.path
+                apiclient_cert: data.path,
             })
         }
     }
 
+    const onFormChange = ({ channel }) => {
+        console.log(channel);
+        setFormChannel(channel);
+      };
+
     return (
         <div>
-            <Form preserve={false} {...layout} form={form}>
+            <Form preserve={false} {...layout} form={form} initialValues={{
+                channel: formChannel
+            }}
+            onValuesChange={onFormChange}
+            >
                 <div style={{display:'none'}}>
                     <Form.Item name="id" label="">
                         <Input placeholder=""/>
@@ -60,7 +72,7 @@ export const SoftwareFrom: React.FC<SoftwareFromProps> = ({form, channel, edit})
                         </Form.Item>
                         </> : <></>
                 }
-                { channel === 'wechat' ?  <>
+                { formChannel == 'wechat' ?  <>
                     <Form.Item name="appid" label="APPID" rules={[{ required: true, message: '项目名称不能为空'}]}>
                         <Input placeholder="微信开放平台审核通过应用的APPID"/>
                     </Form.Item>
@@ -81,16 +93,20 @@ export const SoftwareFrom: React.FC<SoftwareFromProps> = ({form, channel, edit})
                         }/>
                     </Form.Item>
                 </> : <>
-                    <Form.Item name="appid" label="APPID" rules={[{ required: true, message: '项目名称不能为空'}]}>
-                        <Input placeholder="支付宝开放平台审核通过的应用APPID"/>
-                    </Form.Item>
-                    <Form.Item name="public_key" label="支付宝公钥" rules={[{ required: true, message: '项目名称不能为空'}]}>
-                        <Input placeholder="支付宝公钥"/>
-                    </Form.Item>
-                    <Form.Item name="private_key" label="支付宝私钥" rules={[{ required: true, message: '项目名称不能为空'}]}>
-                        <Input placeholder="支付宝私钥"/>
-                    </Form.Item>
                 </>}
+                {
+                    formChannel == 'alipay' ? <>
+                        <Form.Item name="appid" label="APPID" rules={[{ required: true, message: '项目名称不能为空'}]}>
+                            <Input placeholder="支付宝开放平台审核通过的应用APPID"/>
+                        </Form.Item>
+                        <Form.Item name="public_key" label="支付宝公钥" rules={[{ required: true, message: '项目名称不能为空'}]}>
+                            <Input placeholder="支付宝公钥"/>
+                        </Form.Item>
+                        <Form.Item name="private_key" label="支付宝私钥" rules={[{ required: true, message: '项目名称不能为空'}]}>
+                            <Input placeholder="支付宝私钥"/>
+                        </Form.Item>
+                    </>: <></>
+                }
             </Form>
         </div>
     );

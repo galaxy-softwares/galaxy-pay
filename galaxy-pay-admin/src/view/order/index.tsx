@@ -1,6 +1,6 @@
 import React, {FC, useState, useCallback, useEffect} from 'react';
 import "./index.less";
-import { Button, Card, Col, Descriptions, PageHeader, Row, Statistic, Table, Tag } from 'antd';
+import { Card, Col, Row, Table, Tag } from 'antd';
 import {
     WechatOutlined,
     AlipayCircleOutlined
@@ -17,12 +17,10 @@ const Order: FC = () => {
         amount: Number,
         count: Number,
     });
-    const [count, setCount] = useState(0);
 
     const initOrder = useCallback( async () => {
         const result = await orderGetList();
         setData(result.data.data);
-        setCount(result.data.count);
         setIncome(result.data.income);
         setExpenditure(result.data.expenditure);
     }, [data])
@@ -83,7 +81,7 @@ const Order: FC = () => {
             dataIndex: 'trade_amount',
             key: 'trade_amount',
             render: (text, record) => {
-                return record.trade_type == '1' ? `-${text}`: `${text}`;
+                return record.trade_type === '1' ? `-${text}`: `${text}`;
             }
         },
         {
@@ -91,7 +89,7 @@ const Order: FC = () => {
             dataIndex: 'trade_type',
             key: 'trade_type',
             render: (text: string) => {
-                return  text == '1' ? <Tag color="#eb2f96">支出</Tag> : <Tag color="#fa8c16">收入</Tag>;
+                return  text === '1' ? <Tag color="#eb2f96">支出</Tag> : <Tag color="#fa8c16">收入</Tag>;
             },
         },
         {
@@ -107,7 +105,7 @@ const Order: FC = () => {
             dataIndex: 'trade_status',
             key: 'trade_status',
             render: (text: number) => {
-                return text == 1 ? <Tag color="#87d068">已完成</Tag>: <Tag color="#108ee9">未完成</Tag>
+                return text === 1 ? <Tag color="#87d068">已完成</Tag>: <Tag color="#108ee9">未完成</Tag>
             },
         },
         {

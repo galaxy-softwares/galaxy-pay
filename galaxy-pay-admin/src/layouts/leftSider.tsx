@@ -2,8 +2,6 @@ import React, { useEffect, FC } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
     AppstoreOutlined,
-    GoldOutlined,
-    SettingOutlined,
     CopyOutlined
   } from '@ant-design/icons';
 import { Layout } from "antd";

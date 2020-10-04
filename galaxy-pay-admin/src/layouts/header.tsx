@@ -1,23 +1,13 @@
 import React, { FC } from 'react'
 import "./index.less";
-import {Avatar, Badge, Button, Layout} from "antd";
-import {
-    NotificationOutlined,
-    MessageOutlined,
-    EditOutlined,
-    FolderOutlined,
-    RollbackOutlined
-} from '@ant-design/icons';
+import { Button, Layout} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import {AppState} from "../state/store";
-import { useHistory } from 'react-router-dom'
 import { setVisible } from "../state/actions/modal.action";
 const { Header } = Layout;
 
 const RenderAction = () => {
     const { path } = useSelector((state: AppState) => state.menuReducer)
-    const { username, avatar } = useSelector((state: AppState) => state.userReducer)
-    const history = useHistory()
     const dispatch = useDispatch()
     const handleOpenSoftwareCreate = () => {
         dispatch(setVisible(true))
