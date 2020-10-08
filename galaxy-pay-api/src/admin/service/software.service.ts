@@ -37,9 +37,9 @@ export class SoftwareService extends BaseService<Software> {
         appid
       });
       if (data.channel === TradeChannel.wechat) {
-        return JSON.parse(data.wechat);
+        return { wechatConfig: JSON.parse(data.wechat), app_secret: data.app_secret}
       } else {
-        return JSON.parse(data.alipay);
+        return { alipayConfig: JSON.parse(data.alipay), app_secret: data.app_secret}
       }
     } catch (e) {
       throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);

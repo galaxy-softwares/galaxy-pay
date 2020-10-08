@@ -6,6 +6,7 @@ import { AliSignUtil } from './util/sign.util';
 import { AliAppPayService } from './service/app.pay.service';
 import { AliPagePayService } from './service/page.pay.service';
 import { AliTradePayService } from './service/trade.pay.service';
+import { fundPayService } from './service/fund.pay.service';
 
 @Module({
     imports: [HttpModule],
@@ -18,6 +19,7 @@ import { AliTradePayService } from './service/trade.pay.service';
        AliSignUtil,
        AliWapPayService,
        AliTradePayService,
+       fundPayService
     ],
     exports: [
        AliPagePayService,
@@ -27,6 +29,7 @@ import { AliTradePayService } from './service/trade.pay.service';
        AliSignUtil,
        AliTradePayService,
        AliWapPayService,
+       fundPayService
     ]
 })
 export class AliPayModule {

@@ -50,9 +50,15 @@ export class Trade extends Base {
   trade_amount: string;
 
   @Column({
+    comment: "账单退款金额",
+    default: ""
+  })
+  trade_refund_amount: string;
+
+  @Column({
     comment:"订单通道（支付宝还是微信）",
     type: 'enum', 
-    enum: TradeChannel, 
+    enum: TradeChannel,
   })
   trade_channel: TradeChannel
 

@@ -14,7 +14,9 @@ import { ApiTradeSerivce } from './service/api.trade.service';
 import { AlipayPageBizContent } from 'src/pay/module/ali/interfaces/page.interface';
 import { AlipayWapBizContent } from 'src/pay/module/ali/interfaces/wap.interface';
 import { AlipayRefundBizContent } from 'src/pay/module/ali/interfaces/refund.interface';
-import { TradeChannel } from 'src/common/enum/trade.enum';
+import { TradeAccountType, TradeChannel, TradeType } from 'src/common/enum/trade.enum';
+import { fundPayService } from 'src/pay/module/ali/service/fund.pay.service';
+import { AlipayTransferBizContent } from 'src/pay/module/ali/interfaces/fund.interface';
 
 @Controller("alipay")
 @UseGuards(PayGuard)
@@ -26,6 +28,7 @@ export class AlipayController {
         private readonly aliwapPayService: AliWapPayService,
         private readonly apiTradeService: ApiTradeSerivce,
         private readonly transformService: TransformService,
+        private readonly fundPayService: fundPayService,
         @Inject(HttpService) protected readonly httpService: HttpService,
     ) {
     }
@@ -55,7 +58,6 @@ export class AlipayController {
      */
     @Post("page")
     async pagePay(@Body() body: AliPayDto,  @PayConfig() payConfig: AlipayConfig): Promise<string> {
-        
         await this.apiTradeService.generateOrder(body, payConfig);
         const param = this.transformService.transformAlipayParams<AlipayPageBizContent>({
             product_code: "FAST_INSTANT_TRADE_PAY",
@@ -122,7 +124,7 @@ export class AlipayController {
      */
     @Post("refund")
     async refund(@Body() body: AliPayRefundDto,  @PayConfig() payConfig: AlipayConfig): Promise<any> {
-        await this.apiTradeService.generateRefundOrder(body, payConfig);
+        await this.apiTradeService.generateRefundOrder(body, payConfig, TradeChannel.alipay);
         const param = this.transformService.transformAlipayParams<AlipayRefundBizContent>({
             trade_no: body.trade_no,
             refund_amount: body.money,
@@ -132,6 +134,8 @@ export class AlipayController {
         if (refundResult.code == '10000') {
             if(await this.apiTradeService.refundSuccess(body.out_trade_no, body.trade_no, TradeChannel.alipay)) {
                 return "退款成功！";
+            } else {
+                return "退款失败！";
             }
         } else {
             throw new HttpException("订单退款失败！请稍后重试！", HttpStatus.BAD_REQUEST);
@@ -154,6 +158,29 @@ export class AlipayController {
             ...body.biz_count
         }, payConfig, 'alipay.trade.create');
         return await this.alitradePayService.create(param, payConfig.private_key, payConfig.public_key);
+    }
+
+    @Post("transfer")
+    async transfer(@Body() body, @PayConfig() payConfig: AlipayConfig): Promise<any> {
+        /**
+         * 创建提现订单。
+         */
+        await this.apiTradeService.generateOrder(body, payConfig, TradeType.expenditure, TradeAccountType.withdrawal);
+        const param = this.transformService.transformAlipayParams<AlipayTransferBizContent>({
+            out_biz_no: "2020091122001465530515423423",
+            trans_amount: "0.01",
+            product_code: 'TRANS_ACCOUNT_NO_PWD',
+            biz_scene: "DIRECT_TRANSFER",
+            order_title: "转账订单测试",
+            payee_info: {
+                identity: "",
+                identity_type: "",
+                name: "",
+            },
+            remark: "单笔转账",
+            business_params: "",
+        }, payConfig, 'alipay.fund.trans.uni.transfer');
+        return await this.fundPayService.transfer(param, payConfig.private_key, payConfig.public_key);
     }
 
     /**

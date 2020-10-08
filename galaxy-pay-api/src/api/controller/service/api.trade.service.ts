@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { TradeService } from "src/admin/service/trade.service";
 import { AliPayDto, AliPayRefundDto, WechatPayDto, WechatRefundPayDto } from "src/common/dtos/pay.dto";
-import { Trade } from "src/common/entities/trade.entity";
 import { TradeAccountType, TradeChannel, TradeStatus, TradeType } from "src/common/enum/trade.enum";
 import { AlipayConfig } from "src/pay/module/ali/interfaces/base.interface";
 import { WechatConfig } from "src/pay/module/wechat/interfaces/base.interface";
@@ -27,7 +26,7 @@ export class ApiTradeSerivce {
             const order = await this.tradeService.findOrder(body.out_trade_no);
             if (order) {
                 order.trade_channel = this.channel;
-                return await this.tradeService.update(order);
+                await this.tradeService.update(order);
             } else {
                 this.createTrade(body, payConfig, trade_type, trade_account_type);
             }
@@ -69,17 +68,35 @@ export class ApiTradeSerivce {
      * @param body WechatRefundPayDto | AliPayRefundDto
      * @param payConfig WechatConfig | AlipayConfig
      */
-    public async generateRefundOrder(body: WechatRefundPayDto | AliPayRefundDto, payConfig: WechatConfig | AlipayConfig)  {
+    public async generateRefundOrder(body: WechatRefundPayDto | AliPayRefundDto, payConfig: WechatConfig | AlipayConfig, channel: TradeChannel)  {
         try {
             // 先判断系统中是否有这个账单并且是支付类型，且已经完成支付。
-            const order = await this.tradeService.findOneByWhere({
+            const trade = await this.tradeService.findOneByWhere({
                 trade_no: body.trade_no,
                 out_trade_no: body.out_trade_no,
                 trade_status: TradeStatus.Success,
+                trade_channel: channel,
                 trade_account_type: TradeAccountType.payment
             });
-            if (order) {
-                return this.createTrade(body, payConfig, TradeType.expenditure, TradeAccountType.refund);
+            if (trade) {
+                const refund_trade = await this.tradeService.findOneByWhere({
+                  out_trade_no: body.out_trade_no,
+                  trade_account_type: TradeAccountType.refund,
+                  trade_status: TradeStatus.UnPaid,
+                });
+                if (refund_trade) {
+                    return this.tradeService.update({
+                        ...refund_trade,
+                        callback_url: payConfig.callback_url,
+                        return_url: payConfig.return_url,
+                        notify_url: payConfig.notify_url,
+                        trade_amount: body.money,
+                        trade_refund_amount: body.refund_money,
+                        trade_body: body.body,
+                    })
+                } else {
+                    return this.createTrade(body, payConfig, TradeType.expenditure, TradeAccountType.refund);
+                }
             }
         } catch(e) {
             throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);

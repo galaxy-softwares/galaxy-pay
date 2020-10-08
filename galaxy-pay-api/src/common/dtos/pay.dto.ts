@@ -37,8 +37,13 @@ export class AliPayRefundDto {
   @IsNotEmpty({ message: '订单号不能为空！' })
   out_trade_no: string;
 
-  @IsNotEmpty({ message: '退款金额不能为空'})
+  @IsNotEmpty({ message: '订单总金额不能为空'})
   money: string;
+
+  @IsNotEmpty({
+    message: "退款金额不能为空"
+  })
+  refund_money: string;
 
   @IsNotEmpty({ message: '退款原因不能为空'})
   body?: string;
@@ -50,7 +55,7 @@ export class WechatPayDto {
   appid: string;
 
   @IsNotEmpty({ message: '付款金额不能为空！' })
-  money: number;
+  money: string;
 
   @IsNotEmpty({ message: '订单编号不能为空！'})
   out_trade_no: string;
@@ -71,7 +76,7 @@ export class WechatRefundPayDto extends WechatPayDto {
   trade_no: string;
 
   @IsNotEmpty({ message: '退款金额不能为空'})
-  refund_money: number;
+  refund_money: string;
 
   @IsNotEmpty({ message: '退款原因不能为空！'})
   refund_reason: string;

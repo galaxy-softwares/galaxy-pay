@@ -1,7 +1,7 @@
 import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
 import { AliPayBaseService } from "./base.service";
-import { AlipayConfig, AlipayRequestParam } from "../interfaces/base.interface";
-import { AlipayTradeQueryResponse, AlipayTradeQueryResponseData, AlipayTradeRefundResponse, AlipayTradeRefundResponseData, AlipayPrecreateResponse, AlipayTradeCreateResponse, AlipayTradeCreateResponseData, AlipayTradeCloseResponse, AlipayTradeCloseResponseData, AlipayPrecreateResponseData, AlipayCreateBizContent, AlipayPrecreateBizContent } from "../interfaces/trade.interface";
+import { AlipayRequestParam } from "../interfaces/base.interface";
+import { AlipayTradeRefundResponseData, AlipayPrecreateResponse, AlipayTradeCreateResponse, AlipayTradeCreateResponseData, AlipayTradeCloseResponse, AlipayTradeCloseResponseData, AlipayPrecreateResponseData, AlipayCreateBizContent, AlipayPrecreateBizContent } from "../interfaces/trade.interface";
 
 @Injectable()
 export class AliTradePayService extends AliPayBaseService {

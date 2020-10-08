@@ -4,7 +4,7 @@ import { Trade } from 'src/common/entities/trade.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Software } from 'src/common/entities/software.entity';
-import { TradeAccountType, TradeChannel, TradeStatus } from 'src/common/enum/trade.enum';
+import { TradeAccountType, TradeChannel, TradeStatus, TradeType } from 'src/common/enum/trade.enum';
 
 
 @Injectable()
@@ -20,21 +20,24 @@ export class TradeService extends BaseService<Trade> {
      * 查询账单
      */
     async find(): Promise<any> {
-        const income = await this.tradeRepository.createQueryBuilder("trade").where({
-            trade_type: '0',
-            trade_status: TradeStatus.Success
-        }).select("SUM(trade.trade_amount)", "amount").addSelect("COUNT(*) AS count").getRawOne()
-        const expenditure  = await this.tradeRepository.createQueryBuilder("trade").where({
-            trade_type: '1',
-            trade_status: TradeStatus.Success
-        }).select("SUM(trade.trade_amount)", "amount").addSelect("COUNT(*) AS count").getRawOne();
-        console.log(expenditure);
-        const data = await this.tradeRepository.createQueryBuilder("trade").leftJoinAndMapOne('trade.software', Software, 'software', 'trade.appid = software.appid').orderBy("trade.id", 'ASC').getManyAndCount()
-        return {
-            data: data[0],
-            count: data[1],
-            income: income,
-            expenditure: expenditure,
+        try { 
+            const income = await this.tradeRepository.createQueryBuilder("trade").where({
+                trade_type:  TradeType.income,
+                trade_status: TradeStatus.Success
+            }).select("SUM(trade.trade_amount)", "amount").addSelect("COUNT(*) AS count").getRawOne()
+            const expenditure  = await this.tradeRepository.createQueryBuilder("trade").where({
+                trade_type: TradeType.expenditure,
+                trade_status: TradeStatus.Success
+            }).select("SUM(trade.trade_amount)", "amount").addSelect("COUNT(*) AS count").getRawOne();
+            const data = await this.tradeRepository.createQueryBuilder("trade").leftJoinAndMapOne('trade.software', Software, 'software', 'trade.appid = software.appid').orderBy("trade.id", 'ASC').getManyAndCount()
+            return {
+                data: data[0],
+                count: data[1],
+                income: income,
+                expenditure: expenditure,
+            }
+        } catch(e) {
+            console.log(e);
         }
     }
 

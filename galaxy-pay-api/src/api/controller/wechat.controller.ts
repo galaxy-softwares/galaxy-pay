@@ -14,6 +14,7 @@ import * as fs from 'fs';
 import * as https from 'https';
 import * as path from 'path';
 import { ApiTradeSerivce } from "./service/api.trade.service";
+import { TradeChannel } from "src/common/enum/trade.enum";
 
 @Controller("wechat")
 @UseGuards(PayGuard)
@@ -76,7 +77,7 @@ export class WechatController {
      */
     @Post("refund")
     async refund(@Body() body: WechatRefundPayDto,  @PayConfig() payConfig: WechatConfig) {
-        await this.apiTradeService.generateRefundOrder(body, payConfig);
+        await this.apiTradeService.generateRefundOrder(body, payConfig, TradeChannel.wechat);
         const payBody = {
             transaction_id: body.trade_no,
             out_refund_no: body.out_trade_no,

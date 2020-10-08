@@ -73,7 +73,8 @@ export class AliSignUtil {
             'alipay_trade_cancel_response',
             'alipay_trade_close_response',
             'alipay_trade_order_settle_response',
-            'alipay_trade_fastpay_refund_query_response'
+            'alipay_trade_fastpay_refund_query_response',
+            'alipay_fund_trans_uni_transfer_response'
         ];
         const res = response_type.reduce(function(prev, currentType){
             if (currentType in ret) return ret[currentType];
@@ -106,6 +107,6 @@ export class AliSignUtil {
       sha.update(str, 'utf8');
       return sha.sign(private_key, 'base64');
     }
-
-
 }
+
+
