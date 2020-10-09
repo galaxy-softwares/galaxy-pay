@@ -14,7 +14,7 @@ interface WeChatBaseOrderRequestParam {
     /** 附加数据 */
     attach?: string;
     /** 订单金额，单位为分，只能为整数 */
-    total_fee: number;
+    total_fee: string;
     /** 指定支付方式，上传此参数 no_credit --可限制用户不能使用信用卡支付 */
     limit_pay?: string;
     /** 终端IP */

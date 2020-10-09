@@ -15,10 +15,12 @@ import { Trade } from 'src/common/entities/trade.entity';
 import { TradeService } from './service/trade.service';
 import { OrderController } from './controller/trade.controller';
 import { FileController } from './controller/file.controller';
+import { RefundTradeService } from './service/refund.trade.service';
+import { RefundTrade } from 'src/common/entities/refund.trade.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Software, Trade]),
+    TypeOrmModule.forFeature([User, Software, Trade, RefundTrade]),
     JwtModule.register({
         secretOrPrivateKey: '1AGy4bCUoECDZ4yI6h8DxHDwgj84EqStMNyab8nPChQ=',
         signOptions: {
@@ -28,7 +30,7 @@ import { FileController } from './controller/file.controller';
     PassportModule.register({ defaultStrategy: 'jwt' })
   ],
   controllers: [AuthController, SoftwareController, OrderController, FileController],
-  providers: [AuthService, SoftwareService, UserService, TradeService, JwtAuthGuard, JwtStrategy],
-  exports: [SoftwareService, TradeService]
+  providers: [AuthService, SoftwareService, UserService, TradeService,RefundTradeService, JwtAuthGuard, JwtStrategy],
+  exports: [SoftwareService, TradeService, RefundTradeService]
 })
 export class AdminModule {}

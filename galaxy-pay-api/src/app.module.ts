@@ -8,6 +8,7 @@ import { Software } from './common/entities/software.entity';
 import { ApiModule } from './api/api.module';
 import { PayModule } from './pay/pay.module';
 import { Trade } from './common/entities/trade.entity';
+import { RefundTrade } from './common/entities/refund.trade.entity';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { Trade } from './common/entities/trade.entity';
       username: 'root',
       password: 'root',
       database: 'test',
-      entities: [User, Software, Trade],
+      entities: [User, Software, Trade, RefundTrade],
       synchronize: true,  
       charset: 'UTF8_GENERAL_CI',
     }),

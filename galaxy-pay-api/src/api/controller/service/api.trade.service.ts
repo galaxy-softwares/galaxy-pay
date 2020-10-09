@@ -1,7 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { RefundTradeService } from "src/admin/service/refund.trade.service";
 import { TradeService } from "src/admin/service/trade.service";
-import { AliPayDto, AliPayRefundDto, WechatPayDto, WechatRefundPayDto } from "src/common/dtos/pay.dto";
-import { TradeAccountType, TradeChannel, TradeStatus, TradeType } from "src/common/enum/trade.enum";
+import { AliPayDto, WechatPayDto } from "src/common/dtos/pay.dto";
+import { AliPayRefundDto, WechatRefundPayDto } from "src/common/dtos/refund.dto";
+import { TradeChannel, TradeStatus } from "src/common/enum/trade.enum";
 import { AlipayConfig } from "src/pay/module/ali/interfaces/base.interface";
 import { WechatConfig } from "src/pay/module/wechat/interfaces/base.interface";
 
@@ -12,55 +14,37 @@ export class ApiTradeSerivce {
     private channel: TradeChannel;
     constructor(
         private readonly tradeService: TradeService,
+        private readonly refundTradeService: RefundTradeService,
     ) {
     }
 
     /**
-     * 支付/提现订单生成
+     * 支付订单生成
      * @param body WechatPayDto | AliPayDto
      * @param payConfig WechatConfig | AlipayConfig
      * @param withdrawal bool
      */
-    public async generateOrder(body: WechatPayDto | AliPayDto, payConfig: WechatConfig | AlipayConfig, trade_type = TradeType.income, trade_account_type = TradeAccountType.payment) {
+    public async generateOrder(body: WechatPayDto | AliPayDto, payConfig: WechatConfig | AlipayConfig) {
         try {
-            const order = await this.tradeService.findOrder(body.out_trade_no);
-            if (order) {
-                order.trade_channel = this.channel;
-                await this.tradeService.update(order);
+            if ((payConfig.appid).substring(0,2) == 'wx') {
+                this.channel = TradeChannel.wechat;
             } else {
-                this.createTrade(body, payConfig, trade_type, trade_account_type);
+                this.channel = TradeChannel.alipay;
             }
+            await this.tradeService.createTrade({
+                appid: body.appid,
+                out_trade_no: body.out_trade_no,
+                trade_status: TradeStatus.UnPaid,
+                callback_url: payConfig.callback_url,
+                return_url: payConfig.return_url,
+                notify_url: payConfig.notify_url,
+                trade_amount: body.money,
+                trade_channel: this.channel,
+                trade_body: body.body,
+            }, this.channel);
         } catch(e) {
             throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
         }
-    }
-
-    /**
-     * 创建账单
-     * @param body 
-     * @param payConfig 
-     * @param trade_type 
-     * @param trade_account_type 
-     */
-    private async createTrade(body: WechatPayDto | AliPayDto |  WechatRefundPayDto | AliPayRefundDto, payConfig: WechatConfig | AlipayConfig, trade_type = TradeType.income, trade_account_type = TradeAccountType.payment) {
-        if ((payConfig.appid).substring(0,2) == 'wx') {
-            this.channel = TradeChannel.wechat;
-        } else {
-            this.channel = TradeChannel.alipay;
-        }
-        return await this.tradeService.create({
-            appid: body.appid,
-            out_trade_no: body.out_trade_no,
-            trade_type: trade_type,
-            trade_account_type: trade_account_type,
-            trade_status: TradeStatus.UnPaid,
-            callback_url: payConfig.callback_url,
-            return_url: payConfig.return_url,
-            notify_url: payConfig.notify_url,
-            trade_amount: body.money,
-            trade_channel: this.channel,
-            trade_body: body.body,
-        });
     }
 
     /**
@@ -70,34 +54,22 @@ export class ApiTradeSerivce {
      */
     public async generateRefundOrder(body: WechatRefundPayDto | AliPayRefundDto, payConfig: WechatConfig | AlipayConfig, channel: TradeChannel)  {
         try {
-            // 先判断系统中是否有这个账单并且是支付类型，且已经完成支付。
-            const trade = await this.tradeService.findOneByWhere({
-                trade_no: body.trade_no,
-                out_trade_no: body.out_trade_no,
-                trade_status: TradeStatus.Success,
-                trade_channel: channel,
-                trade_account_type: TradeAccountType.payment
-            });
-            if (trade) {
-                const refund_trade = await this.tradeService.findOneByWhere({
-                  out_trade_no: body.out_trade_no,
-                  trade_account_type: TradeAccountType.refund,
-                  trade_status: TradeStatus.UnPaid,
-                });
-                if (refund_trade) {
-                    return this.tradeService.update({
-                        ...refund_trade,
-                        callback_url: payConfig.callback_url,
-                        return_url: payConfig.return_url,
-                        notify_url: payConfig.notify_url,
-                        trade_amount: body.money,
-                        trade_refund_amount: body.refund_money,
-                        trade_body: body.body,
-                    })
-                } else {
-                    return this.createTrade(body, payConfig, TradeType.expenditure, TradeAccountType.refund);
-                }
+            if ((payConfig.appid).substring(0,2) == 'wx') {
+                this.channel = TradeChannel.wechat;
+            } else {
+                this.channel = TradeChannel.alipay;
             }
+            return await this.refundTradeService.createRefdunTrade({
+                appid: body.appid,
+                out_trade_no: body.out_trade_no,
+                trade_status: TradeStatus.UnPaid,
+                callback_url: payConfig.callback_url,
+                trade_no: '',
+                trade_amount: body.money,
+                trade_refund_amount: body.refund_money,
+                trade_channel: this.channel,
+                trade_body: body.body,
+            }, this.channel);
         } catch(e) {
             throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
         }

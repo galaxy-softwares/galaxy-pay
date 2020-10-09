@@ -39,36 +39,6 @@ export class AppController {
     }
   }
 
-  @Post("wechat_refund_notify_url")
-  async refund_notify_url(@Req() req, @Res() res) {
-    res.set('Content-Type', 'text/html');
-    res.status(200);
-    // try {
-    //   const data = await this.weChatNotifyParserUtil.receiveReqData<WeChatRefundNotifyRes>(req, 'pay');
-    //   const payConfig = await this.softwareService.findSoftwareByWxAppid(data.appid);
-    //   const result = await this.weChatNotifyParserUtil.parseRefundNotify(data, payConfig.mch_key);
-    //   if (result) {
-    //     const refundOrder = await this.refundSerivce.findOrder(data.out_refund_no);
-    //     if(refundOrder.order_status == OrderStatus.UnPaid) {
-    //       const status = await this.tradeService.paySuccess(data.out_trade_no, OrderChannel.wechat, data.transaction_id);
-    //       if (!status) {
-    //         res.end(this.weChatNotifyParserUtil.generateFailMessage("订单状态修改失败！"))
-    //       }
-    //       const callbackResut = await this.httpService.post(refundOrder.callback_url, JSON.stringify(refundOrder)).toPromise();
-    //       console.log(callbackResut);
-    //     } else {
-    //       res.end(this.weChatNotifyParserUtil.generateSuccessMessage())
-    //     }
-    //   }
-    // } catch (e) {
-    //   res.end(this.weChatNotifyParserUtil.generateFailMessage(e.toString()))
-    // }
-    try {
-    } catch(e) {
-      res.end(this.weChatNotifyParserUtil.generateFailMessage(e.toString()));
-    }
-  }
-
   @Post("wechat_notify_url")
   async wechat_notify_url(@Req() req, @Res() res) {
     res.set('Content-Type', 'text/html');

@@ -4,7 +4,8 @@ import { Trade } from 'src/common/entities/trade.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Software } from 'src/common/entities/software.entity';
-import { TradeAccountType, TradeChannel, TradeStatus, TradeType } from 'src/common/enum/trade.enum';
+import { TradeChannel, TradeStatus } from 'src/common/enum/trade.enum';
+import { CreateTrade } from 'src/common/interceptor/trade.interceptor';
 
 
 @Injectable()
@@ -20,46 +21,44 @@ export class TradeService extends BaseService<Trade> {
      * 查询账单
      */
     async find(): Promise<any> {
-        try { 
-            const income = await this.tradeRepository.createQueryBuilder("trade").where({
-                trade_type:  TradeType.income,
-                trade_status: TradeStatus.Success
-            }).select("SUM(trade.trade_amount)", "amount").addSelect("COUNT(*) AS count").getRawOne()
-            const expenditure  = await this.tradeRepository.createQueryBuilder("trade").where({
-                trade_type: TradeType.expenditure,
-                trade_status: TradeStatus.Success
-            }).select("SUM(trade.trade_amount)", "amount").addSelect("COUNT(*) AS count").getRawOne();
-            const data = await this.tradeRepository.createQueryBuilder("trade").leftJoinAndMapOne('trade.software', Software, 'software', 'trade.appid = software.appid').orderBy("trade.id", 'ASC').getManyAndCount()
-            return {
-                data: data[0],
-                count: data[1],
-                income: income,
-                expenditure: expenditure,
-            }
-        } catch(e) {
-            console.log(e);
-        }
-    }
-
-    /**
-     * 根据任意条件查询一条订单
-     * @param where 
-     */
-    async findOneByWhere(where: any): Promise<Trade> {
-        try {
-            return await this.tradeRepository.findOne(where);
-        } catch (e) {
-            throw new HttpException("没有查询到订单", HttpStatus.BAD_REQUEST);
-        } 
+        // try { 
+        //     const income = await this.tradeRepository.createQueryBuilder("trade").where({
+        //         trade_status: TradeStatus.Success
+        //     }).select("SUM(trade.trade_amount)", "amount").addSelect("COUNT(*) AS count").getRawOne()
+        //     const expenditure  = await this.tradeRepository.createQueryBuilder("trade").where({
+        //         trade_type: TradeType.expenditure,
+        //         trade_status: TradeStatus.Success
+        //     }).select("SUM(trade.trade_amount)", "amount").addSelect("COUNT(*) AS count").getRawOne();
+        //     const data = await this.tradeRepository.createQueryBuilder("trade").leftJoinAndMapOne('trade.software', Software, 'software', 'trade.appid = software.appid').orderBy("trade.id", 'ASC').getManyAndCount()
+        //     return {
+        //         data: data[0],
+        //         count: data[1],
+        //         income: income,
+        //         expenditure: expenditure,
+        //     }
+        // } catch(e) {
+        //     console.log(e);
+        // }
     }
 
     /**
      * 创建订单
      * @param data 
      */
-    async create(data): Promise<Trade> {
+    async createTrade(data: CreateTrade, channel: TradeChannel): Promise<Trade> {
         try {
-            return await this.tradeRepository.save(data);
+            const trade = await this.tradeRepository.findOne({
+                out_trade_no: data.out_trade_no,
+            })
+            if (trade) {
+                trade.trade_channel = channel;
+                trade.trade_body = data.trade_body;
+                trade.trade_amount = data.trade_amount;
+                trade.appid = data.appid;
+                return await this.tradeRepository.save(trade);
+            } else {
+                return await this.tradeRepository.save(data);
+            }
         } catch (e) {
             throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
         } 
@@ -110,13 +109,12 @@ export class TradeService extends BaseService<Trade> {
      * 判断订单是否退款完成
      * @param data 
      */
-    async refundSuccess(out_trade_no: string, trade_no: string, channel: TradeChannel): Promise<Boolean> {
+    async refundSuccess(out_trade_no: string, trade_no: string, channel: TradeChannel): Promise<boolean> {
         try {
             const order = await this.tradeRepository.findOne({
                 out_trade_no,
                 trade_status: TradeStatus.UnPaid,
                 trade_channel: channel,
-                trade_account_type: TradeAccountType.refund
             })
             if (order) {
                 order.trade_no = trade_no;
@@ -130,18 +128,5 @@ export class TradeService extends BaseService<Trade> {
             throw new HttpException("订单支付状态查询失败！", HttpStatus.BAD_REQUEST);
         }
     }
-
-    /**
-     * 更更新订单
-     * @param data Trade
-     */
-    async update(data: Trade): Promise<Trade> {
-        try { 
-            const order = this.tradeRepository.create(data);
-            return await this.tradeRepository.save(order);
-        } catch(e) {
-            throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
-        }
-      }
     
 }

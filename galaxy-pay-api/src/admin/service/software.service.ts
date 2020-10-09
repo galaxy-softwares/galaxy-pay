@@ -136,7 +136,7 @@ export class SoftwareService extends BaseService<Software> {
    * 创建项目
    * @param data SoftwareDto
    */
-  async create(data: SoftwareDto): Promise<Software> {
+  async createSoftware(data: SoftwareDto): Promise<Software> {
     const software = this.softwareRepository.create(this.generateSoftware(data));
     return await this.softwareRepository.save(software);
   }

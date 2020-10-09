@@ -5,7 +5,7 @@ import { AliTradePayService } from 'src/pay/module/ali/service/trade.pay.service
 import { AlipayConfig } from 'src/pay/module/ali/interfaces/base.interface';
 import { AliWapPayService } from 'src/pay/module/ali/service/wap.pay.service';
 import { AlipayPrecreateBizContent, AlipayPrecreateResponse, AlipayTradeCreateResponse } from 'src/pay/module/ali/interfaces/trade.interface';
-import { AliPayDto, AliPayRefundDto } from 'src/common/dtos/pay.dto';
+import { AliPayDto } from 'src/common/dtos/pay.dto';
 import { PayConfig } from 'src/common/decorator/pay.config.decorator';
 import { PayGuard } from 'src/common/guard/pay.guard';
 import { TransformService } from './service/transform.service';
@@ -14,9 +14,10 @@ import { ApiTradeSerivce } from './service/api.trade.service';
 import { AlipayPageBizContent } from 'src/pay/module/ali/interfaces/page.interface';
 import { AlipayWapBizContent } from 'src/pay/module/ali/interfaces/wap.interface';
 import { AlipayRefundBizContent } from 'src/pay/module/ali/interfaces/refund.interface';
-import { TradeAccountType, TradeChannel, TradeType } from 'src/common/enum/trade.enum';
+import { TradeChannel } from 'src/common/enum/trade.enum';
 import { fundPayService } from 'src/pay/module/ali/service/fund.pay.service';
 import { AlipayTransferBizContent } from 'src/pay/module/ali/interfaces/fund.interface';
+import { AliPayRefundDto } from 'src/common/dtos/refund.dto';
 
 @Controller("alipay")
 @UseGuards(PayGuard)
@@ -165,7 +166,7 @@ export class AlipayController {
         /**
          * 创建提现订单。
          */
-        await this.apiTradeService.generateOrder(body, payConfig, TradeType.expenditure, TradeAccountType.withdrawal);
+        await this.apiTradeService.generateOrder(body, payConfig);
         const param = this.transformService.transformAlipayParams<AlipayTransferBizContent>({
             out_biz_no: "2020091122001465530515423423",
             trans_amount: "0.01",

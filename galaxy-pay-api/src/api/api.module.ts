@@ -5,6 +5,7 @@ import { AlipayController } from './controller/alipay.controller';
 import { WechatController } from './controller/wechat.controller';
 import { TransformService } from './controller/service/transform.service';
 import { ApiTradeSerivce } from './controller/service/api.trade.service';
+import { RefundTradeService } from 'src/admin/service/refund.trade.service';
 
 @Global()
 @Module({
