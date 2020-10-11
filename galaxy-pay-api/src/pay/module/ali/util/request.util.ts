@@ -25,9 +25,7 @@ export class AliRequestUtil {
      */
     async post<T>(url: string, public_key: string, axiosConfig?: axios.AxiosRequestConfig): Promise<T> {
         try {
-            console.log(url);
             const { data } = await this.httpService.post<T>(`${url}`, axiosConfig).toPromise();
-                console.log(data);
             if (!this.singinUtil.responSignVerify(data, public_key)) {
                 throw new HttpException('支付宝支付接口返回签名有误', HttpStatus.BAD_REQUEST);
             }

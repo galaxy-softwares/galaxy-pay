@@ -131,15 +131,15 @@ export class AlipayController {
             refund_amount: body.money,
             refund_reason: body.body,
         }, payConfig, 'alipay.trade.refund');
-        const refundResult = await this.alitradePayService.refund(param, payConfig.private_key, payConfig.public_key);
-        if (refundResult.code == '10000') {
+        const refund_result = await this.alitradePayService.refund(param, payConfig.private_key, payConfig.public_key);
+        if (refund_result.code == '10000') {
             if(await this.apiTradeService.refundSuccess(body.out_trade_no, body.trade_no, TradeChannel.alipay)) {
                 return "退款成功！";
             } else {
                 return "退款失败！";
             }
         } else {
-            throw new HttpException("订单退款失败！请稍后重试！", HttpStatus.BAD_REQUEST);
+            throw new HttpException(refund_result.sub_msg, HttpStatus.BAD_REQUEST);
         }
     }
 

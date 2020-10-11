@@ -60,7 +60,7 @@ export class TradeService extends BaseService<Trade> {
                 return await this.tradeRepository.save(data);
             }
         } catch (e) {
-            throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
+            throw new HttpException("支付账单生成失败！", HttpStatus.BAD_REQUEST);
         } 
     }
 
@@ -73,7 +73,7 @@ export class TradeService extends BaseService<Trade> {
             return this.tradeRepository.findOne({
                 out_trade_no,
             })
-        } catch (e) {
+        } catch {
             throw new HttpException("没有查询到订单", HttpStatus.BAD_REQUEST);
         } 
     }
@@ -101,31 +101,7 @@ export class TradeService extends BaseService<Trade> {
             }
             return false;
         } catch(e) {
-            throw new HttpException("订单支付状态查询失败！", HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    /**
-     * 判断订单是否退款完成
-     * @param data 
-     */
-    async refundSuccess(out_trade_no: string, trade_no: string, channel: TradeChannel): Promise<boolean> {
-        try {
-            const order = await this.tradeRepository.findOne({
-                out_trade_no,
-                trade_status: TradeStatus.UnPaid,
-                trade_channel: channel,
-            })
-            if (order) {
-                order.trade_no = trade_no;
-                order.trade_status = TradeStatus.Success;
-                if (await this.tradeRepository.save(order)) {
-                    return true;
-                }
-            }
-            return false;
-        } catch(e) {
-            throw new HttpException("订单支付状态查询失败！", HttpStatus.BAD_REQUEST);
+            throw new HttpException("订单支付状态修改失败！", HttpStatus.BAD_REQUEST);
         }
     }
     

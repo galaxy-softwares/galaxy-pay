@@ -10,6 +10,7 @@ export class RefundTrade extends Base {
 
   @Column({
     comment: "订单编号",
+    unique: true
   })
   out_trade_no: string;
 

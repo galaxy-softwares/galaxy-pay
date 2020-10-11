@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards } from "@nestjs/common";
+import { Controller, Post, Body, UseGuards, HttpException, HttpStatus } from "@nestjs/common";
 import { WeChatAppletPayService } from "src/pay/module/wechat/service/applet.pay.service";
 import { WeChatJSAPIPayService } from "src/pay/module/wechat/service/jsapi.pay.service";
 import { WeChatNativePayService } from "src/pay/module/wechat/service/native.pay.service";
@@ -82,17 +82,25 @@ export class WechatController {
         const payBody = {
             transaction_id: body.trade_no,
             out_refund_no: body.out_trade_no,
-            total_fee: body.money,
-            refund_fee: body.refund_money,
-            refund_desc: body.refund_reason,
+            total_fee: parseInt(body.money),
+            refund_fee: parseInt(body.refund_money),
+            refund_desc: body.body,
             notify_url: payConfig.notify_url,
         }
         const httpConfig = new https.Agent({
             pfx: fs.readFileSync(path.join(__dirname,  payConfig.apiclient_cert)),
             passphrase: payConfig.mch_id,
         });
-        // const result = await this.wechatAppPayService.refund(payBody, payConfig, httpConfig);
-        // return result
+        const refund_result = await this.wechatAppPayService.refund(payBody, payConfig, httpConfig);
+        if (refund_result.return_code == 'SUCCESS') {
+            if(await this.apiTradeService.refundSuccess(refund_result.out_trade_no, refund_result.out_refund_no, TradeChannel.wechat)) {
+                return '退款成功'
+            } else {
+                return '退款失败'
+            }
+        } else {
+            throw new HttpException(refund_result.err_code_des, HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**

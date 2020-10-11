@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber } from "class-validator";
+import { IsNotEmpty } from "class-validator";
 
 export class WechatRefundPayDto {
 
@@ -11,9 +11,6 @@ export class WechatRefundPayDto {
     @IsNotEmpty({ message: '退款金额不能为空'})
     refund_money: string;
   
-    @IsNotEmpty({ message: '退款原因不能为空！'})
-    refund_reason: string;
-    
     @IsNotEmpty({ message: '付款金额不能为空！' })
     money: string;
   

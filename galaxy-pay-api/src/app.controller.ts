@@ -35,6 +35,7 @@ export class AppController {
       const status = await this.tradeService.paySuccess(data.out_trade_no, TradeChannel.alipay, data.trade_no);
       if (status) {
         const callback_result = await this.callbackRequest(trade.callback_url, data, app_secret);
+        console.log(callback_result, '支付callback 回调状态！');
       }
     }
   }
@@ -46,9 +47,8 @@ export class AppController {
     try {
       const data = await this.weChatNotifyParserUtil.receiveReqData<WeChatPayNotifyRes>(req, 'pay');
       const order = await this.tradeService.findOrder(data.out_trade_no)
-      if (!order) {
-        res.end(this.weChatNotifyParserUtil.generateFailMessage("没有查询到订单！"))
-      } else if(order.trade_status == '1') {
+      // 因为已经在支付查询的时候已经做了错误抛出所以不用再去判断是否存在账单。
+      if(order.trade_status == '1') {
         res.end(this.weChatNotifyParserUtil.generateSuccessMessage())
       }
       const { wechatConfig, app_secret } = await this.softwareService.findSoftwarePayConfig(order.appid)
@@ -57,20 +57,19 @@ export class AppController {
       // 不进行签名验证
       delete data.sign;
       const sign = this.signUtil.sign(data, wechatConfig.mch_key)
-      console.log(sign);
       //  还要判断是支付类型！！！！！！！
       if ((sign !== data_sign)|| (data.return_code !== 'SUCCESS')|| (data.result_code !== 'SUCCESS')) {
         res.end(this.weChatNotifyParserUtil.generateFailMessage("签名验证失败"))
       }
       const status = await this.tradeService.paySuccess(data.out_trade_no, TradeChannel.wechat, data.transaction_id);
-      if (!status) {
-        res.end(this.weChatNotifyParserUtil.generateFailMessage("订单状态修改失败！"))
+      if (status) {
+        const callback_result = await this.callbackRequest(order.callback_url, {
+          out_trade_no: data.out_trade_no,
+          trade_no: data.transaction_id
+        }, app_secret);
+        console.log(callback_result, '微信支付callback回调状态');
+        res.end(this.weChatNotifyParserUtil.generateSuccessMessage())
       }
-      const callback_result = await this.callbackRequest(order.callback_url, {
-        out_trade_no: data.out_trade_no,
-        trade_no: data.transaction_id
-      }, app_secret);
-      res.end(this.weChatNotifyParserUtil.generateSuccessMessage())
     } catch(e) {
       res.end(this.weChatNotifyParserUtil.generateFailMessage(e.toString()))
     }

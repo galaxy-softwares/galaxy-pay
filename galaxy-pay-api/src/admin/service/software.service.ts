@@ -22,12 +22,11 @@ export class SoftwareService extends BaseService<Software> {
    * @param appid string
    */
   async findSoftwarePay(appid: string) {
-    try {
-      return await this.softwareRepository.findOne({
-        appid
-      });
-    } catch (e) {
-      throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
+    const software = await this.softwareRepository.findOne({ appid });
+    if(software) {
+      return software;
+    } else {
+      throw new HttpException("未查询到支付配置,请检查appid", HttpStatus.BAD_REQUEST);
     }
   }
 
