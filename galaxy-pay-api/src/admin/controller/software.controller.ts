@@ -2,6 +2,8 @@ import { Controller, Get, UsePipes, UseGuards, Post, Body, Param, Put, Request }
 import { SoftwareService } from '../service/software.service';
 import { JwtAuthGuard } from '../service/jwt-auth.guard';
 import { ValidationPipe } from 'src/common/pipe/validation.pipe';
+import { SoftwareDto } from 'src/common/dtos/software.dto';
+import { TradeChannel } from 'src/common/enum/trade.enum';
 
 @Controller("software")
 @UsePipes(new ValidationPipe())
@@ -22,27 +24,25 @@ export class SoftwareController {
     }
 
     @Post()
-    async create(@Request() request, @Body() data): Promise<any> {
+    async create(@Request() request, @Body() data: SoftwareDto): Promise<any> {
         const { headers: { host } } = request;
-        if (data.channel == 'wechat') {
+        if (data.channel == TradeChannel.wechat) {
             data.notify_url = `${host}/wechat_notify_url`;
-            data.refund_notify_url = `${host}/wechat_refund_notify_url`;
         } else {
             data.notify_url = `${host}/alipay_notify_url`;
         }
-        return await this.softwareService.create(data);
+        return await this.softwareService.createSoftware(data);
     }
 
     @Put()
-    async update(@Request() request, @Body() data) {
+    async update(@Request() request, @Body() data: SoftwareDto) {
         // 获取本机得域名
         const { headers: { host } } = request;
-        if (data.channel == 'wechat') {
+        if (data.channel == TradeChannel.wechat) {
             data.notify_url = `${host}/wechat_notify_url`;
-            data.refund_notify_url = `${host}/wechat_refund_notify_url`;
         } else {
             data.notify_url = `${host}/alipay_notify_url`;
         }
-        return await this.softwareService.update(data);
+        return await this.softwareService.updateSoftware(data);
     }
 }

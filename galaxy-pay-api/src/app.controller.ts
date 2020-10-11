@@ -28,13 +28,13 @@ export class AppController {
   async alipay_notify_url(@Request() req) {
     const data = req.body;
     const trade = await this.tradeService.findOrder(data.out_trade_no)
-    const { alipayConfig, app_secret} = await this.softwareService.findSoftwarePayConfig(trade.appid)
+    const { alipayConfig, secret_key} = await this.softwareService.findSoftwarePayConfig(trade.appid)
     delete data.pay_type;
     const sign_result = this.aliSignUtil.responSignVerify(data, alipayConfig.public_key);
     if (sign_result) {
       const status = await this.tradeService.paySuccess(data.out_trade_no, TradeChannel.alipay, data.trade_no);
       if (status) {
-        const callback_result = await this.callbackRequest(trade.callback_url, data, app_secret);
+        const callback_result = await this.callbackRequest(trade.callback_url, data, secret_key);
         console.log(callback_result, '支付callback 回调状态！');
       }
     }
@@ -51,7 +51,7 @@ export class AppController {
       if(order.trade_status == '1') {
         res.end(this.weChatNotifyParserUtil.generateSuccessMessage())
       }
-      const { wechatConfig, app_secret } = await this.softwareService.findSoftwarePayConfig(order.appid)
+      const { wechatConfig, secret_key } = await this.softwareService.findSoftwarePayConfig(order.appid)
       // 先拿到微信得签名
       const data_sign = data.sign;
       // 不进行签名验证
@@ -66,7 +66,7 @@ export class AppController {
         const callback_result = await this.callbackRequest(order.callback_url, {
           out_trade_no: data.out_trade_no,
           trade_no: data.transaction_id
-        }, app_secret);
+        }, secret_key);
         console.log(callback_result, '微信支付callback回调状态');
         res.end(this.weChatNotifyParserUtil.generateSuccessMessage())
       }

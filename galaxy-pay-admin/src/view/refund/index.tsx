@@ -5,44 +5,24 @@ import {
     WechatOutlined,
     AlipayCircleOutlined
   } from '@ant-design/icons';
-import { orderGetList } from '../../request/order';
+import { refundGetList } from '../../request/refund';
 
-const Order: FC = () => {
+const Refund: FC = () => {
     const [data, setData]= useState([]);
-    const [expenditure, setExpenditure] = useState({
-        amount: Number,
-        count: Number,
-    });
     const [income, setIncome] = useState({
         amount: Number,
         count: Number,
     });
 
     const initOrder = useCallback( async () => {
-        const result = await orderGetList();
+        const result = await refundGetList();
         setData(result.data.data);
         setIncome(result.data.income);
-        setExpenditure(result.data.expenditure);
     }, [data])
 
     useEffect( () => {
         initOrder();
     }, [])
-
-    const tradeAccountType = {
-        "0" : {
-            text: '支付',
-            color: '#13c2c2'
-        },
-        "1" : {
-            text: '提现',
-            color: '#722ed1'
-        },
-        '2': {
-            text: '退款',
-            color: '#f5222d'
-        }
-    }
 
     const columns = [
         {
@@ -77,35 +57,27 @@ const Order: FC = () => {
             key: 'appid'
         },
         {
-            title: '金额',
+            title: '账单金额',
             dataIndex: 'trade_amount',
             key: 'trade_amount',
-            render: (text, record) => {
-                return record.trade_type === '1' ? `-${text}`: `${text}`;
+            render: (text) => {
+                return `${text}`;
             }
         },
         {
-            title: '收支',
-            dataIndex: 'trade_type',
-            key: 'trade_type',
-            render: (text: string) => {
-                return  text === '1' ? <Tag color="#eb2f96">支出</Tag> : <Tag color="#fa8c16">收入</Tag>;
-            },
-        },
-        {
-            title: '账单类型',
-            dataIndex: 'trade_account_type',
-            key: 'trade_account_type',
-            render: (text: string) => {
-                return  <Tag color={tradeAccountType[text].color}>{tradeAccountType[text].text}</Tag>;
-            },
+            title: '退款金额',
+            dataIndex: 'trade_refund_amount',
+            key: 'trade_refund_amount',
+            render: (text) => {
+                return `${text}`;
+            }
         },
         {
             title: '状态',
             dataIndex: 'trade_status',
             key: 'trade_status',
             render: (text: number) => {
-                return text === 1 ? <Tag color="#87d068">已完成</Tag>: <Tag color="#108ee9">未完成</Tag>
+                return text == 1 ? <Tag color="#87d068">已完成</Tag>: <Tag color="#108ee9">未完成</Tag>
             },
         },
         {
@@ -141,25 +113,18 @@ const Order: FC = () => {
         <div>
             <Card bordered={false} className="margin-20">
                 <Row>
-                <Col sm={6} xs={24}>
-                    <Info title="收入" value={`${income.amount}￥`} desc={`共${income.count} 笔`} bordered />
-                </Col>
-                <Col sm={6} xs={24}>
-                    <Info title="支出" value={`${expenditure.amount}￥`} desc={`共${expenditure.count} 笔`} bordered />
-                </Col>
-                <Col sm={6} xs={24}>
-                    <Info title="" value="" desc=""/>
-                </Col>
+                    <Col sm={6} xs={24}>
+                        <Info title="支出" value={`${income.amount}￥`} desc={`共${income.count} 笔`} bordered />
+                    </Col>
                 </Row>
             </Card>
             <Card bordered={false}>
                 <Table columns={columns} dataSource={data} rowKey={(record, index) => index}  pagination={{ 
                     hideOnSinglePage: false,
                     defaultPageSize: 7,
-
                 }} />
             </Card>
         </div>
     )
 }
-export default Order;
+export default Refund;

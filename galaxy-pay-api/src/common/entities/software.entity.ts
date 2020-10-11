@@ -12,12 +12,12 @@ export class Software extends Base {
   name: string;
 
   @Column({
-    comment: "此乃系统随机生成的字符串切记要好好保存！"
+    comment: "系统随机生成的字符串, 用于双方系统加密使用"
   })
-  app_secret: string;
+  secret_key: string;
 
   @Column({
-    comment: "请求白名单地址，仅限一个url谢谢！"
+    comment: "请求白名单地址,多个逗号分开"
   })
   domain_url: string;
 

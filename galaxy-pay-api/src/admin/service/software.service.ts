@@ -24,7 +24,12 @@ export class SoftwareService extends BaseService<Software> {
   async findSoftwarePay(appid: string) {
     const software = await this.softwareRepository.findOne({ appid });
     if(software) {
-      return software;
+      const payConfig = software.channel === TradeChannel.wechat ? JSON.parse(software.wechat) : JSON.parse(software.alipay);
+      return {
+        domain_url: (software.domain_url).split(','),
+        secret_key: software.secret_key,
+        payConfig,
+      };
     } else {
       throw new HttpException("未查询到支付配置,请检查appid", HttpStatus.BAD_REQUEST);
     }
@@ -36,9 +41,9 @@ export class SoftwareService extends BaseService<Software> {
         appid
       });
       if (data.channel === TradeChannel.wechat) {
-        return { wechatConfig: JSON.parse(data.wechat), app_secret: data.app_secret}
+        return { wechatConfig: JSON.parse(data.wechat), secret_key: data.secret_key}
       } else {
-        return { alipayConfig: JSON.parse(data.alipay), app_secret: data.app_secret}
+        return { alipayConfig: JSON.parse(data.alipay), secret_key: data.secret_key}
       }
     } catch (e) {
       throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
@@ -183,6 +188,7 @@ export class SoftwareService extends BaseService<Software> {
       software.id = data.id;
     } else {
       software.appid = this.randomString();
+      software.secret_key = this.randomString();
     }
     return software;
   } 
@@ -191,24 +197,8 @@ export class SoftwareService extends BaseService<Software> {
    * 更新项目
    * @param data SoftwareDto
    */
-  async update(data: SoftwareDto): Promise<Software> {
+  async updateSoftware(data: SoftwareDto): Promise<Software> {
     const software = this.softwareRepository.create(this.generateSoftware(data));
     return await this.softwareRepository.save(software);
   }
-
-  /**
-   * 
-   * @param prefix string 要加上去的前缀
-   * @param object 对象
-   */
-  addPrefix(prefix: string, object: any) {
-    const newObject = {}
-    for (const name in object) {
-      if (typeof object[name] != "object") {
-        newObject[`${prefix}_${name}`] = object[name];
-      }
-    }
-    return newObject;
-  }
-  
 }

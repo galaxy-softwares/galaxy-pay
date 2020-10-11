@@ -4,7 +4,8 @@ import { RefundTrade } from "src/common/entities/refund.trade.entity";
 import { Repository } from "typeorm";
 import { TradeChannel, TradeStatus } from 'src/common/enum/trade.enum';
 import { BaseService } from "./base.service";
-import { CreateRefundTrade } from "src/common/interceptor/refund.trade.interceptor";
+import { CreateRefundTrade } from "src/common/interfaces/refund.trade.interfaces";
+import { Software } from "src/common/entities/software.entity";
 
 @Injectable()
 export class RefundTradeService extends BaseService<RefundTrade> {
@@ -14,6 +15,22 @@ export class RefundTradeService extends BaseService<RefundTrade> {
         private readonly refundTradeRepository: Repository<RefundTrade>,
       ) {
         super(refundTradeRepository);
+    }
+
+    async find(): Promise<any> {
+        try { 
+            const income = await this.refundTradeRepository.createQueryBuilder("trade").where({
+                trade_status: TradeStatus.Success
+            }).select("SUM(trade.trade_amount)", "amount").addSelect("COUNT(*) AS count").getRawOne()
+            const data = await this.refundTradeRepository.createQueryBuilder("trade").leftJoinAndMapOne('trade.software', Software, 'software', 'trade.appid = software.appid').orderBy("trade.id", 'ASC').getManyAndCount()
+            return {
+                data: data[0],
+                count: data[1],
+                income: income,
+            }
+        } catch(e) {
+            console.log(e);
+        }
     }
 
     // /**

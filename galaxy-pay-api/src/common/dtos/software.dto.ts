@@ -1,4 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
+import { TradeChannel } from '../enum/trade.enum';
 
 export class SoftwareDto {
   
@@ -12,6 +13,10 @@ export class SoftwareDto {
   call_back: string;
 
   notify_url: string;
+
+  channel: TradeChannel;
+
+  secret_key: string;
   
   @IsNotEmpty({ message: '请求地址不能为空' })
   domain_url: string;

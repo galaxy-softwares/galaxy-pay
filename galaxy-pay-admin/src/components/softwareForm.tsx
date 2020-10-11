@@ -30,18 +30,15 @@ export const SoftwareFrom: React.FC<SoftwareFromProps> = ({form, channel, edit})
         }
     }
 
-    const onFormChange = ({ channel }) => {
-        console.log(channel);
-        setFormChannel(channel);
-      };
+    const onFormChange = e => {
+        setFormChannel(e.target.value);
+    };
 
     return (
         <div>
             <Form preserve={false} {...layout} form={form} initialValues={{
                 channel: formChannel
-            }}
-            onValuesChange={onFormChange}
-            >
+            }}>
                 <div style={{display:'none'}}>
                     <Form.Item name="id" label="">
                         <Input placeholder=""/>
@@ -50,8 +47,8 @@ export const SoftwareFrom: React.FC<SoftwareFromProps> = ({form, channel, edit})
                 <Form.Item name="name" label="项目名称" rules={[{ required: true, message: '项目名称不能为空'}]}>
                     <Input placeholder="请输入项目名称"/>
                 </Form.Item>
-                <Form.Item name="domain_url" label="授权域名">
-                    <Input placeholder="非授权域名禁止发送支付请求，可为空！"/>
+                <Form.Item name="domain_url" label="授权域名" rules={[{ required: true, message: '授权域名不能为空'}]}>
+                    <Input placeholder="非授权域名禁止发送支付请求"/>
                 </Form.Item>
                 <Form.Item name="callback_url" label="异步回调地址" rules={[{ required: true, message: '异步回调地址不能为空'}]}>
                     <Input placeholder="当支付完成时回调此地址"/>
@@ -59,8 +56,8 @@ export const SoftwareFrom: React.FC<SoftwareFromProps> = ({form, channel, edit})
                 <Form.Item name="return_url" label="返回域名">
                     <Input placeholder="当支付完成时返回此域名，可为空，一般用户h5 pc 支付使用！"/>
                 </Form.Item>
-                <Form.Item name="channel" label="支付通道">
-                <Radio.Group disabled={edit}>
+                <Form.Item name="channel" label="支付通道" rules={[{ required: false, message: '请选择通道'}]} >
+                <Radio.Group disabled={edit} onChange={onFormChange}>
                     <Radio value="wechat">微信</Radio>
                     <Radio value="alipay">支付宝</Radio>
                     </Radio.Group>

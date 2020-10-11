@@ -13,10 +13,11 @@ import { SoftwareService } from './service/software.service';
 import { SoftwareController } from './controller/software.controller';
 import { Trade } from 'src/common/entities/trade.entity';
 import { TradeService } from './service/trade.service';
-import { OrderController } from './controller/trade.controller';
+import { TradeController } from './controller/trade.controller';
 import { FileController } from './controller/file.controller';
 import { RefundTradeService } from './service/refund.trade.service';
 import { RefundTrade } from 'src/common/entities/refund.trade.entity';
+import { RefundController } from './controller/refund.controller';
 
 @Module({
   imports: [
@@ -29,7 +30,7 @@ import { RefundTrade } from 'src/common/entities/refund.trade.entity';
     }),
     PassportModule.register({ defaultStrategy: 'jwt' })
   ],
-  controllers: [AuthController, SoftwareController, OrderController, FileController],
+  controllers: [AuthController, SoftwareController, TradeController, FileController, RefundController],
   providers: [AuthService, SoftwareService, UserService, TradeService,RefundTradeService, JwtAuthGuard, JwtStrategy],
   exports: [SoftwareService, TradeService, RefundTradeService]
 })

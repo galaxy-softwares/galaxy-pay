@@ -9,11 +9,13 @@ import {
 import BaseLayout from './layouts/baseLayout';
 import Software from './view/software'
 import Login from "./view/login";
-import Order from './view/order';
+import Trade from './view/trade';
+import Refund from './view/refund';
 
 const Routers = [
     { path: "/", name: "Software", component: Software, auth: true },
-    { path: "/Order", name: "Order", component: Order, auth: true },
+    { path: "/Trade", name: "Trade", component: Trade, auth: true },
+    { path: "/Refund", name: "Refund", component: Refund, auth: true },
 ];
 
 const App:FC = () => {
@@ -26,7 +28,7 @@ const App:FC = () => {
                 } />
             })}
             <Route path="/login" component={Login} />
-            <Redirect from={"*"} to={'/software'} />
+            <Redirect from={"*"} to={'/'} />
         </Switch>
     </Router>
   )

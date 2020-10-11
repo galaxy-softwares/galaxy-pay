@@ -19,7 +19,12 @@ const menuList = [
     {
         title: '账单',
         icon: <CopyOutlined />,
-        path: '/order'
+        path: '/trade'
+    },
+    {
+        title: '退款',
+        icon: <CopyOutlined />,
+        path: '/refund'
     },
 ]
 

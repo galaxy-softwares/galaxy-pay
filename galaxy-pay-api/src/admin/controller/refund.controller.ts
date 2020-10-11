@@ -1,18 +1,18 @@
 import { Controller, ValidationPipe, UseGuards, UsePipes, Get } from '@nestjs/common';
-import { TradeService } from '../service/trade.service';
 import { JwtAuthGuard } from '../service/jwt-auth.guard';
+import { RefundTradeService } from '../service/refund.trade.service';
 
-@Controller("trade")
+@Controller("refund")
 @UsePipes(new ValidationPipe())
 @UseGuards(JwtAuthGuard)
-export class TradeController {
+export class RefundController {
 
     constructor(
-        private readonly tradeService: TradeService,
+        private readonly refundTradeService: RefundTradeService,
     ) {}
     
     @Get()
     async find() {
-        return this.tradeService.find();
+        return this.refundTradeService.find();
     }
 }

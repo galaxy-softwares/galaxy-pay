@@ -86,15 +86,6 @@ const Software: FC = () => {
                 key: 'softwareCreate',
                 type: 'success',
                 message: `${form.name} 创建完成！`,
-                description: '项目创建成功!',
-                duration: 3,
-            })
-        } else {
-            openNotification({
-                key: 'softwareCreate',
-                type: 'success',
-                message: `${form.name} 创建完成！`,
-                description: '项目创建成功!',
                 duration: 3,
             })
         }
@@ -111,15 +102,6 @@ const Software: FC = () => {
                 key: 'softwareCreate',
                 type: 'success',
                 message: `${form.name} 修改成功`,
-                description: '项目修改成功!',
-                duration: 3,
-            })
-        } else {
-            openNotification({
-                key: 'softwareCreate',
-                type: 'success',
-                message: `${form.name} 修改成功`,
-                description: '项目修改成功!',
                 duration: 3,
             })
         }
