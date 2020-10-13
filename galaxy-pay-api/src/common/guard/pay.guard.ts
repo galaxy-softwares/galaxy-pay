@@ -10,6 +10,8 @@ export class PayGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<any>{
     const request = context.switchToHttp().getRequest();
     const { body, headers: { host } } = request;
+
+    console.log(body);
     const { domain_url, secret_key, payConfig } = await this.softwareService.findSoftwarePay(body.appid);
     // if (domain_url.indexOf(host) < 0) {
     //   throw new HttpException(`很抱歉，你的请求域名不在当前允许范围内！`, HttpStatus.FORBIDDEN);

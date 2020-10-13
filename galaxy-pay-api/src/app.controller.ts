@@ -1,7 +1,6 @@
 import { Controller, Get, Post,  Request, Res, Inject, Req, HttpService } from '@nestjs/common';
-import { SoftwareService } from './admin/service/software.service';
 import { AliSignUtil } from './pay/module/ali/util/sign.util';
-import { TradeService } from './admin/service/trade.service';
+import { TradeService, SoftwareService } from './admin/service';
 import { WeChatSignUtil } from './pay/module/wechat/utils/sign.util';
 import { WeChatNotifyParserUtil } from './pay/module/wechat/utils/notify-parser.util';
 import { WeChatPayNotifyRes } from './pay/module/wechat/interfaces/notify.interface';

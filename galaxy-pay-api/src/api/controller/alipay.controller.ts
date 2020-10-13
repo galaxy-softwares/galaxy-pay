@@ -5,7 +5,6 @@ import { AliTradePayService } from 'src/pay/module/ali/service/trade.pay.service
 import { AlipayConfig } from 'src/pay/module/ali/interfaces/base.interface';
 import { AliWapPayService } from 'src/pay/module/ali/service/wap.pay.service';
 import { AlipayPrecreateBizContent, AlipayPrecreateResponse, AlipayTradeCreateResponse } from 'src/pay/module/ali/interfaces/trade.interface';
-import { AliPayDto } from 'src/common/dtos/pay.dto';
 import { PayConfig } from 'src/common/decorator/pay.config.decorator';
 import { PayGuard } from 'src/common/guard/pay.guard';
 import { TransformService } from './service/transform.service';
@@ -17,7 +16,8 @@ import { AlipayRefundBizContent } from 'src/pay/module/ali/interfaces/refund.int
 import { TradeChannel } from 'src/common/enum/trade.enum';
 import { fundPayService } from 'src/pay/module/ali/service/fund.pay.service';
 import { AlipayTransferBizContent } from 'src/pay/module/ali/interfaces/fund.interface';
-import { AliPayRefundDto } from 'src/common/dtos/refund.dto';
+import { AliPayDto } from 'src/admin/dtos/pay.dto';
+import { AliPayRefundDto } from 'src/admin/dtos/refund.dto';
 
 @Controller("alipay")
 @UseGuards(PayGuard)

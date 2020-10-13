@@ -1,24 +1,28 @@
 import { Module, Global } from '@nestjs/common';
-import { APP_PIPE } from '@nestjs/core';
-import { WinstonModule } from 'nest-winston';
+import { AllExceptionsFilter } from './filters/all-exception.filter';
+import { HttpExceptionFilter } from './filters/http.exception.filter';
+import { ResponseInterceptor } from './interceptor/response.interceptor';
+import { GapConfigModule } from './modules/config.module';
+import { DatabaseModule } from './modules/database.module';
+import { LoggerModule } from './modules/logger.module';
 import { ValidationPipe } from './pipe/validation.pipe';
 import { LoggerService } from './service/logger.service';
-import { WinstonConfigService } from './service/winston.service';
 import { TimeUtil } from './utils/time.util';
 
 @Global()
 @Module({
     imports: [
-        WinstonModule.forRootAsync({
-            useClass: WinstonConfigService,
-        }),
+        DatabaseModule,
+        GapConfigModule,
+        LoggerModule,
     ],
     providers: [
-        {
-            provide: APP_PIPE,
-            useClass: ValidationPipe,
-        },
+        ValidationPipe,
         LoggerService,
+        HttpExceptionFilter,
+        AllExceptionsFilter,
+        ResponseInterceptor,
+        ResponseInterceptor,
         TimeUtil,
     ],
     exports: [LoggerService],

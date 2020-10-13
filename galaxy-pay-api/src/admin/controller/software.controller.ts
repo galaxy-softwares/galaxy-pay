@@ -1,9 +1,8 @@
 import { Controller, Get, UsePipes, UseGuards, Post, Body, Param, Put, Request } from '@nestjs/common';
-import { SoftwareService } from '../service/software.service';
-import { JwtAuthGuard } from '../service/jwt-auth.guard';
+import { SoftwareService, JwtAuthGuard } from '../service';
 import { ValidationPipe } from 'src/common/pipe/validation.pipe';
-import { SoftwareDto } from 'src/common/dtos/software.dto';
 import { TradeChannel } from 'src/common/enum/trade.enum';
+import { SoftwareDto } from '../dtos/software.dto';
 
 @Controller("software")
 @UsePipes(new ValidationPipe())

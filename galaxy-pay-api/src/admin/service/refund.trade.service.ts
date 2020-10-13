@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { RefundTrade } from "src/common/entities/refund.trade.entity";
+import { RefundTrade } from "src/admin/entities/refund.trade.entity";
 import { Repository } from "typeorm";
 import { TradeChannel, TradeStatus } from 'src/common/enum/trade.enum';
 import { BaseService } from "./base.service";
 import { CreateRefundTrade } from "src/common/interfaces/refund.trade.interfaces";
-import { Software } from "src/common/entities/software.entity";
+import { Software } from "src/admin/entities/software.entity";
 
 @Injectable()
 export class RefundTradeService extends BaseService<RefundTrade> {

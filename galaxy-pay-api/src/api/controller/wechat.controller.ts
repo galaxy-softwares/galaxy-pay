@@ -5,7 +5,6 @@ import { WeChatNativePayService } from "src/pay/module/wechat/service/native.pay
 import { WeChatWapPayService } from "src/pay/module/wechat/service/wap.pay.service";
 import { WeChatMicroPayService } from "src/pay/module/wechat/service/micro.pay.service";
 import { WeChatAppPayService } from "src/pay/module/wechat/service/app.pay.service";
-import { WechatPayDto } from "src/common/dtos/pay.dto";
 import { PayConfig } from "src/common/decorator/pay.config.decorator";
 import { WechatConfig } from "src/pay/module/wechat/interfaces/base.interface";
 import { WeChatTradeType } from "src/pay/module/wechat/enums/trade-type.enum";
@@ -15,7 +14,8 @@ import * as https from 'https';
 import * as path from 'path';
 import { ApiTradeSerivce } from "./service/api.trade.service";
 import { TradeChannel } from "src/common/enum/trade.enum";
-import { WechatRefundPayDto } from "src/common/dtos/refund.dto";
+import { WechatPayDto } from "src/admin/dtos/pay.dto";
+import { WechatRefundPayDto } from "src/admin/dtos/refund.dto";
 
 @Controller("wechat")
 @UseGuards(PayGuard)

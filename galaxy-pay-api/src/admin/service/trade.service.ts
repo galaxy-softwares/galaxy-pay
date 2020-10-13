@@ -1,9 +1,9 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { BaseService } from './base.service';
-import { Trade } from 'src/common/entities/trade.entity';
+import { Trade } from 'src/admin/entities/trade.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Software } from 'src/common/entities/software.entity';
+import { Software } from 'src/admin/entities/software.entity';
 import { TradeChannel, TradeStatus } from 'src/common/enum/trade.enum';
 import { CreateTrade } from 'src/common/interfaces/trade.interfaces';
 

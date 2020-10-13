@@ -1,7 +1,7 @@
-import {Controller, Get, HttpException,   Header, HttpStatus, Post, UploadedFile, UseInterceptors} from "@nestjs/common";
+import {Controller, HttpException, HttpStatus, Post, UploadedFile, UseInterceptors} from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { createWriteStream } from "fs";
-import path = require("path");
+import * as path from 'path';
 
 @Controller('file')
 export class FileController {

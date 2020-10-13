@@ -8,7 +8,6 @@ import { AlipayRequestParam } from '../interfaces/base.interface';
 @Injectable()
 export class AliPayBaseService {
     protected alipay_gate_way  = 'https://openapi.alipay.com/gateway.do?';
-    protected alipay_gate_way_sandbox = "https://openapi.alipaydev.com/gateway.do?";
 
     public param: AlipayRequestParam = {
         app_id: "",

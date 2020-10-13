@@ -1,6 +1,5 @@
 import { Controller, ValidationPipe, UseGuards, UsePipes, Get } from '@nestjs/common';
-import { TradeService } from '../service/trade.service';
-import { JwtAuthGuard } from '../service/jwt-auth.guard';
+import { TradeService, JwtAuthGuard } from "../service";
 
 @Controller("trade")
 @UsePipes(new ValidationPipe())

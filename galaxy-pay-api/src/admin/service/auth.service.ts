@@ -1,9 +1,13 @@
-import { Injectable, UnauthorizedException, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtService } from '@nestjs/jwt';
-import * as crypto from 'crypto-js'
+import * as crypto from 'crypto-js';
+
 @Injectable()
 export class AuthService {
+    validateUser(payload: { account: string; }) {
+        throw new Error('Method not implemented.');
+    }
 
     constructor(
       private readonly userService: UserService,

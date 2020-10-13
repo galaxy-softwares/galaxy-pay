@@ -1,5 +1,5 @@
 import { Entity, Column } from 'typeorm';
-import { TradeChannel, TradeStatus } from '../enum/trade.enum';
+import { TradeChannel, TradeStatus } from '../../common/enum/trade.enum';
 import { Base } from './base.entity'
 
 @Entity()

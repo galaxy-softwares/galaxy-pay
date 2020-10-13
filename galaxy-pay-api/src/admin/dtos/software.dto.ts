@@ -1,5 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
-import { TradeChannel } from '../enum/trade.enum';
+import { TradeChannel } from 'src/common/enum/trade.enum';
 
 export class SoftwareDto {
   
