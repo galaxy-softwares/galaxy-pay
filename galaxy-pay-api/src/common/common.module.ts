@@ -11,20 +11,16 @@ import { TimeUtil } from './utils/time.util';
 
 @Global()
 @Module({
-    imports: [
-        DatabaseModule,
-        GapConfigModule,
-        LoggerModule,
-    ],
-    providers: [
-        ValidationPipe,
-        LoggerService,
-        HttpExceptionFilter,
-        AllExceptionsFilter,
-        ResponseInterceptor,
-        ResponseInterceptor,
-        TimeUtil,
-    ],
-    exports: [LoggerService],
+  imports: [DatabaseModule, GapConfigModule, LoggerModule],
+  providers: [
+    ValidationPipe,
+    LoggerService,
+    HttpExceptionFilter,
+    AllExceptionsFilter,
+    ResponseInterceptor,
+    ResponseInterceptor,
+    TimeUtil,
+  ],
+  exports: [LoggerService],
 })
 export class CommonModule {}

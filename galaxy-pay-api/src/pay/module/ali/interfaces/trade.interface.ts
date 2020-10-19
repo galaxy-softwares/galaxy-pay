@@ -1,11 +1,11 @@
-import { AlipayBaseBizContent, AlipayTradeBase } from "./base.interface"
+import { AlipayBaseBizContent, AlipayTradeBase } from './base.interface';
 
 /**
  * 支付宝biz_content 请求接口
  */
 export default interface AlipayTradeBizContent extends AlipayBaseBizContent {
   extend_params?: {
-    sys_service_provider_id?: string
+    sys_service_provider_id?: string;
     industry_reflux_info?: string;
     card_type?: string;
   };
@@ -16,7 +16,7 @@ export default interface AlipayTradeBizContent extends AlipayBaseBizContent {
   terminal_params?: string;
   promo_params: {
     actual_order_time?: string;
-  }
+  };
   advance_payment_type?: string;
   query_options: string[];
   request_org_pid?: string;
@@ -61,7 +61,7 @@ export interface AlipayPrecreateBizContent extends AlipayBaseBizContent {
 /**
  * create 请求biz_content
  */
-export interface AlipayCreateBizContent extends AlipayBaseBizContent  {
+export interface AlipayCreateBizContent extends AlipayBaseBizContent {
   discountable_amount?: string;
   buyer_id?: string;
   operator_id?: string;
@@ -82,7 +82,7 @@ export interface AlipayCreateBizContent extends AlipayBaseBizContent  {
       settle_entity_id?: string;
       settle_entity_type?: string;
       amount: string;
-    }
+    };
     settle_period_time: string;
   };
   logistics_detail?: {
@@ -99,7 +99,7 @@ export interface AlipayCreateBizContent extends AlipayBaseBizContent  {
     mobile?: string;
     zip?: string;
     division_code?: string;
-  }
+  };
 }
 
 /**
@@ -107,7 +107,7 @@ export interface AlipayCreateBizContent extends AlipayBaseBizContent  {
  */
 export interface AlipayTradeQueryResponseData {
   sign: string;
-  alipay_trade_query_response: AlipayTradeQueryResponse
+  alipay_trade_query_response: AlipayTradeQueryResponse;
 }
 
 export interface AlipayTradeQueryResponse extends AlipayTradeBase {
@@ -124,52 +124,49 @@ export interface AlipayTradeQueryResponse extends AlipayTradeBase {
   trade_status: string;
 }
 
-
 /**
  * 支付宝退款接口
  */
 export interface AlipayTradeRefundResponseData {
   sign: string;
-  alipay_trade_refund_response: AlipayTradeRefundResponse
+  alipay_trade_refund_response: AlipayTradeRefundResponse;
 }
 
 export interface AlipayTradeRefundResponse extends AlipayTradeBase {
-  buyer_logon_id: string,
-  fund_change: string,
-  refund_fee: number,
-  refund_currency: string,
-  gmt_refund_pay: string,
-  refund_detail_item_list: Array<any>
-  store_name: string,
-  buyer_user_id: string,
-  refund_preset_paytool_list: any,
-  refund_settlement_id: string,
-  present_refund_buyer_amount: string,
-  present_refund_discount_amount: string,
-  present_refund_mdiscount_amount: string
+  buyer_logon_id: string;
+  fund_change: string;
+  refund_fee: number;
+  refund_currency: string;
+  gmt_refund_pay: string;
+  refund_detail_item_list: Array<any>;
+  store_name: string;
+  buyer_user_id: string;
+  refund_preset_paytool_list: any;
+  refund_settlement_id: string;
+  present_refund_buyer_amount: string;
+  present_refund_discount_amount: string;
+  present_refund_mdiscount_amount: string;
 }
-
 
 /**
  * 统一收单交易创建接口
  */
-export type AlipayTradeCreateResponse = AlipayTradeBase
+export type AlipayTradeCreateResponse = AlipayTradeBase;
 
 /**
  * 统一收单交易创建接口
  */
 export interface AlipayTradeCreateResponseData {
   sign: string;
-  alipay_trade_create_response: AlipayTradeCreateResponse
+  alipay_trade_create_response: AlipayTradeCreateResponse;
 }
 
-export type AlipayTradeCloseResponse = AlipayTradeBase
+export type AlipayTradeCloseResponse = AlipayTradeBase;
 
 export interface AlipayTradeCloseResponseData {
   sign: string;
-  alipay_trade_close_response: AlipayTradeCloseResponse
+  alipay_trade_close_response: AlipayTradeCloseResponse;
 }
-
 
 /**
  * 支付宝扫码支付订单创建
@@ -183,5 +180,5 @@ export interface AlipayPrecreateResponse extends AlipayTradeBase {
  */
 export interface AlipayPrecreateResponseData {
   sign: string;
-  alipay_trade_precreate_response: AlipayPrecreateResponse
+  alipay_trade_precreate_response: AlipayPrecreateResponse;
 }

@@ -1,11 +1,11 @@
-import { AlipayBaseBizContent, ExtUserInfo } from "./base.interface";
+import { AlipayBaseBizContent, ExtUserInfo } from './base.interface';
 
 /**
  * Wap 请求biz_content
  */
 export interface AlipayWapBizContent extends AlipayBaseBizContent {
   timeout_express?: string;
-  time_expire?:string;
+  time_expire?: string;
   auth_token?: string;
   goods_type?: string;
   quit_url?: string;
@@ -23,5 +23,5 @@ export interface AlipayWapBizContent extends AlipayBaseBizContent {
   disable_pay_channels?: string;
   specified_channel?: string;
   business_params?: string;
-  ext_user_info?: ExtUserInfo
+  ext_user_info?: ExtUserInfo;
 }

@@ -1,4 +1,4 @@
-import { Module, HttpModule, Global } from '@nestjs/common';
+import { Module, HttpModule } from '@nestjs/common';
 import { WeChatAppletPayService } from './service/applet.pay.service';
 import { WeChatPayBaseService } from './service/base.service';
 import { WeChatRequestUtil } from './utils/request.util';
@@ -14,36 +14,35 @@ import { WeChatWapPayService } from './service/wap.pay.service';
 import { WeChatNotifyParserUtil } from './utils/notify-parser.util';
 
 @Module({
-    imports: [HttpModule],
-    controllers: [],
-    providers: [
-        WeChatAppletPayService,
-        WeChatAppPayService,
-        WeChatNativePayService,
-        WeChatJSAPIPayService,
-        WeChatMicroPayService,
-        WeChatWapPayService,
-        WeChatRequestUtil,
-        WeChatPayBaseService,
-        XmlUtil,
-        WeChatSignUtil,
-        RandomUtil,
-        WeChatNotifyParserUtil,
-        { provide: WeChatPayCertificateAgentProvider, useValue: "certificateAgent" },
-    ],
-    exports: [
-        WeChatAppletPayService,
-        WeChatAppPayService,
-        WeChatRequestUtil,
-        WeChatPayBaseService,
-        WeChatNativePayService,
-        WeChatJSAPIPayService,
-        WeChatMicroPayService,
-        WeChatWapPayService,
-        WeChatSignUtil,
-        XmlUtil,
-        WeChatNotifyParserUtil
-    ]
+  imports: [HttpModule],
+  controllers: [],
+  providers: [
+    WeChatAppletPayService,
+    WeChatAppPayService,
+    WeChatNativePayService,
+    WeChatJSAPIPayService,
+    WeChatMicroPayService,
+    WeChatWapPayService,
+    WeChatRequestUtil,
+    WeChatPayBaseService,
+    XmlUtil,
+    WeChatSignUtil,
+    RandomUtil,
+    WeChatNotifyParserUtil,
+    { provide: WeChatPayCertificateAgentProvider, useValue: 'certificateAgent' },
+  ],
+  exports: [
+    WeChatAppletPayService,
+    WeChatAppPayService,
+    WeChatRequestUtil,
+    WeChatPayBaseService,
+    WeChatNativePayService,
+    WeChatJSAPIPayService,
+    WeChatMicroPayService,
+    WeChatWapPayService,
+    WeChatSignUtil,
+    XmlUtil,
+    WeChatNotifyParserUtil,
+  ],
 })
-export class WechatPayModule {
-}
+export class WechatPayModule {}

@@ -7,6 +7,6 @@ import { TypeOrmConfigService } from '../service/typeorm.service';
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
     }),
-  ]
+  ],
 })
 export class DatabaseModule {}

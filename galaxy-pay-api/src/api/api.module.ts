@@ -8,11 +8,7 @@ import { ApiTradeSerivce } from './controller/service/api.trade.service';
 
 @Global()
 @Module({
-  imports: [
-    PayModule,
-    HttpModule,
-    AdminModule
-  ],
+  imports: [PayModule, HttpModule, AdminModule],
   controllers: [AlipayController, WechatController],
   providers: [TransformService, ApiTradeSerivce],
 })

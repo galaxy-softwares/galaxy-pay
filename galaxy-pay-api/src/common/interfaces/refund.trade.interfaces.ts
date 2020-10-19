@@ -1,22 +1,21 @@
-import { TradeChannel, TradeStatus } from "../enum/trade.enum";
-
+import { TradeChannel, TradeStatus } from '../enum/trade.enum';
 
 export interface CreateRefundTrade {
-    appid: string;
-    
-    out_trade_no: string;
+  appid: string;
 
-    trade_status: TradeStatus;
+  out_trade_no: string;
 
-    callback_url: string;
-    
-    trade_amount: string;
-    
-    trade_channel: TradeChannel;
+  trade_status: TradeStatus;
 
-    trade_refund_amount: string;
-    
-    trade_no?: string;
+  callback_url: string;
 
-    trade_body: string;
+  trade_amount: string;
+
+  trade_channel: TradeChannel;
+
+  trade_refund_amount: string;
+
+  trade_no?: string;
+
+  trade_body: string;
 }

@@ -7,13 +7,12 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService extends BaseService<User> {
-
   constructor(
-      @InjectRepository(User)
-      private readonly userRepository: Repository<User>,
-      private readonly jwtService: JwtService
-    ) {
-      super(userRepository);
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtService,
+  ) {
+    super(userRepository);
   }
   getHello(): string {
     return 'Hello World!';

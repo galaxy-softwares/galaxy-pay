@@ -2,7 +2,6 @@ import { IsNotEmpty } from 'class-validator';
 import { TradeChannel } from 'src/common/enum/trade.enum';
 
 export class SoftwareDto {
-  
   id?: number;
 
   appid: string;
@@ -17,7 +16,7 @@ export class SoftwareDto {
   channel: TradeChannel;
 
   secret_key: string;
-  
+
   @IsNotEmpty({ message: '请求地址不能为空' })
   domain_url: string;
 
@@ -32,7 +31,7 @@ export class SoftwareDto {
   wechat_app_secret: string;
 
   wechat_notify_url: string;
-  
+
   alipay_appid: string;
 
   alipay_private_key: string;
@@ -40,7 +39,6 @@ export class SoftwareDto {
   alipay_public_key: string;
 
   alipay_notify_url: string;
-
 }
 
 export class QuerySoftwareDto {

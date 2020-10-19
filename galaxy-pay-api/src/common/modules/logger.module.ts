@@ -6,7 +6,7 @@ import { WinstonConfigService } from '../service/winston.service';
 @Module({
   imports: [
     WinstonModule.forRootAsync({
-        useClass: WinstonConfigService,
+      useClass: WinstonConfigService,
     }),
   ],
   providers: [LoggerService],

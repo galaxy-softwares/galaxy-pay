@@ -74,11 +74,7 @@ export class TimeUtil {
    * @param dateRight {number | Date}
    * @param type {string}
    */
-  diffTime(
-    dateLeft: number | Date,
-    dateRight: number | Date,
-    type = '',
-  ): string | number {
+  diffTime(dateLeft: number | Date, dateRight: number | Date, type = ''): string | number {
     const timediff = differenceInSeconds(dateRight, dateLeft);
 
     // 计算天数

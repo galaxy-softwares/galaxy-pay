@@ -6,13 +6,7 @@ import { ApiModule } from './api/api.module';
 import { PayModule } from './pay/pay.module';
 
 @Module({
-  imports: [
-    HttpModule,
-    AdminModule,
-    CommonModule,
-    PayModule,
-    ApiModule,
-  ],
+  imports: [HttpModule, AdminModule, CommonModule, PayModule, ApiModule],
   controllers: [AppController],
   providers: [],
 })

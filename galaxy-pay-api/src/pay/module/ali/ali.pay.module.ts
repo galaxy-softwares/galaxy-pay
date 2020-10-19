@@ -1,4 +1,4 @@
-import { Module, HttpModule, Global } from '@nestjs/common';
+import { Module, HttpModule } from '@nestjs/common';
 import { AliWapPayService } from './service/wap.pay.service';
 import { AliParamsUtil } from './util/params.util';
 import { AliRequestUtil } from './util/request.util';
@@ -9,28 +9,27 @@ import { AliTradePayService } from './service/trade.pay.service';
 import { fundPayService } from './service/fund.pay.service';
 
 @Module({
-    imports: [HttpModule],
-    controllers: [],
-    providers: [
-       AliPagePayService,
-       AliAppPayService,
-       AliParamsUtil,
-       AliRequestUtil,
-       AliSignUtil,
-       AliWapPayService,
-       AliTradePayService,
-       fundPayService
-    ],
-    exports: [
-       AliPagePayService,
-       AliAppPayService,
-       AliParamsUtil,
-       AliRequestUtil,
-       AliSignUtil,
-       AliTradePayService,
-       AliWapPayService,
-       fundPayService
-    ]
+  imports: [HttpModule],
+  controllers: [],
+  providers: [
+    AliPagePayService,
+    AliAppPayService,
+    AliParamsUtil,
+    AliRequestUtil,
+    AliSignUtil,
+    AliWapPayService,
+    AliTradePayService,
+    fundPayService,
+  ],
+  exports: [
+    AliPagePayService,
+    AliAppPayService,
+    AliParamsUtil,
+    AliRequestUtil,
+    AliSignUtil,
+    AliTradePayService,
+    AliWapPayService,
+    fundPayService,
+  ],
 })
-export class AliPayModule {
-}
+export class AliPayModule {}

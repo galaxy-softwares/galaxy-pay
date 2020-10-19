@@ -7,9 +7,7 @@ import * as path from 'path';
 
 @Injectable({ scope: Scope.REQUEST })
 export class LoggerService extends WinstonLogger {
-  constructor(
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly winston: Logger,
-  ){
+  constructor(@Inject(WINSTON_MODULE_PROVIDER) private readonly winston: Logger) {
     super(winston);
   }
 
@@ -60,7 +58,11 @@ export class LoggerService extends WinstonLogger {
     Error.captureStackTrace(this, error);
     Error.stackTraceLimit = 1;
 
-    const logFormat = `${req.method} 请求地址: ${req.originalUrl} 请求IP: ${req.ip}\n 响应内容: ${JSON.stringify(data)}\n 错误信息: ${hex('#e50048')(error.stack.split('at ')[1])}`;
+    const logFormat = `${req.method} 请求地址: ${req.originalUrl} 请求IP: ${
+      req.ip
+    }\n 响应内容: ${JSON.stringify(data)}\n 错误信息: ${hex('#e50048')(
+      error.stack.split('at ')[1],
+    )}`;
 
     this.error(`${hex('#e50048')(status)} ` + logFormat, error);
   }

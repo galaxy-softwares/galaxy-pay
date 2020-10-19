@@ -14,23 +14,40 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "lint": "tsc --pretty && eslint . --ext ts --ext js",
+    "lint:fix": "eslint \"{src,test}/**/*.ts\" --fix",
+    "prettier": "prettier --write **/*.{js,ts}",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.@(ts)": "npm run lint"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
-    "@nestjs/common": "^7.0.0",
+    "@nestjs/common": "^7.4.4",
     "@nestjs/config": "^0.5.0",
-    "@nestjs/core": "^7.0.0",
+    "@nestjs/core": "^7.4.4",
     "@nestjs/jwt": "^7.1.0",
     "@nestjs/passport": "^7.1.0",
-    "@nestjs/platform-express": "^7.0.0",
-    "@nestjs/typeorm": "^7.1.1",
+    "@nestjs/platform-express": "^7.4.4",
+    "@nestjs/typeorm": "^7.1.4",
     "@types/crypto-js": "^3.1.47",
+    "@types/express": "4.17.8",
     "@types/passport-local": "^1.0.33",
     "body-parser": "^1.19.0",
     "body-parser-xml": "^2.0.0",
@@ -40,6 +57,7 @@
     "class-validator": "^0.12.2",
     "crypto-js": "^4.0.0",
     "date-fns": "^2.16.1",
+    "lint-staged": "^10.4.2",
     "md5": "^2.3.0",
     "moment": "^2.27.0",
     "mysql": "^2.18.1",
@@ -59,26 +77,29 @@
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
     "@nestjs/cli": "^7.5.1",
-    "@nestjs/schematics": "^7.1.1",
-    "@nestjs/testing": "^7.0.0",
-    "@types/express": "^4.17.3",
-    "@types/jest": "25.1.4",
-    "@types/node": "^13.9.1",
-    "@types/supertest": "^2.0.8",
-    "@typescript-eslint/eslint-plugin": "^2.23.0",
-    "@typescript-eslint/parser": "^2.23.0",
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.10.0",
-    "eslint-plugin-import": "^2.20.1",
+    "@nestjs/schematics": "^7.1.2",
+    "@nestjs/testing": "^7.4.4",
+    "@types/jest": "26.0.14",
+    "@types/node": "^14.11.10",
+    "@types/supertest": "^2.0.10",
+    "@typescript-eslint/eslint-plugin": "4.4.1",
+    "@typescript-eslint/parser": "4.4.1",
+    "eslint": "7.11.0",
+    "eslint-config-prettier": "^6.13.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "husky": "^4.3.0",
     "jest": "^25.1.0",
-    "prettier": "^1.19.1",
-    "supertest": "^4.0.2",
-    "ts-jest": "25.2.1",
-    "ts-loader": "^6.2.1",
-    "ts-node": "^8.6.2",
+    "prettier": "^2.1.2",
+    "supertest": "^5.0.0",
+    "ts-jest": "26.4.1",
+    "ts-loader": "^8.0.5",
+    "ts-node": "^9.0.0",
     "tsconfig-paths": "^3.9.0",
-    "typescript": "^3.7.4"
+    "typescript": "^4.0.3"
   },
   "jest": {
     "moduleFileExtensions": [

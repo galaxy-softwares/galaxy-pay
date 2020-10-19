@@ -14,15 +14,18 @@ import * as fs from 'fs';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = dotenv.parse(fs.readFileSync('.env'));
-  const loggerService = new LoggerService(createLogger(new WinstonConfigService().createWinstonModuleOptions()));
-  const timeUtil = new TimeUtil;
+  const loggerService = new LoggerService(
+    createLogger(new WinstonConfigService().createWinstonModuleOptions()),
+  );
+  const timeUtil = new TimeUtil();
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
   // 全局拦截器
-  app.useGlobalInterceptors(
-    new ResponseInterceptor(loggerService),
+  app.useGlobalInterceptors(new ResponseInterceptor(loggerService));
+  app.useGlobalFilters(
+    new AllExceptionsFilter(timeUtil, loggerService),
+    new HttpExceptionFilter(timeUtil, loggerService),
   );
-  app.useGlobalFilters(new AllExceptionsFilter(timeUtil, loggerService), new HttpExceptionFilter(timeUtil, loggerService));
   await app.listen(config.PORT);
 }
 bootstrap();

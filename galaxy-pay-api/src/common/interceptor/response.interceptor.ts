@@ -12,10 +12,7 @@ export interface Response<T> {
  */
 @Injectable()
 export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
-  constructor(
-    private loggerService: LoggerService,
-  ) {
-  }
+  constructor(private loggerService: LoggerService) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     // 解析ExecutionContext的数据内容获取请求体
@@ -26,23 +23,26 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
     let params = {};
     if (req.method === 'POST') {
       params = req.body;
-    } else if(req.method === 'GET'){
+    } else if (req.method === 'GET') {
       params = req.query;
     }
 
     this.loggerService.setContext(ResponseInterceptor.name);
-    this.loggerService.info(`开始...\n ${req.method} 请求地址: ${req.originalUrl} 请求IP: ${req.ip}\n 请求参数: ${JSON.stringify(params)}`);
+    this.loggerService.info(
+      `开始...\n ${req.method} 请求地址: ${req.originalUrl} 请求IP: ${
+        req.ip
+      }\n 请求参数: ${JSON.stringify(params)}`,
+    );
 
     const now = Date.now();
-    return next
-      .handle()
-      .pipe(
-        map((data: any) => {
-          const logFormat = `响应内容: ${JSON.stringify(data)}\n结束... ${hex('#e4e700')('耗时: ' +(Date.now() - now) + 'ms')}`;
-          this.loggerService.http(res.statusCode, logFormat);
-          return data;
-        }),
-      );
+    return next.handle().pipe(
+      map((data: any) => {
+        const logFormat = `响应内容: ${JSON.stringify(data)}\n结束... ${hex('#e4e700')(
+          '耗时: ' + (Date.now() - now) + 'ms',
+        )}`;
+        this.loggerService.http(res.statusCode, logFormat);
+        return data;
+      }),
+    );
   }
-
 }

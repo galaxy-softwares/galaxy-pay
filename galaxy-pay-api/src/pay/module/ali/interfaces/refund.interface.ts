@@ -1,8 +1,6 @@
-import { AlipayBaseBizContent } from "./base.interface";
-
 export interface AlipayRefundBizContent {
   trade_no: string;
-  refund_amount: string,
+  refund_amount: string;
   refund_currency?: string;
   refund_reason?: string;
   out_request_no?: string;
@@ -13,7 +11,7 @@ export interface AlipayRefundBizContent {
   query_options?: string;
 }
 
-export interface RefundRoyaltyParameters { 
+export interface RefundRoyaltyParameters {
   royalty_type?: string;
   trans_out?: string;
   trans_out_type?: string;

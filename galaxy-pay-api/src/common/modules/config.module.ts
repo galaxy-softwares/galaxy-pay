@@ -10,22 +10,13 @@ import { GpaConfigService } from '../service/config.service';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [
-        DatabaseConfig,
-        LoggerConfig,
-      ],
+      load: [DatabaseConfig, LoggerConfig],
       expandVariables: true,
       validationSchema: validation.schema,
-      validationOptions: validation.options
+      validationOptions: validation.options,
     }),
   ],
-  providers: [
-    ConfigService,
-    GpaConfigService,
-  ],
-  exports: [
-    ConfigService,
-    GpaConfigService,
-  ],
+  providers: [ConfigService, GpaConfigService],
+  exports: [ConfigService, GpaConfigService],
 })
 export class GapConfigModule {}
