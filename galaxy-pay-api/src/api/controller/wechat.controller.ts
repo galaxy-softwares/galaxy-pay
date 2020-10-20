@@ -12,10 +12,10 @@ import { PayGuard } from 'src/common/guard/pay.guard';
 import * as fs from 'fs';
 import * as https from 'https';
 import * as path from 'path';
-import { ApiTradeSerivce } from './service/api.trade.service';
 import { TradeChannel } from 'src/common/enum/trade.enum';
 import { WechatPayDto } from 'src/admin/dtos/pay.dto';
 import { WechatRefundPayDto } from 'src/admin/dtos/refund.dto';
+import { ApiTradeSerivce } from '../service/api.trade.service';
 
 @Controller('wechat')
 @UseGuards(PayGuard)

@@ -20,9 +20,7 @@ import {
 } from 'src/pay/module/ali/interfaces/trade.interface';
 import { PayConfig } from 'src/common/decorator/pay.config.decorator';
 import { PayGuard } from 'src/common/guard/pay.guard';
-import { TransformService } from './service/transform.service';
 import { AlipayAppBizContent } from 'src/pay/module/ali/interfaces/app.interface';
-import { ApiTradeSerivce } from './service/api.trade.service';
 import { AlipayPageBizContent } from 'src/pay/module/ali/interfaces/page.interface';
 import { AlipayWapBizContent } from 'src/pay/module/ali/interfaces/wap.interface';
 import { AlipayRefundBizContent } from 'src/pay/module/ali/interfaces/refund.interface';
@@ -31,6 +29,8 @@ import { fundPayService } from 'src/pay/module/ali/service/fund.pay.service';
 import { AlipayTransferBizContent } from 'src/pay/module/ali/interfaces/fund.interface';
 import { AliPayDto } from 'src/admin/dtos/pay.dto';
 import { AliPayRefundDto } from 'src/admin/dtos/refund.dto';
+import { ApiTradeSerivce } from '../service/api.trade.service';
+import { TransformService } from '../service/transform.service';
 
 @Controller('alipay')
 @UseGuards(PayGuard)

@@ -3,8 +3,8 @@ import { PayModule } from 'src/pay/pay.module';
 import { AdminModule } from 'src/admin/admin.module';
 import { AlipayController } from './controller/alipay.controller';
 import { WechatController } from './controller/wechat.controller';
-import { TransformService } from './controller/service/transform.service';
-import { ApiTradeSerivce } from './controller/service/api.trade.service';
+import { TransformService } from './service/transform.service';
+import { ApiTradeSerivce } from './service/api.trade.service';
 
 @Global()
 @Module({
