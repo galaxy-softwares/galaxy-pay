@@ -1,9 +1,11 @@
 import { Controller, Get, Post, Request, Res, Inject, Req, HttpService } from '@nestjs/common';
-import { AliSignUtil } from './pay/module/ali/util/sign.util';
+import {
+  AliSignUtil,
+  WeChatNotifyParserUtil,
+  WeChatPayNotifyRes,
+  WeChatSignUtil,
+} from 'galaxy-pay-config';
 import { TradeService, SoftwareService } from './admin/service';
-import { WeChatSignUtil } from './pay/module/wechat/utils/sign.util';
-import { WeChatNotifyParserUtil } from './pay/module/wechat/utils/notify-parser.util';
-import { WeChatPayNotifyRes } from './pay/module/wechat/interfaces/notify.interface';
 import { TradeChannel } from './common/enum/trade.enum';
 import { makeSignStr } from './common/utils/indedx';
 

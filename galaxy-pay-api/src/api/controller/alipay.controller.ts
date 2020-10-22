@@ -8,29 +8,22 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { AliPagePayService } from 'src/pay/module/ali/service/page.pay.service';
-import { AliAppPayService } from 'src/pay/module/ali/service/app.pay.service';
-import { AliTradePayService } from 'src/pay/module/ali/service/trade.pay.service';
-import { AlipayConfig } from 'src/pay/module/ali/interfaces/base.interface';
-import { AliWapPayService } from 'src/pay/module/ali/service/wap.pay.service';
-import {
-  AlipayPrecreateBizContent,
-  AlipayPrecreateResponse,
-  AlipayTradeCreateResponse,
-} from 'src/pay/module/ali/interfaces/trade.interface';
 import { PayConfig } from 'src/common/decorator/pay.config.decorator';
 import { PayGuard } from 'src/common/guard/pay.guard';
-import { AlipayAppBizContent } from 'src/pay/module/ali/interfaces/app.interface';
-import { AlipayPageBizContent } from 'src/pay/module/ali/interfaces/page.interface';
-import { AlipayWapBizContent } from 'src/pay/module/ali/interfaces/wap.interface';
-import { AlipayRefundBizContent } from 'src/pay/module/ali/interfaces/refund.interface';
 import { TradeChannel } from 'src/common/enum/trade.enum';
-import { fundPayService } from 'src/pay/module/ali/service/fund.pay.service';
-import { AlipayTransferBizContent } from 'src/pay/module/ali/interfaces/fund.interface';
 import { AliPayDto } from 'src/admin/dtos/pay.dto';
 import { AliPayRefundDto } from 'src/admin/dtos/refund.dto';
 import { ApiTradeSerivce } from '../service/api.trade.service';
 import { TransformService } from '../service/transform.service';
+import {
+  AliAppPayService,
+  AliPagePayService,
+  AlipayConfig,
+  AlipayPrecreateResponse,
+  AlipayTradeCreateResponse,
+  AliTradePayService,
+  AliWapPayService,
+} from 'galaxy-pay-config';
 
 @Controller('alipay')
 @UseGuards(PayGuard)
@@ -42,7 +35,6 @@ export class AlipayController {
     private readonly aliwapPayService: AliWapPayService,
     private readonly apiTradeService: ApiTradeSerivce,
     private readonly transformService: TransformService,
-    private readonly fundPayService: fundPayService,
     @Inject(HttpService) protected readonly httpService: HttpService,
   ) {}
 
@@ -54,7 +46,7 @@ export class AlipayController {
   @Post('app')
   async appPay(@Body() body: AliPayDto, @PayConfig() payConfig: AlipayConfig) {
     await this.apiTradeService.generateOrder(body, payConfig);
-    const biz_count = this.transformService.transformAlipayParams<AlipayAppBizContent>(
+    return this.aliAppPayService.pay(
       {
         product_code: 'QUICK_MSECURITY_PAY',
         subject: body.body,
@@ -63,9 +55,7 @@ export class AlipayController {
         ...body.biz_count,
       },
       payConfig,
-      'alipay.trade.app.pay',
     );
-    return this.aliAppPayService.pay(biz_count, payConfig);
   }
 
   /**
@@ -76,7 +66,7 @@ export class AlipayController {
   @Post('page')
   async pagePay(@Body() body: AliPayDto, @PayConfig() payConfig: AlipayConfig): Promise<string> {
     await this.apiTradeService.generateOrder(body, payConfig);
-    const param = this.transformService.transformAlipayParams<AlipayPageBizContent>(
+    return this.aliPagePaySerice.pay(
       {
         product_code: 'FAST_INSTANT_TRADE_PAY',
         subject: body.body,
@@ -85,9 +75,7 @@ export class AlipayController {
         ...body.biz_count,
       },
       payConfig,
-      'alipay.trade.page.pay',
     );
-    return this.aliPagePaySerice.pay(param, payConfig.private_key);
   }
 
   /**
@@ -113,7 +101,7 @@ export class AlipayController {
     @PayConfig() payConfig: AlipayConfig,
   ): Promise<AlipayPrecreateResponse> {
     await this.apiTradeService.generateOrder(body, payConfig);
-    const param = this.transformService.transformAlipayParams<AlipayPrecreateBizContent>(
+    return await this.alitradePayService.precreate(
       {
         product_code: 'FACE_TO_FACE_PAYMENT',
         subject: body.body,
@@ -122,12 +110,6 @@ export class AlipayController {
         ...body.biz_count,
       },
       payConfig,
-      'alipay.trade.precreate',
-    );
-    return await this.alitradePayService.precreate(
-      param,
-      payConfig.private_key,
-      payConfig.public_key,
     );
   }
 
@@ -139,7 +121,7 @@ export class AlipayController {
   @Post('wap')
   async wap(@Body() body: AliPayDto, @PayConfig() payConfig: AlipayConfig): Promise<string> {
     await this.apiTradeService.generateOrder(body, payConfig);
-    const param = this.transformService.transformAlipayParams<AlipayWapBizContent>(
+    return this.aliwapPayService.pay(
       {
         product_code: 'FACE_TO_FACE_PAYMENT',
         subject: body.body,
@@ -148,9 +130,7 @@ export class AlipayController {
         ...body.biz_count,
       },
       payConfig,
-      'alipay.trade.wap.pay',
     );
-    return this.aliwapPayService.pay(param, payConfig.private_key);
   }
 
   /**
@@ -161,19 +141,13 @@ export class AlipayController {
   @Post('refund')
   async refund(@Body() body: AliPayRefundDto, @PayConfig() payConfig: AlipayConfig): Promise<any> {
     await this.apiTradeService.generateRefundOrder(body, payConfig);
-    const param = this.transformService.transformAlipayParams<AlipayRefundBizContent>(
+    const refund_result = await this.alitradePayService.refund(
       {
         trade_no: body.trade_no,
         refund_amount: body.money,
         refund_reason: body.body,
       },
       payConfig,
-      'alipay.trade.refund',
-    );
-    const refund_result = await this.alitradePayService.refund(
-      param,
-      payConfig.private_key,
-      payConfig.public_key,
     );
     if (refund_result.code == '10000') {
       if (
@@ -203,7 +177,7 @@ export class AlipayController {
     @PayConfig() payConfig: AlipayConfig,
   ): Promise<AlipayTradeCreateResponse> {
     await this.apiTradeService.generateOrder(body, payConfig);
-    const param = this.transformService.transformAlipayParams<AlipayWapBizContent>(
+    return await this.alitradePayService.create(
       {
         product_code: 'FACE_TO_FACE_PAYMENT',
         subject: body.body,
@@ -212,37 +186,35 @@ export class AlipayController {
         ...body.biz_count,
       },
       payConfig,
-      'alipay.trade.create',
     );
-    return await this.alitradePayService.create(param, payConfig.private_key, payConfig.public_key);
   }
 
-  @Post('transfer')
-  async transfer(@Body() body, @PayConfig() payConfig: AlipayConfig): Promise<any> {
-    /**
-     * 创建提现订单。
-     */
-    await this.apiTradeService.generateOrder(body, payConfig);
-    const param = this.transformService.transformAlipayParams<AlipayTransferBizContent>(
-      {
-        out_biz_no: '2020091122001465530515423423',
-        trans_amount: '0.01',
-        product_code: 'TRANS_ACCOUNT_NO_PWD',
-        biz_scene: 'DIRECT_TRANSFER',
-        order_title: '转账订单测试',
-        payee_info: {
-          identity: '',
-          identity_type: '',
-          name: '',
-        },
-        remark: '单笔转账',
-        business_params: '',
-      },
-      payConfig,
-      'alipay.fund.trans.uni.transfer',
-    );
-    return await this.fundPayService.transfer(param, payConfig.private_key, payConfig.public_key);
-  }
+  // @Post('transfer')
+  // async transfer(@Body() body, @PayConfig() payConfig: AlipayConfig): Promise<any> {
+  //   /**
+  //    * 创建提现订单。
+  //    */
+  //   await this.apiTradeService.generateOrder(body, payConfig);
+  //   const param = this.transformService.transformAlipayParams<AlipayTransferBizContent>(
+  //     {
+  //       out_biz_no: '2020091122001465530515423423',
+  //       trans_amount: '0.01',
+  //       product_code: 'TRANS_ACCOUNT_NO_PWD',
+  //       biz_scene: 'DIRECT_TRANSFER',
+  //       order_title: '转账订单测试',
+  //       payee_info: {
+  //         identity: '',
+  //         identity_type: '',
+  //         name: '',
+  //       },
+  //       remark: '单笔转账',
+  //       business_params: '',
+  //     },
+  //     payConfig,
+  //     'alipay.fund.trans.uni.transfer',
+  //   );
+  //   return await this.fundPayService.transfer(param, payConfig.private_key, payConfig.public_key);
+  // }
 
   /**
    * 支付宝订单关闭接口

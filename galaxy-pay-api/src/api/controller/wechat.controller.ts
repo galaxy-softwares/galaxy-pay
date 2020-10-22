@@ -1,13 +1,5 @@
 import { Controller, Post, Body, UseGuards, HttpException, HttpStatus } from '@nestjs/common';
-import { WeChatAppletPayService } from 'src/pay/module/wechat/service/applet.pay.service';
-import { WeChatJSAPIPayService } from 'src/pay/module/wechat/service/jsapi.pay.service';
-import { WeChatNativePayService } from 'src/pay/module/wechat/service/native.pay.service';
-import { WeChatWapPayService } from 'src/pay/module/wechat/service/wap.pay.service';
-import { WeChatMicroPayService } from 'src/pay/module/wechat/service/micro.pay.service';
-import { WeChatAppPayService } from 'src/pay/module/wechat/service/app.pay.service';
 import { PayConfig } from 'src/common/decorator/pay.config.decorator';
-import { WechatConfig } from 'src/pay/module/wechat/interfaces/base.interface';
-import { WeChatTradeType } from 'src/pay/module/wechat/enums/trade-type.enum';
 import { PayGuard } from 'src/common/guard/pay.guard';
 import * as fs from 'fs';
 import * as https from 'https';
@@ -16,6 +8,16 @@ import { TradeChannel } from 'src/common/enum/trade.enum';
 import { WechatPayDto } from 'src/admin/dtos/pay.dto';
 import { WechatRefundPayDto } from 'src/admin/dtos/refund.dto';
 import { ApiTradeSerivce } from '../service/api.trade.service';
+import {
+  WeChatAppletPayService,
+  WeChatAppPayService,
+  WechatConfig,
+  WeChatJSAPIPayService,
+  WeChatMicroPayService,
+  WeChatNativePayService,
+  WeChatTradeType,
+  WeChatWapPayService,
+} from 'galaxy-pay-config';
 
 @Controller('wechat')
 @UseGuards(PayGuard)

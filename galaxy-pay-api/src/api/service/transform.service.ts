@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { AlipayConfig, AlipayRequestParam } from 'src/pay/module/ali/interfaces/base.interface';
+import { AlipayConfig, AlipayRequestParam } from 'galaxy-pay-config';
 import * as moment from 'moment';
 
 @Injectable()

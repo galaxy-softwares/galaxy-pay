@@ -3,10 +3,9 @@ import { RefundTradeService } from 'src/admin/service/refund.trade.service';
 import { TradeService } from 'src/admin/service/trade.service';
 import { RefundTrade } from 'src/admin/entities/refund.trade.entity';
 import { TradeChannel, TradeStatus } from 'src/common/enum/trade.enum';
-import { AlipayConfig } from 'src/pay/module/ali/interfaces/base.interface';
-import { WechatConfig } from 'src/pay/module/wechat/interfaces/base.interface';
 import { AliPayDto, WechatPayDto } from 'src/admin/dtos/pay.dto';
 import { AliPayRefundDto, WechatRefundPayDto } from 'src/admin/dtos/refund.dto';
+import { AlipayConfig, WechatConfig } from 'galaxy-pay-config';
 
 @Injectable()
 export class ApiTradeSerivce {
