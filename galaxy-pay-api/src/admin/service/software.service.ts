@@ -3,9 +3,9 @@ import { BaseService } from './base.service';
 import { Software } from 'src/admin/entities/software.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { WechatConfig } from 'src/pay/module/wechat/interfaces/base.interface';
 import { TradeChannel } from 'src/common/enum/trade.enum';
 import { SoftwareDto } from '../dtos/software.dto';
+import { WechatConfig } from 'galaxy-pay-config';
 
 @Injectable()
 export class SoftwareService extends BaseService<Software> {
@@ -22,9 +22,6 @@ export class SoftwareService extends BaseService<Software> {
    */
   async findSoftwarePay(appid: string) {
     const software = await this.softwareRepository.findOne({ appid });
-    console.log(appid);
-
-    console.log(software);
     if (software) {
       const payConfig =
         software.channel === TradeChannel.wechat

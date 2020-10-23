@@ -17,10 +17,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       path: req.url,
     };
 
-    console.log(exception.message);
     const status =
       exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
-
     this.loggerService.setContext(HttpExceptionFilter.name);
     const logFormat = `${req.method} 请求地址: ${req.originalUrl} 请求IP: ${
       req.ip

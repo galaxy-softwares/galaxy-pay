@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './common/filters/http.exception.filter';
 import { LoggerService } from './common/service/logger.service';
 import { createLogger } from 'winston';
@@ -10,6 +9,7 @@ import { AllExceptionsFilter } from './common/filters/all-exception.filter';
 import { TimeUtil } from './common/utils/time.util';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
+import { ValidationPipe } from './common/pipe/validation.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

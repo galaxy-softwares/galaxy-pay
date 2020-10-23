@@ -19,13 +19,14 @@ export class PayGuard implements CanActivate {
       headers: { host },
     } = request;
 
-    console.log(body);
     const { domain_url, secret_key, payConfig } = await this.softwareService.findSoftwarePay(
       body.appid,
     );
+
     if (domain_url.indexOf(host) < 0) {
       throw new HttpException(`很抱歉，你的请求域名不在当前允许范围内！`, HttpStatus.FORBIDDEN);
     }
+
     // 先判断是否存在sign 参数，如果有的话就开始进行加密校验。
     if (body?.sign) {
       const sign = body.sign;

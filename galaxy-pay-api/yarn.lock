@@ -493,6 +493,19 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@fidm/asn1@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@fidm/asn1/-/asn1-1.0.4.tgz#afbf9f10a0cb83aca2114c6f59a97dd48eb7dd84"
+  integrity sha512-esd1jyNvRb2HVaQGq2Gg8Z0kbQPXzV9Tq5Z14KNIov6KfFD6PTaRIO8UpcsYiTNzOqJpmyzWgVTrUwFV3UF4TQ==
+
+"@fidm/x509@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@fidm/x509/-/x509-1.2.1.tgz#ae546a661005d776cc4dca674b399c1132c1e0e4"
+  integrity sha512-nwc2iesjyc9hkuzcrMCBXQRn653XuAUKorfWM8PZyJawiy1QzLj4vahwzaI25+pfpwOLvMzbJ0uKpWLDNmo16w==
+  dependencies:
+    "@fidm/asn1" "^1.0.4"
+    tweetnacl "^1.0.1"
+
 "@hapi/address@^4.0.1":
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@hapi/address/-/address-4.1.0.tgz#d60c5c0d930e77456fdcde2598e77302e2955e1d"
@@ -1836,6 +1849,11 @@ bignumber.js@9.0.0:
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.0.0.tgz#805880f84a329b5eac6e7cb6f8274b6d82bdf075"
   integrity sha512-t/OYhhJ2SD+YGBQcjY8GzzDHEk9f3nerxjtfa6tlMXfe7frs/WozhvCNoGvpM0P3bNf3Gq5ZRMlGr5f3r4/N8A==
+
+bignumber.js@^9.0.1:
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.0.1.tgz#8d7ba124c882bfd8e43260c67475518d0689e4e5"
+  integrity sha512-IdZR9mh6ahOBv/hYGiXyVuyCetmGJhtYkqLBpTStdhEGjegpPlUawydyaF3pbIOFynJTpllEs+NP+CS9jKFLjA==
 
 binary-extensions@^1.0.0:
   version "1.13.1"
@@ -3885,14 +3903,16 @@ functional-red-black-tree@^1.0.1:
   resolved "https://registry.yarnpkg.com/functional-red-black-tree/-/functional-red-black-tree-1.0.1.tgz#1b0ab3bd553b2a0d6399d29c0e3ea0b252078327"
   integrity sha1-GwqzvVU7Kg1jmdKcDj6gslIHgyc=
 
-galaxy-pay-config@^0.0.8:
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/galaxy-pay-config/-/galaxy-pay-config-0.0.8.tgz#a42e30ef9404fdd2928eb3c04fa9c165efbafadb"
-  integrity sha512-r0q92vt4M8IZJMohehkW/OTebtI91xc4fFBQHLdmcescaVdGCXoJvBOlxXO4ciWMil6IuKDXw3L05kgeK9CcmA==
+galaxy-pay-config@^0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/galaxy-pay-config/-/galaxy-pay-config-0.0.10.tgz#ad3f538ae0f8ae67253bda80df097f1cf7512f9e"
+  integrity sha512-BeY0Clslyw8VYyx6KOeS3G0zg9OekRkfOtjjuss5tS3WNzjJiLZ4MW9/2cEqYgvJ0dIcwo7aI5u6AiD3KUD3YQ==
   dependencies:
+    "@fidm/x509" "^1.2.1"
     "@nestjs/common" "^7.4.4"
     "@nestjs/core" "^7.4.4"
     "@nestjs/platform-express" "^7.4.4"
+    bignumber.js "^9.0.1"
     chance "^1.1.7"
     moment "^2.29.1"
     reflect-metadata "^0.1.13"
@@ -8157,6 +8177,11 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
+
+tweetnacl@^1.0.1:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.3.tgz#ac0af71680458d8a6378d0d0d050ab1407d35596"
+  integrity sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
 
 type-check@^0.4.0, type-check@~0.4.0:
   version "0.4.0"

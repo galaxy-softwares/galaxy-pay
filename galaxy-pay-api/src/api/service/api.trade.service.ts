@@ -5,7 +5,7 @@ import { RefundTrade } from 'src/admin/entities/refund.trade.entity';
 import { TradeChannel, TradeStatus } from 'src/common/enum/trade.enum';
 import { AliPayDto, WechatPayDto } from 'src/admin/dtos/pay.dto';
 import { AliPayRefundDto, WechatRefundPayDto } from 'src/admin/dtos/refund.dto';
-import { AlipayConfig, WechatConfig } from 'galaxy-pay-config';
+import { AlipayConfig, WechatConfig } from 'galaxy-pay-config/dist';
 
 @Injectable()
 export class ApiTradeSerivce {
@@ -23,9 +23,9 @@ export class ApiTradeSerivce {
    */
   public async generateOrder(
     body: WechatPayDto | AliPayDto,
-    payConfig: WechatConfig | AlipayConfig,
+    pay_config: WechatConfig | AlipayConfig,
   ) {
-    if (payConfig.appid.substring(0, 2) == 'wx') {
+    if (pay_config.appid.substring(0, 2) == 'wx') {
       this.channel = TradeChannel.wechat;
     } else {
       this.channel = TradeChannel.alipay;
@@ -35,9 +35,9 @@ export class ApiTradeSerivce {
         appid: body.appid,
         out_trade_no: body.out_trade_no,
         trade_status: TradeStatus.UnPaid,
-        callback_url: payConfig.callback_url,
-        return_url: payConfig.return_url,
-        notify_url: payConfig.notify_url,
+        callback_url: pay_config.callback_url,
+        return_url: pay_config.return_url,
+        notify_url: pay_config.notify_url,
         trade_amount: body.money,
         trade_channel: this.channel,
         trade_body: body.body,
@@ -49,13 +49,13 @@ export class ApiTradeSerivce {
   /**
    * 支付退款账单生成
    * @param body WechatRefundPayDto | AliPayRefundDto
-   * @param payConfig WechatConfig | AlipayConfig
+   * @param pay_config WechatConfig | AlipayConfig
    */
   public async generateRefundOrder(
     body: WechatRefundPayDto | AliPayRefundDto,
-    payConfig: WechatConfig | AlipayConfig,
+    pay_config: WechatConfig | AlipayConfig,
   ) {
-    if (payConfig.appid.substring(0, 2) == 'wx') {
+    if (pay_config.appid.substring(0, 2) == 'wx') {
       this.channel = TradeChannel.wechat;
     } else {
       this.channel = TradeChannel.alipay;
@@ -65,7 +65,7 @@ export class ApiTradeSerivce {
         appid: body.appid,
         out_trade_no: body.out_trade_no,
         trade_status: TradeStatus.UnPaid,
-        callback_url: payConfig.callback_url,
+        callback_url: pay_config.callback_url,
         trade_no: '',
         trade_amount: body.money,
         trade_refund_amount: body.refund_money,
