@@ -69,9 +69,5 @@ curl --location --request POST 'http://127.0.0.1:3100/alipay/page' \
 to be or not to be, this is a question.
 
 
-## License
-
-  galaxy-pay is [MIT licensed](LICENSE).
-
 
 
