@@ -71,7 +71,7 @@ to be or not to be, this is a question.
 
 ## License
 
-  Nest is [MIT licensed](LICENSE).
+  galaxy-pay is [MIT licensed](LICENSE).
 
 
 
