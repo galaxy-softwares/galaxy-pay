@@ -3903,10 +3903,10 @@ functional-red-black-tree@^1.0.1:
   resolved "https://registry.yarnpkg.com/functional-red-black-tree/-/functional-red-black-tree-1.0.1.tgz#1b0ab3bd553b2a0d6399d29c0e3ea0b252078327"
   integrity sha1-GwqzvVU7Kg1jmdKcDj6gslIHgyc=
 
-galaxy-pay-config@^0.0.10:
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/galaxy-pay-config/-/galaxy-pay-config-0.0.10.tgz#ad3f538ae0f8ae67253bda80df097f1cf7512f9e"
-  integrity sha512-BeY0Clslyw8VYyx6KOeS3G0zg9OekRkfOtjjuss5tS3WNzjJiLZ4MW9/2cEqYgvJ0dIcwo7aI5u6AiD3KUD3YQ==
+galaxy-pay-config@^0.0.12:
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/galaxy-pay-config/-/galaxy-pay-config-0.0.12.tgz#119d6e38c6ddec10f28fed8d4b63dffbf5047276"
+  integrity sha512-C/X/EjZoX5Fvn0R5dVr8fPDVHkgWdr4uCXJm9y4DSmZPtnNGeFGZRjW/a7z1TSqejrWvOLeRcxcRF17rc0lGBA==
   dependencies:
     "@fidm/x509" "^1.2.1"
     "@nestjs/common" "^7.4.4"
@@ -3914,6 +3914,7 @@ galaxy-pay-config@^0.0.10:
     "@nestjs/platform-express" "^7.4.4"
     bignumber.js "^9.0.1"
     chance "^1.1.7"
+    lint-staged "^10.4.2"
     moment "^2.29.1"
     reflect-metadata "^0.1.13"
     rimraf "^3.0.2"

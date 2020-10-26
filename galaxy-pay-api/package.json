@@ -57,7 +57,7 @@
     "class-validator": "^0.12.2",
     "crypto-js": "^4.0.0",
     "date-fns": "^2.16.1",
-    "galaxy-pay-config": "^0.0.10",
+    "galaxy-pay-config": "^0.0.12",
     "lint-staged": "^10.4.2",
     "md5": "^2.3.0",
     "moment": "^2.27.0",

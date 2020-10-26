@@ -11,7 +11,7 @@ import {
 import { PayConfig } from 'src/common/decorator/pay.config.decorator';
 import { PayGuard } from 'src/common/guard/pay.guard';
 import { TradeChannel } from 'src/common/enum/trade.enum';
-import { AliPayDto } from 'src/admin/dtos/pay.dto';
+import { AliPayDto, AlipayQuery } from 'src/admin/dtos/pay.dto';
 import { AliPayRefundDto } from 'src/admin/dtos/refund.dto';
 import { ApiTradeSerivce } from '../service/api.trade.service';
 import {
@@ -19,7 +19,11 @@ import {
   AliCertUtil,
   AliPagePayService,
   AlipayConfig,
-  AlipayPrecreateRes,
+  AlipayTradeCloseRes,
+  AlipayTradeCreateRes,
+  AlipayTradePrecreateRes,
+  AlipayTradeQueryRefundRes,
+  AlipayTradeQueryRes,
   AliTradePayService,
   AliWapPayService,
 } from 'galaxy-pay-config';
@@ -30,8 +34,8 @@ export class AlipayController {
   constructor(
     private readonly aliPagePaySerice: AliPagePayService,
     private readonly aliAppPayService: AliAppPayService,
-    private readonly alitradePayService: AliTradePayService,
-    private readonly aliwapPayService: AliWapPayService,
+    private readonly aliTradePayService: AliTradePayService,
+    private readonly aliWapPayService: AliWapPayService,
     private readonly apiTradeService: ApiTradeSerivce,
     private aliCertUtil: AliCertUtil,
     @Inject(HttpService) protected readonly httpService: HttpService,
@@ -50,6 +54,8 @@ export class AlipayController {
           alipay_config.alipay_cert_public_key,
         );
         return { ...alipay_config, public_key, alipay_root_cert_sn, app_cert_sn };
+      } else {
+        return alipay_config;
       }
     } catch (e) {
       throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
@@ -100,16 +106,41 @@ export class AlipayController {
   }
 
   /**
-   * 查询订单
-   * @param param
-   * @param body
+   * 支付宝 交易查询
+   * @param param AlipayQuery
+   * @param alipay_config AlipayConfig
    */
-  // @Post("query")
-  // async tradePay(@Query() param: AliPayDto, @Body() body): Promise<AlipayTradeQueryResponse> {
-  //     const alipayConfig = await this.apiAlipayService.generateAliPay(param, body);
-  //     const result = await this.alitradePayService.query(body, alipayConfig);
-  //     return result
-  // }
+  @Post('query')
+  async query(
+    @Body() body: AlipayQuery,
+    @PayConfig() alipay_config: AlipayConfig,
+  ): Promise<AlipayTradeQueryRes> {
+    return await this.aliTradePayService.query(
+      {
+        out_trade_no: body.out_trade_no,
+      },
+      this.isAliPayCert(alipay_config),
+    );
+  }
+
+  /**
+   * 支付宝 退款查询
+   * @param body AlipayQuery
+   * @param alipay_config
+   */
+  @Post('refundQuery')
+  async refundQuery(
+    @Body() body: AlipayQuery,
+    @PayConfig() alipay_config: AlipayConfig,
+  ): Promise<AlipayTradeQueryRefundRes> {
+    return await this.aliTradePayService.fastpayRefundQuery(
+      {
+        out_trade_no: body.out_trade_no,
+        out_request_no: body.out_trade_no,
+      },
+      this.isAliPayCert(alipay_config),
+    );
+  }
 
   /**
    * 支付宝扫码接口
@@ -120,9 +151,9 @@ export class AlipayController {
   async precreate(
     @Body() body: AliPayDto,
     @PayConfig() alipay_config: AlipayConfig,
-  ): Promise<AlipayPrecreateRes> {
+  ): Promise<AlipayTradePrecreateRes> {
     await this.apiTradeService.generateOrder(body, alipay_config);
-    return await this.alitradePayService.precreate(
+    return await this.aliTradePayService.precreate(
       {
         product_code: 'FACE_TO_FACE_PAYMENT',
         subject: body.body,
@@ -142,7 +173,7 @@ export class AlipayController {
   @Post('wap')
   async wap(@Body() body: AliPayDto, @PayConfig() alipay_config: AlipayConfig): Promise<string> {
     await this.apiTradeService.generateOrder(body, alipay_config);
-    return this.aliwapPayService.pay(
+    return this.aliWapPayService.pay(
       {
         product_code: 'FACE_TO_FACE_PAYMENT',
         subject: body.body,
@@ -165,7 +196,7 @@ export class AlipayController {
     @PayConfig() alipay_config: AlipayConfig,
   ): Promise<string> {
     await this.apiTradeService.generateRefundOrder(body, alipay_config);
-    const refund_result = await this.alitradePayService.refund(
+    const refund_result = await this.aliTradePayService.refund(
       {
         trade_no: body.trade_no,
         refund_amount: body.money,
@@ -196,9 +227,12 @@ export class AlipayController {
    * @param body
    */
   @Post('create')
-  async create(@Body() body: AliPayDto, @PayConfig() alipay_config: AlipayConfig): Promise<any> {
+  async create(
+    @Body() body: AliPayDto,
+    @PayConfig() alipay_config: AlipayConfig,
+  ): Promise<AlipayTradeCreateRes> {
     await this.apiTradeService.generateOrder(body, alipay_config);
-    return await this.alitradePayService.create(
+    return await this.aliTradePayService.create(
       {
         product_code: 'FACE_TO_FACE_PAYMENT',
         subject: body.body,
@@ -238,14 +272,20 @@ export class AlipayController {
   // }
 
   /**
-   * 支付宝订单关闭接口
+   * 支付宝 交易关闭接口
    * @param param
    * @param body
    */
-  // @Post("close")
-  // async close(@Body() body: AliPayDto,  @PayConfig() payConfig: AlipayConfig): Promise<AlipayTradeCloseResponse> {
-  //     const alipayConfig = await this.apiAlipayService.generateAliPay(param, body);
-  //     const result = this.alitradePayService.close(body, alipayConfig);
-  //     return result
-  // }
+  @Post('close')
+  async close(
+    @Body() body: AlipayQuery,
+    @PayConfig() alipay_config: AlipayConfig,
+  ): Promise<AlipayTradeCloseRes> {
+    return await this.aliTradePayService.close(
+      {
+        out_trade_no: body.out_trade_no,
+      },
+      this.isAliPayCert(alipay_config),
+    );
+  }
 }

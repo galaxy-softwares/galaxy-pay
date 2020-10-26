@@ -1,5 +1,13 @@
 import { IsNotEmpty } from 'class-validator';
 
+export class AlipayQuery {
+  @IsNotEmpty({ message: 'appid不能为空' })
+  appid: string;
+
+  @IsNotEmpty({ message: '订单编号不能为空！' })
+  out_trade_no: string;
+}
+
 export class AliPayDto {
   @IsNotEmpty({ message: 'appid不能为空' })
   appid: string;
