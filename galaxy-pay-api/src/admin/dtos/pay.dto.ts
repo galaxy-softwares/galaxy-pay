@@ -32,6 +32,14 @@ export class AliPayDto {
   product_code?: string;
 }
 
+export class WechatPayQuery {
+  @IsNotEmpty({ message: 'appid不能为空' })
+  appid: string;
+
+  @IsNotEmpty({ message: '订单编号不能为空！' })
+  out_trade_no: string;
+}
+
 export class WechatPayDto {
   @IsNotEmpty({ message: 'appid不能为空' })
   appid: string;
