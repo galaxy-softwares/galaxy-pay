@@ -4,19 +4,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User, Software, Trade, RefundTrade } from './entities';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import {
-  AuthController,
-  SoftwareController,
-  TradeController,
-  FileController,
-  RefundController,
-} from './controller';
+import { AuthController, SoftwareController, TradeController, FileController } from './controller';
 import {
   AuthService,
   SoftwareService,
   UserService,
   TradeService,
-  RefundTradeService,
   JwtAuthGuard,
   JwtStrategy,
 } from './service';
@@ -32,22 +25,8 @@ import {
     }),
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
-  controllers: [
-    AuthController,
-    SoftwareController,
-    TradeController,
-    FileController,
-    RefundController,
-  ],
-  providers: [
-    AuthService,
-    SoftwareService,
-    UserService,
-    TradeService,
-    RefundTradeService,
-    JwtAuthGuard,
-    JwtStrategy,
-  ],
-  exports: [SoftwareService, TradeService, RefundTradeService],
+  controllers: [AuthController, SoftwareController, TradeController, FileController],
+  providers: [AuthService, SoftwareService, UserService, TradeService, JwtAuthGuard, JwtStrategy],
+  exports: [SoftwareService, TradeService],
 })
 export class AdminModule {}

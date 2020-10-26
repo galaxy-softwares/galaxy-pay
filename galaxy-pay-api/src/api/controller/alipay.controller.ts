@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { PayConfig } from 'src/common/decorator/pay.config.decorator';
 import { PayGuard } from 'src/common/guard/pay.guard';
-import { TradeChannel } from 'src/common/enum/trade.enum';
 import { AliPayDto, AlipayQuery } from 'src/admin/dtos/pay.dto';
 import { AliPayRefundDto } from 'src/admin/dtos/refund.dto';
 import { ApiTradeSerivce } from '../service/api.trade.service';
@@ -27,6 +26,7 @@ import {
   AliTradePayService,
   AliWapPayService,
 } from 'galaxy-pay-config';
+import { TradeChannel } from 'src/common/enum/trade.enum';
 
 @Controller('alipay')
 @UseGuards(PayGuard)
@@ -74,7 +74,7 @@ export class AlipayController {
       {
         product_code: 'QUICK_MSECURITY_PAY',
         subject: body.body,
-        out_trade_no: body.out_trade_no,
+        out_trade_no: body.sys_trade_no,
         total_amount: body.money,
         ...body.biz_count,
       },
@@ -97,7 +97,7 @@ export class AlipayController {
       {
         product_code: 'FAST_INSTANT_TRADE_PAY',
         subject: body.body,
-        out_trade_no: body.out_trade_no,
+        out_trade_no: body.sys_trade_no,
         total_amount: body.money,
         ...body.biz_count,
       },
@@ -157,7 +157,7 @@ export class AlipayController {
       {
         product_code: 'FACE_TO_FACE_PAYMENT',
         subject: body.body,
-        out_trade_no: body.out_trade_no,
+        out_trade_no: body.sys_trade_no,
         total_amount: body.money,
         ...body.biz_count,
       },
@@ -177,7 +177,7 @@ export class AlipayController {
       {
         product_code: 'FACE_TO_FACE_PAYMENT',
         subject: body.body,
-        out_trade_no: body.out_trade_no,
+        out_trade_no: body.sys_trade_no,
         total_amount: body.money,
         ...body.biz_count,
       },
@@ -195,10 +195,11 @@ export class AlipayController {
     @Body() body: AliPayRefundDto,
     @PayConfig() alipay_config: AlipayConfig,
   ): Promise<string> {
-    await this.apiTradeService.generateRefundOrder(body, alipay_config);
+    await this.apiTradeService.generateRefundOrder(body, alipay_config, TradeChannel.alipay);
     const refund_result = await this.aliTradePayService.refund(
       {
-        trade_no: body.trade_no,
+        trade_no: body.sys_transaction_no,
+        out_request_no: body.sys_trade_no,
         refund_amount: body.money,
         refund_reason: body.body,
       },
@@ -207,9 +208,9 @@ export class AlipayController {
     if (refund_result.code == '10000') {
       if (
         await this.apiTradeService.refundSuccess(
-          body.out_trade_no,
-          body.trade_no,
+          body.sys_trade_no,
           TradeChannel.alipay,
+          refund_result.trade_no,
         )
       ) {
         return '退款成功！';
@@ -236,7 +237,7 @@ export class AlipayController {
       {
         product_code: 'FACE_TO_FACE_PAYMENT',
         subject: body.body,
-        out_trade_no: body.out_trade_no,
+        out_trade_no: body.sys_trade_no,
         total_amount: body.money,
         ...body.biz_count,
       },

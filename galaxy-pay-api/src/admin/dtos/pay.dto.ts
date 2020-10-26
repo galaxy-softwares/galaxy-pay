@@ -16,7 +16,7 @@ export class AliPayDto {
   money: string;
 
   @IsNotEmpty({ message: '订单编号不能为空！' })
-  out_trade_no: string;
+  sys_trade_no: string;
 
   @IsNotEmpty({ message: '订单标题不能为空！' })
   body: string;
@@ -37,7 +37,7 @@ export class WechatPayQuery {
   appid: string;
 
   @IsNotEmpty({ message: '订单编号不能为空！' })
-  out_trade_no: string;
+  sys_trade_no: string;
 }
 
 export class WechatPayDto {
@@ -48,7 +48,7 @@ export class WechatPayDto {
   money: string;
 
   @IsNotEmpty({ message: '订单编号不能为空！' })
-  out_trade_no: string;
+  sys_trade_no: string;
 
   @IsNotEmpty({ message: '订单标题不能为空！' })
   body: string;

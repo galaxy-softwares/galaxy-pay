@@ -1,11 +1,15 @@
-import { TradeChannel, TradeStatus } from '../enum/trade.enum';
+import { TradeChannel, TradeStatus, TradeType } from '../enum/trade.enum';
 
 export interface CreateTrade {
   appid: string;
 
-  out_trade_no: string;
+  sys_trade_no: string;
 
   trade_status: TradeStatus;
+
+  refund_trade_no: string;
+
+  trade_type: TradeType;
 
   callback_url: string;
 
@@ -17,7 +21,7 @@ export interface CreateTrade {
 
   trade_channel: TradeChannel;
 
-  trade_no?: string;
+  sys_transaction_no?: string;
 
   trade_body: string;
 }

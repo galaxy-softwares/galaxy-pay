@@ -4,7 +4,7 @@ import { Trade } from 'src/admin/entities/trade.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Software } from 'src/admin/entities/software.entity';
-import { TradeChannel, TradeStatus } from 'src/common/enum/trade.enum';
+import { TradeChannel, TradeStatus, TradeType } from 'src/common/enum/trade.enum';
 import { CreateTrade } from 'src/common/interfaces/trade.interfaces';
 
 @Injectable()
@@ -48,13 +48,13 @@ export class TradeService extends BaseService<Trade> {
    * 创建订单
    * @param data
    */
-  async createTrade(data: CreateTrade, channel: TradeChannel): Promise<Trade> {
+  async createTrade(data: CreateTrade): Promise<Trade> {
     try {
       const trade = await this.tradeRepository.findOne({
-        out_trade_no: data.out_trade_no,
+        sys_trade_no: data.sys_trade_no,
       });
       if (trade) {
-        trade.trade_channel = channel;
+        trade.trade_channel = data.trade_channel;
         trade.trade_body = data.trade_body;
         trade.trade_amount = data.trade_amount;
         trade.appid = data.appid;
@@ -69,12 +69,12 @@ export class TradeService extends BaseService<Trade> {
 
   /**
    * 根据订单编号查询订单订单
-   * @param out_trade_no string
+   * @param sys_trade_no string
    */
-  async findOrder(out_trade_no: string) {
+  async findOrder(sys_trade_no: string) {
     try {
       return this.tradeRepository.findOne({
-        out_trade_no,
+        sys_trade_no,
       });
     } catch {
       throw new HttpException('没有查询到订单', HttpStatus.BAD_REQUEST);
@@ -83,26 +83,53 @@ export class TradeService extends BaseService<Trade> {
 
   /**
    * 判断支付是否完成
-   * @param out_trade_no string 订单编号
+   * @param sys_trade_no string 订单编号
    * @param channel OrderChannel 订单类型
    * @param trade_no string 支付宝或者微信的支付订单号
    *
    */
   async paySuccess(
-    out_trade_no: string,
+    sys_trade_no: string,
     channel: TradeChannel,
-    trade_no: string,
+    sys_transaction_no: string,
   ): Promise<boolean> {
     try {
-      const order = await this.tradeRepository.findOne({
-        out_trade_no,
+      const trade = await this.tradeRepository.findOne({
+        sys_trade_no,
         trade_status: TradeStatus.UnPaid,
         trade_channel: channel,
       });
-      if (order) {
-        order.trade_no = trade_no;
-        order.trade_status = TradeStatus.Success;
-        if (await this.tradeRepository.save(order)) {
+      if (trade) {
+        trade.sys_transaction_no = sys_transaction_no;
+        trade.trade_status = TradeStatus.Success;
+        if (await this.tradeRepository.save(trade)) {
+          return true;
+        }
+      }
+      return false;
+    } catch (e) {
+      throw new HttpException('订单支付状态修改失败！', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  /**
+   * 判断退款是否成功
+   * @param sys_trade_no
+   * @param channel
+   * @param sys_transaction_no 支付宝同步返回的 trade_no
+   */
+  async refundSuccess(sys_trade_no: string, channel: TradeChannel, sys_transaction_no: string) {
+    try {
+      const trade = await this.tradeRepository.findOne({
+        sys_trade_no,
+        trade_status: TradeStatus.UnPaid,
+        trade_channel: channel,
+        trade_type: TradeType.Refund,
+      });
+      if (trade) {
+        trade.sys_transaction_no = sys_transaction_no;
+        trade.trade_status = TradeStatus.Success;
+        if (await this.tradeRepository.save(trade)) {
           return true;
         }
       }

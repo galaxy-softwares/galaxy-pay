@@ -49,7 +49,7 @@ export class WechatController {
         trade_type: WeChatTradeType.APP,
         notify_url: wechat_config.notify_url,
         body: body.body,
-        out_trade_no: body.out_trade_no,
+        out_trade_no: body.sys_trade_no,
         total_fee: body.money,
         spbill_create_ip: '',
       },
@@ -71,7 +71,7 @@ export class WechatController {
         trade_type: WeChatTradeType.APP,
         notify_url: wechat_config.notify_url,
         body: body.body,
-        out_trade_no: body.out_trade_no,
+        out_trade_no: body.sys_trade_no,
         total_fee: body.money,
         spbill_create_ip: '',
       },
@@ -88,12 +88,11 @@ export class WechatController {
   async refund(
     @Body() body: WechatRefundPayDto,
     @PayConfig() wechat_config: WechatConfig,
-  ): Promise<string> {
-    await this.apiTradeService.generateRefundOrder(body, wechat_config);
+  ): Promise<any> {
+    await this.apiTradeService.generateRefundOrder(body, wechat_config, TradeChannel.wechat);
     const refund_result = await this.wechatBaseservice.refund(
       {
-        transaction_id: body.trade_no,
-        out_refund_no: body.out_trade_no,
+        out_refund_no: body.sys_trade_no,
         total_fee: parseInt(body.money),
         refund_fee: parseInt(body.refund_money),
         refund_desc: body.body,
@@ -102,17 +101,6 @@ export class WechatController {
       wechat_config,
     );
     if (refund_result.return_code == 'SUCCESS') {
-      if (
-        await this.apiTradeService.refundSuccess(
-          refund_result.out_trade_no,
-          refund_result.out_refund_no,
-          TradeChannel.wechat,
-        )
-      ) {
-        return '退款成功';
-      } else {
-        return '退款失败';
-      }
     } else {
       throw new HttpException(refund_result.err_code_des, HttpStatus.BAD_REQUEST);
     }
@@ -134,7 +122,7 @@ export class WechatController {
         trade_type: WeChatTradeType.JSAPI,
         notify_url: wechat_config.notify_url,
         body: body.body,
-        out_trade_no: body.out_trade_no,
+        out_trade_no: body.sys_trade_no,
         total_fee: body.money,
         spbill_create_ip: '',
       },
@@ -158,7 +146,7 @@ export class WechatController {
         trade_type: WeChatTradeType.NATIVE,
         notify_url: wechat_config.notify_url,
         body: body.body,
-        out_trade_no: body.out_trade_no,
+        out_trade_no: body.sys_trade_no,
         total_fee: body.money,
         spbill_create_ip: '',
       },
@@ -182,7 +170,7 @@ export class WechatController {
         trade_type: WeChatTradeType.MWEB,
         notify_url: wechat_config.notify_url,
         body: body.body,
-        out_trade_no: body.out_trade_no,
+        out_trade_no: body.sys_trade_no,
         total_fee: body.money,
         spbill_create_ip: '',
       },
@@ -205,7 +193,7 @@ export class WechatController {
       trade_type: WeChatTradeType.MWEB,
       notify_url: wechat_config.notify_url,
       body: body.body,
-      out_trade_no: body.out_trade_no,
+      out_trade_no: body.sys_trade_no,
       total_fee: body.money,
       auth_code: '',
       spbill_create_ip: '',
@@ -226,7 +214,7 @@ export class WechatController {
   ): Promise<WeChatBaseCloseOrderRes> {
     return await this.wechatBaseservice.closeOrder(
       {
-        out_trade_no: body.out_trade_no,
+        out_trade_no: body.sys_trade_no,
       },
       wechat_config,
     );
@@ -244,7 +232,7 @@ export class WechatController {
   ): Promise<WeChatBaseQueryOrderRes> {
     return await this.wechatBaseservice.queryOrder(
       {
-        out_trade_no: body.out_trade_no,
+        out_trade_no: body.sys_trade_no,
       },
       wechat_config,
     );
@@ -262,7 +250,7 @@ export class WechatController {
   ): Promise<WeChatBaseQueryRefundRes> {
     return await this.wechatBaseservice.queryRefund(
       {
-        out_trade_no: body.out_trade_no,
+        out_trade_no: body.sys_trade_no,
       },
       wechat_config,
     );
