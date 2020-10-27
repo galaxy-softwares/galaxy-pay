@@ -4,6 +4,7 @@ import { TradeChannel, TradeStatus, TradeType } from 'src/common/enum/trade.enum
 import { AliPayDto, WechatPayDto } from 'src/admin/dtos/pay.dto';
 import { AliPayRefundDto, WechatRefundPayDto } from 'src/admin/dtos/refund.dto';
 import { AlipayConfig, WechatConfig } from 'galaxy-pay-config/dist';
+import { Trade } from 'src/admin/entities';
 
 @Injectable()
 export class ApiTradeSerivce {
@@ -42,7 +43,7 @@ export class ApiTradeSerivce {
   }
 
   /**
-   * 支付退款账单生成
+   * 退款账单生成
    * @param body WechatRefundPayDto | AliPayRefundDto
    * @param pay_config WechatConfig | AlipayConfig
    */
@@ -79,18 +80,14 @@ export class ApiTradeSerivce {
   /**
    * 判断订单是否退款成功！
    * @param sys_trade_no
-   * @param trade_no
    * @param channel
+   * @param sys_transaction_no
    */
   async refundSuccess(
     sys_trade_no: string,
     channel: TradeChannel,
     sys_transaction_no: string,
-  ): Promise<boolean> {
-    try {
-      return await this.tradeService.refundSuccess(sys_trade_no, channel, sys_transaction_no);
-    } catch (e) {
-      throw new HttpException('订单支付状态修改失败！', HttpStatus.BAD_REQUEST);
-    }
+  ): Promise<Trade> {
+    return await this.tradeService.refundSuccess(sys_trade_no, channel, sys_transaction_no);
   }
 }

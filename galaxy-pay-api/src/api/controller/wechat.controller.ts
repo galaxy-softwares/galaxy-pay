@@ -93,6 +93,7 @@ export class WechatController {
     const refund_result = await this.wechatBaseservice.refund(
       {
         out_refund_no: body.sys_trade_no,
+        transaction_id: body.sys_transaction_no,
         total_fee: parseInt(body.money),
         refund_fee: parseInt(body.refund_money),
         refund_desc: body.body,
@@ -101,6 +102,15 @@ export class WechatController {
       wechat_config,
     );
     if (refund_result.return_code == 'SUCCESS') {
+      if (
+        await this.apiTradeService.refundSuccess(
+          body.sys_trade_no,
+          TradeChannel.wechat,
+          refund_result.transaction_id,
+        )
+      ) {
+        return '退款成功！';
+      }
     } else {
       throw new HttpException(refund_result.err_code_des, HttpStatus.BAD_REQUEST);
     }

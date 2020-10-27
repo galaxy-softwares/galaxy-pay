@@ -92,21 +92,23 @@ export class TradeService extends BaseService<Trade> {
     sys_trade_no: string,
     channel: TradeChannel,
     sys_transaction_no: string,
-  ): Promise<boolean> {
+  ): Promise<Trade> {
     try {
       const trade = await this.tradeRepository.findOne({
         sys_trade_no,
         trade_status: TradeStatus.UnPaid,
         trade_channel: channel,
       });
-      if (trade) {
+      if (trade && trade.trade_status === TradeStatus.Success) {
+        return trade;
+      } else if (trade && trade.trade_status === TradeStatus.UnPaid) {
         trade.sys_transaction_no = sys_transaction_no;
         trade.trade_status = TradeStatus.Success;
         if (await this.tradeRepository.save(trade)) {
-          return true;
+          return trade;
         }
       }
-      return false;
+      return null;
     } catch (e) {
       throw new HttpException('订单支付状态修改失败！', HttpStatus.BAD_REQUEST);
     }
@@ -118,22 +120,27 @@ export class TradeService extends BaseService<Trade> {
    * @param channel
    * @param sys_transaction_no 支付宝同步返回的 trade_no
    */
-  async refundSuccess(sys_trade_no: string, channel: TradeChannel, sys_transaction_no: string) {
+  async refundSuccess(
+    sys_trade_no: string,
+    channel: TradeChannel,
+    sys_transaction_no: string,
+  ): Promise<Trade> {
     try {
       const trade = await this.tradeRepository.findOne({
         sys_trade_no,
-        trade_status: TradeStatus.UnPaid,
-        trade_channel: channel,
         trade_type: TradeType.Refund,
+        trade_channel: channel,
       });
-      if (trade) {
+      if (trade && trade.trade_status === TradeStatus.Success) {
+        return trade;
+      } else if (trade) {
         trade.sys_transaction_no = sys_transaction_no;
         trade.trade_status = TradeStatus.Success;
         if (await this.tradeRepository.save(trade)) {
-          return true;
+          return trade;
         }
       }
-      return false;
+      return null;
     } catch (e) {
       throw new HttpException('订单支付状态修改失败！', HttpStatus.BAD_REQUEST);
     }

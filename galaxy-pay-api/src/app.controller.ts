@@ -7,6 +7,7 @@ import {
 } from 'galaxy-pay-config';
 import { TradeService, SoftwareService } from './admin/service';
 import { TradeChannel } from './common/enum/trade.enum';
+import { LoggerService } from './common/service/logger.service';
 import { makeSignStr } from './common/utils/indedx';
 
 @Controller()
@@ -18,6 +19,7 @@ export class AppController {
     @Inject(WeChatSignUtil) protected readonly signUtil: WeChatSignUtil,
     @Inject(HttpService) protected readonly httpService: HttpService,
     @Inject(WeChatNotifyParserUtil) private readonly weChatNotifyParserUtil: WeChatNotifyParserUtil,
+    private loggerService: LoggerService,
   ) {}
 
   @Get()
@@ -28,6 +30,7 @@ export class AppController {
   @Post('alipay_notify_url')
   async alipay_notify_url(@Request() req) {
     const data = req.body;
+    this.loggerService.info(`支付宝异步通知:${JSON.stringify(data)}`);
     const trade = await this.tradeService.findOrder(data.out_trade_no);
     const { alipayConfig, secret_key } = await this.softwareService.findSoftwarePayConfig(
       trade.appid,
@@ -53,6 +56,7 @@ export class AppController {
     res.status(200);
     try {
       const data = await this.weChatNotifyParserUtil.receiveReqData<WeChatPayNotifyRes>(req, 'pay');
+      this.loggerService.info(`微信异步通知:${JSON.stringify(data)}`);
       const order = await this.tradeService.findOrder(data.out_trade_no);
       // 因为已经在支付查询的时候已经做了错误抛出所以不用再去判断是否存在账单。
       if (order.trade_status == '1') {
