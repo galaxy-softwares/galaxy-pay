@@ -21,23 +21,15 @@ export class TradeService extends BaseService<Trade> {
    */
   async find(): Promise<any> {
     try {
-      const income = await this.tradeRepository
-        .createQueryBuilder('trade')
-        .where({
-          trade_status: TradeStatus.Success,
-        })
-        .select('SUM(trade.trade_amount)', 'amount')
-        .addSelect('COUNT(*) AS count')
-        .getRawOne();
       const data = await this.tradeRepository
         .createQueryBuilder('trade')
         .leftJoinAndMapOne('trade.software', Software, 'software', 'trade.appid = software.appid')
         .orderBy('trade.id', 'ASC')
         .getManyAndCount();
+
       return {
         data: data[0],
         count: data[1],
-        income: income,
       };
     } catch (e) {
       console.log(e);

@@ -88,7 +88,7 @@ export class WechatController {
   async refund(
     @Body() body: WechatRefundPayDto,
     @PayConfig() wechat_config: WechatConfig,
-  ): Promise<any> {
+  ): Promise<string> {
     await this.apiTradeService.generateRefundOrder(body, wechat_config, TradeChannel.wechat);
     const refund_result = await this.wechatBaseservice.refund(
       {

@@ -1,6 +1,5 @@
-import { Entity, Column, BeforeInsert, BeforeUpdate } from 'typeorm';
+import { Entity, Column } from 'typeorm';
 import { Base } from './base.entity';
-import * as crypto from 'crypto-js';
 
 @Entity()
 export class User extends Base {
@@ -19,10 +18,4 @@ export class User extends Base {
 
   @Column()
   email: string;
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  hashPassword() {
-    this.password = crypto.MD5(this.password).toString();
-  }
 }
