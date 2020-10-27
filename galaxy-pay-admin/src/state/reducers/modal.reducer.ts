@@ -1,14 +1,14 @@
-import { ModalActions } from "../actions/modal.action"
+import { ModalActions } from '../actions/modal.action'
 
 const modalState = {
-    visible: false,
+  visible: false
 }
 
 export const modalReducer = (state = modalState, actions: ModalActions) => {
-    switch (actions.type) {
-        case 'SEVISIBLE':
-            return { ...state, visible: actions.payload }
-        default:
-            return state
-    }
+  switch (actions.type) {
+    case 'SEVISIBLE':
+      return { ...state, visible: actions.payload }
+    default:
+      return state
+  }
 }

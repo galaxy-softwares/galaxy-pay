@@ -1,17 +1,16 @@
-import { Action } from 'redux';
+import { Action } from 'redux'
 
 const SEVISIBLE = 'SEVISIBLE'
 
 type SEVISIBLE = typeof SEVISIBLE
 
-interface SetVisible extends Action<SEVISIBLE>{
-    payload: boolean
+interface SetVisible extends Action<SEVISIBLE> {
+  payload: boolean
 }
 
 export const setVisible = (payload: boolean): SetVisible => ({
-    type: 'SEVISIBLE',
-    payload
+  type: 'SEVISIBLE',
+  payload
 })
-
 
 export type ModalActions = SetVisible

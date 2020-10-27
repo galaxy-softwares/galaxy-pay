@@ -1,4 +1,3 @@
-import { request } from "../utils/request";
+import { request } from '../utils/request'
 
-export const refundGetList = () => request('get', '/refund');
-
+export const refundGetList = () => request('get', '/refund')

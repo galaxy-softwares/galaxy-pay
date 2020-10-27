@@ -1,25 +1,24 @@
-import { Action } from 'redux';
+import { Action } from 'redux'
 
 export interface UserState {
-    username: string,
-    avatar: string,
-    git_token: string,
-    work_path: string,
-    id: string,
+  username: string
+  avatar: string
+  git_token: string
+  work_path: string
+  id: string
 }
 
 const SETUSER = 'SETUSER'
 
 type SETUSER = typeof SETUSER
 
-interface SetUser extends Action<SETUSER>{
-    payload: Partial<UserState>
+interface SetUser extends Action<SETUSER> {
+  payload: Partial<UserState>
 }
 
-
 export const setUser = (payload: Partial<UserState>): SetUser => ({
-    type: 'SETUSER',
-    payload
+  type: 'SETUSER',
+  payload
 })
 
 export type UserAction = SetUser

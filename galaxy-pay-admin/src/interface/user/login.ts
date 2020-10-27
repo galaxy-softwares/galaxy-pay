@@ -1,10 +1,9 @@
-
 export interface LoginParams {
-    username: string
-    password: string
+  username: string
+  password: string
 }
 
 export interface LoginResult {
-    token: string
-    git_token: string
+  token: string
+  git_token: string
 }
