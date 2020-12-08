@@ -53,7 +53,7 @@
     "body-parser-xml": "^2.0.0",
     "chalk": "^4.1.0",
     "chance": "^1.1.6",
-    "class-transformer": "^0.2.3",
+    "class-transformer": "^0.3.1",
     "class-validator": "^0.12.2",
     "crypto-js": "^4.0.0",
     "date-fns": "^2.16.1",
