@@ -32,11 +32,9 @@ export class AppController {
     const data = req.body;
     this.loggerService.info(`支付宝异步通知:${JSON.stringify(data)}`);
     const trade = await this.tradeService.findOrder(data.out_trade_no);
-    const { alipayConfig, secret_key } = await this.softwareService.findSoftwarePayConfig(
-      trade.appid,
-    );
+    const { payConfig, secret_key } = await this.softwareService.findSoftwarePayConfig(trade.appid);
     delete data.pay_type;
-    const sign_result = this.aliSignUtil.responSignVerify(data, alipayConfig.public_key);
+    const sign_result = this.aliSignUtil.responSignVerify(data, payConfig.public_key);
     if (sign_result) {
       const status = await this.tradeService.paySuccess(
         data.out_trade_no,
@@ -62,14 +60,14 @@ export class AppController {
       if (order.trade_status == '1') {
         res.end(this.weChatNotifyParserUtil.generateSuccessMessage());
       }
-      const { wechatConfig, secret_key } = await this.softwareService.findSoftwarePayConfig(
+      const { payConfig, secret_key } = await this.softwareService.findSoftwarePayConfig(
         order.appid,
       );
       // 先拿到微信得签名
       const data_sign = data.sign;
       // 不进行签名验证
       delete data.sign;
-      const sign = this.signUtil.sign(data, wechatConfig.mch_key);
+      const sign = this.signUtil.sign(data, payConfig.mch_key);
       //  还要判断是支付类型！！！！！！！
       if (sign !== data_sign || data.return_code !== 'SUCCESS' || data.result_code !== 'SUCCESS') {
         res.end(this.weChatNotifyParserUtil.generateFailMessage('签名验证失败'));

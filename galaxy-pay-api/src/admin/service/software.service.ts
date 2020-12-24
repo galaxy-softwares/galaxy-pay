@@ -5,7 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TradeChannel } from 'src/common/enum/trade.enum';
 import { SoftwareDto } from '../dtos/software.dto';
-import { WechatConfig } from 'galaxy-pay-config';
+import { AlipayConfig, WechatConfig } from 'galaxy-pay-config';
+import { Merchant } from '../entities';
 
 @Injectable()
 export class SoftwareService extends BaseService<Software> {
@@ -20,53 +21,47 @@ export class SoftwareService extends BaseService<Software> {
    * 仅限给支付时使用
    * @param appid string
    */
-  async findSoftwarePay(appid: string) {
-    const software = await this.softwareRepository.findOne({ appid });
+  async findSoftwarePayConfig(appid: string) {
+    const software: any = await this.softwareRepository
+      .createQueryBuilder('software')
+      .where({ appid })
+      .leftJoinAndMapOne(
+        'software.merchant',
+        Merchant,
+        'merchant',
+        'software.merchant_id = merchant.id',
+      )
+      .getOne();
     if (software) {
-      const payConfig =
-        software.channel === TradeChannel.wechat
-          ? JSON.parse(software.wechat)
-          : JSON.parse(software.alipay);
-      return {
-        domain_url: software.domain_url.split(','),
-        secret_key: software.secret_key,
-        payConfig,
-      };
+      if (software.merchant.channel == TradeChannel.wechat) {
+        const payConfig: WechatConfig = {
+          ...JSON.parse(software.config),
+          ...JSON.parse(software.merchant.config),
+          callback_url: software.callback_url,
+          return_url: software.return_url,
+          notify_url: software.notify_url,
+        };
+        return {
+          domain_url: software.domain_url.split(','),
+          secret_key: software.secret_key,
+          payConfig,
+        };
+      } else {
+        const payConfig: AlipayConfig = {
+          ...JSON.parse(software.config),
+          ...JSON.parse(software.merchant.config),
+          callback_url: software.callback_url,
+          return_url: software.return_url,
+          notify_url: software.notify_url,
+        };
+        return {
+          domain_url: software.domain_url.split(','),
+          secret_key: software.secret_key,
+          payConfig,
+        };
+      }
     } else {
       throw new HttpException('未查询到支付配置,请检查appid', HttpStatus.BAD_REQUEST);
-    }
-  }
-
-  public async findSoftwarePayConfig(appid: string) {
-    try {
-      const data = await this.softwareRepository.findOne({
-        appid,
-      });
-      if (data.channel === TradeChannel.wechat) {
-        return { wechatConfig: JSON.parse(data.wechat), secret_key: data.secret_key };
-      } else {
-        return { alipayConfig: JSON.parse(data.alipay), secret_key: data.secret_key };
-      }
-    } catch (e) {
-      throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
-    }
-  }
-
-  /**
-   * 根据微信appid 查找到对应的微(s)信(b)配置
-   * @param wxappid
-   */
-  public async findSoftwareByWxAppid(wxappid: string): Promise<WechatConfig> {
-    try {
-      const data = await this.softwareRepository.find({
-        channel: TradeChannel.wechat,
-      });
-      const result = data.find((item) => {
-        return wxappid == JSON.parse(item.wechat).appid;
-      });
-      return JSON.parse(result.wechat);
-    } catch (e) {
-      throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -97,28 +92,28 @@ export class SoftwareService extends BaseService<Software> {
   //   }
   // }
 
-  // 用于修改使用
-  async findSoftware(appid: string) {
-    const data = await this.softwareRepository.findOne({
-      appid,
-    });
-    if (!data) {
-      throw new HttpException(`没有找到项目`, HttpStatus.BAD_REQUEST);
-    }
-    try {
-      if (data.channel === TradeChannel.wechat) {
-        const wechat = JSON.parse(data.wechat);
-        delete data.wechat;
-        return { ...data, ...wechat };
-      } else {
-        const alipay = JSON.parse(data.alipay);
-        delete data.alipay;
-        return { ...data, ...alipay };
-      }
-    } catch (e) {
-      throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
-    }
-  }
+  // // 用于修改使用
+  // async findSoftware(appid: string) {
+  //   const data = await this.softwareRepository.findOne({
+  //     appid,
+  //   });
+  //   if (!data) {
+  //     throw new HttpException(`没有找到项目`, HttpStatus.BAD_REQUEST);
+  //   }
+  //   try {
+  //     if (data.channel === TradeChannel.wechat) {
+  //       const wechat = JSON.parse(data.wechat);
+  //       delete data.wechat;
+  //       return { ...data, ...wechat };
+  //     } else {
+  //       const alipay = JSON.parse(data.alipay);
+  //       delete data.alipay;
+  //       return { ...data, ...alipay };
+  //     }
+  //   } catch (e) {
+  //     throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST);
+  //   }
+  // }
 
   /**
    * 查询项目（因为不会有太多的项目索性不做分页查询!）

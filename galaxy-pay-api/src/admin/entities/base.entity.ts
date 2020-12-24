@@ -2,7 +2,7 @@ import { CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn } from 'type
 
 export abstract class Base {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @CreateDateColumn({
     comment: '创建时间',
