@@ -86,10 +86,10 @@ const Trade: FC = () => {
             微信
           </Tag>
         ) : (
-            <Tag icon={<AlipayCircleOutlined />} color="#2db7f5">
-              支付宝
-            </Tag>
-          )
+          <Tag icon={<AlipayCircleOutlined />} color="#2db7f5">
+            支付宝
+          </Tag>
+        )
       }
     }
   ]

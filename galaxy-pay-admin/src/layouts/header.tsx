@@ -4,11 +4,13 @@ import { Button, Layout } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppState } from '../state/store'
 import { setVisible } from '../state/actions/modal.action'
+import { useHistory } from 'react-router-dom'
 const { Header } = Layout
 
 const RenderAction = () => {
   const { path } = useSelector((state: AppState) => state.menuReducer)
   const dispatch = useDispatch()
+  const history = useHistory()
   const handleOpenSoftwareCreate = () => {
     dispatch(setVisible(true))
   }
@@ -17,7 +19,14 @@ const RenderAction = () => {
     <>
       {path === '/' ? (
         <Button type="primary" onClick={() => handleOpenSoftwareCreate()}>
-          创建项目
+          创建商户
+        </Button>
+      ) : (
+        <></>
+      )}
+      {path === '/detail' ? (
+        <Button type="primary" onClick={() => history.go(-1)}>
+          返回
         </Button>
       ) : (
         <></>

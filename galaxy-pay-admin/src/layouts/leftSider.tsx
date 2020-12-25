@@ -9,7 +9,7 @@ const { Sider } = Layout
 
 const menuList = [
   {
-    title: '项目管理',
+    title: '商户管理',
     icon: <AppstoreOutlined />,
     path: '/'
   },
@@ -27,6 +27,7 @@ const LeftSider: FC = () => {
   const dispatch = useDispatch()
 
   history.listen(location => {
+    console.log(location)
     setMenuInfo(location)
   })
 

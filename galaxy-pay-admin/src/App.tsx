@@ -2,13 +2,15 @@ import React, { FC } from 'react'
 import './App.css'
 import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import BaseLayout from './layouts/baseLayout'
-import Software from './view/software'
+import Merchant from './view/merchant'
 import Login from './view/login'
 import Trade from './view/trade'
+import Detail from './view/merchant/detail'
 
 const Routers = [
-  { path: '/', name: 'Software', component: Software, auth: true },
-  { path: '/Trade', name: 'Trade', component: Trade, auth: true }
+  { path: '/', name: 'Merchant', component: Merchant, auth: true },
+  { path: '/Trade', name: 'Trade', component: Trade, auth: true },
+  { path: '/merchant/:id', name: 'Detail', component: Detail, auth: true }
 ]
 
 const App: FC = () => {

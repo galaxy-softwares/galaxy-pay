@@ -3,27 +3,26 @@ import { Table, notification, Card } from 'antd'
 import { ModalFrom } from '../../components/modalForm'
 import './index.less'
 import { Form, Tag } from 'antd'
-import { softwareCreateInfo, softwareGetList, softwareUpdateInfo } from '../../request/software'
-import { SoftwareFrom } from '../../components/softwareForm'
+import { merchantGetList, merchantCreateInfo, merchantDelete } from '../../request/merchant'
+import { MerchantForm } from '../../components/merchantForm'
 import { useDispatch } from 'react-redux'
-import { softwareDetail } from '../../request/software'
 import { setVisible } from '../../state/actions/modal.action'
+import { useHistory } from 'react-router-dom'
+import { setMenu } from '../../state/actions/menu.actions'
 
-const Software: FC = () => {
+const Merchant: FC = () => {
   const [form] = Form.useForm()
   const [data, setData] = useState([])
-  const [isEdit, setIsEdit] = useState(false)
-  const [channel, setChannel] = useState('')
+  const history = useHistory()
   const dispatch = useDispatch()
-  const [modalTitle, setModalTitle] = useState('项目创建')
-  const initSoftware = useCallback(async () => {
-    const result = await softwareGetList()
+  const initMerchant = useCallback(async () => {
+    const result = await merchantGetList()
     setData(result.data)
   }, [])
 
   useEffect(() => {
-    initSoftware()
-  }, [initSoftware])
+    initMerchant()
+  }, [initMerchant])
 
   const columns = [
     {
@@ -32,19 +31,9 @@ const Software: FC = () => {
       key: 'id'
     },
     {
-      title: 'appid',
-      dataIndex: 'appid',
-      key: 'appid'
-    },
-    {
       title: '项目名称',
       dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: 'domain_url',
-      dataIndex: 'domain_url',
-      key: 'domain_url'
+      key: 'name'
     },
     {
       title: '支付通道',
@@ -55,23 +44,24 @@ const Software: FC = () => {
       }
     },
     {
+      title: '创建时间',
+      dataIndex: 'create_at',
+      key: 'create_at'
+    },
+    {
       title: '操作',
       key: 'action',
       render: (record: any) => (
         <>
-          <div onClick={async () => {
-            setModalTitle('修改项目')
-            const { status, data } = await softwareDetail(record.appid, record.channel)
-            if (status === 200) {
-              setChannel(record.channel)
-              setIsEdit(true)
-              dispatch(setVisible(true))
-              form.setFieldsValue({ ...data })
-            }
-          }}
+          <div
+            onClick={() => {
+              history.push(`/merchant/${record.id}`)
+              dispatch(setMenu({ menuIndex: 0, title: '商户详情', path: '/detail' }))
+            }}
           >
-            编辑
+            详情
           </div>
+          <div onClick={() => deleteMerchant(record.id)}>删除</div>
         </>
       )
     }
@@ -81,8 +71,18 @@ const Software: FC = () => {
     notification.open(config)
   }
 
+  const deleteMerchant = async id => {
+    const { status } = await merchantDelete(id)
+    if (status === 201) {
+      console.log('删除成功！')
+    }
+    merchantGetList().then((res: any) => {
+      setData(res.data)
+    })
+  }
+
   const create = async form => {
-    const { status } = await softwareCreateInfo(form)
+    const { status } = await merchantCreateInfo(form)
     if (status === 201) {
       openNotification({
         key: 'softwareCreate',
@@ -92,23 +92,7 @@ const Software: FC = () => {
       })
     }
     dispatch(setVisible(false))
-    softwareGetList().then((res: any) => {
-      setData(res.data)
-    })
-  }
-
-  const update = async form => {
-    const { status } = await softwareUpdateInfo(form)
-    if (status === 201) {
-      openNotification({
-        key: 'softwareCreate',
-        type: 'success',
-        message: `${form.name} 修改成功`,
-        duration: 3
-      })
-    }
-    dispatch(setVisible(false))
-    softwareGetList().then((res: any) => {
+    merchantGetList().then((res: any) => {
       setData(res.data)
     })
   }
@@ -116,20 +100,13 @@ const Software: FC = () => {
   return (
     <div>
       <ModalFrom
-        title={modalTitle}
-        onClose={() => {
-          setIsEdit(false)
-          setChannel('')
-        }}
+        title={'项目创建'}
+        onClose={null}
         onCreate={() => {
           form
             .validateFields()
             .then((values: any) => {
-              if (values.id) {
-                update(values)
-              } else {
-                create(values)
-              }
+              create(values)
               form.resetFields()
             })
             .catch(info => {
@@ -137,7 +114,7 @@ const Software: FC = () => {
             })
         }}
       >
-        <SoftwareFrom form={form} channel={channel} edit={isEdit} />
+        <MerchantForm form={form} />
       </ModalFrom>
       <Card>
         <Table
@@ -153,4 +130,4 @@ const Software: FC = () => {
   )
 }
 
-export default Software
+export default Merchant
