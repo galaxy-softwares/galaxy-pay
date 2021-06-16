@@ -1,26 +1,102 @@
 import React, { FC, useEffect, useState, useCallback } from 'react'
-import { Table, notification, Card } from 'antd'
-import './index.less'
-import { Form, Tag } from 'antd'
+import { Table, notification, Card, Avatar, Space } from 'antd'
+import { Form } from 'antd'
+import { EllipsisOutlined } from '@ant-design/icons'
 import { merchantGetList, merchantCreateInfo, merchantDelete } from '../../request/merchant'
 import { MerchantForm } from '../../components/merchantForm'
 import { useDispatch } from 'react-redux'
 import { setVisible } from '../../state/actions/modal.action'
 import { useHistory } from 'react-router-dom'
-import { setMenu } from '../../state/actions/menu.actions'
+// import { setMenu } from '../../state/actions/menu.actions'
 import { FormModal } from '../../components/FormModel/formModel'
+import { ColumnsType } from 'antd/lib/table'
+
+type dataType = {
+  id: number
+  name: string
+  amount: number
+  order: number
+  paid: number
+  unpaid: number
+  software: number
+  create_at: string
+}
 
 const Merchant: FC = () => {
   const [form] = Form.useForm()
   const [data, setData] = useState([
     {
       id: 1,
-      name: '测试',
-      channel: 'wechat',
-      create_at: '测试'
+      name: '测试项目1',
+      amount: 999123,
+      order: 1000,
+      paid: 999,
+      unpaid: 1,
+      software: 10,
+      create_at: '2021-06-16'
+    },
+    {
+      id: 2,
+      name: '测试项目2',
+      amount: 999123,
+      order: 1000,
+      paid: 999,
+      unpaid: 1,
+      software: 10,
+      create_at: '2021-06-16'
+    },
+    {
+      id: 3,
+      name: '测试项目3',
+      amount: 999123,
+      order: 1000,
+      paid: 999,
+      unpaid: 1,
+      software: 10,
+      create_at: '2021-06-16'
+    },
+    {
+      id: 4,
+      name: '测试项目4',
+      amount: 999123,
+      order: 1000,
+      paid: 999,
+      unpaid: 1,
+      software: 10,
+      create_at: '2021-06-16'
+    },
+    {
+      id: 5,
+      name: '测试项目5',
+      amount: 999123,
+      order: 1000,
+      paid: 999,
+      unpaid: 1,
+      software: 10,
+      create_at: '2021-06-16'
+    },
+    {
+      id: 6,
+      name: '测试项目6',
+      amount: 999123,
+      order: 1000,
+      paid: 999,
+      unpaid: 1,
+      software: 10,
+      create_at: '2021-06-16'
+    },
+    {
+      id: 7,
+      name: '测试项目7',
+      amount: 999123,
+      order: 1000,
+      paid: 999,
+      unpaid: 1,
+      software: 10,
+      create_at: '2021-06-16'
     }
   ])
-  const history = useHistory()
+  // const history = useHistory()
   const dispatch = useDispatch()
   const initMerchant = useCallback(async () => {
     // const result = await merchantGetList()
@@ -31,45 +107,78 @@ const Merchant: FC = () => {
     initMerchant()
   }, [initMerchant])
 
-  const columns = [
+  const columns: ColumnsType<dataType> = [
     {
-      title: 'id',
+      title: '#',
       dataIndex: 'id',
-      key: 'id'
+      key: 'id',
+      width: 80,
+      align: 'center',
+      sorter: {
+        compare: (a, b) => a.id - b.id
+      }
     },
     {
       title: '项目名称',
       dataIndex: 'name',
-      key: 'name'
+      key: 'name',
+      render: (record: number) => (
+        <Space size={10}>
+          <Avatar size={30} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"></Avatar>
+          {record}
+        </Space>
+      )
     },
     {
-      title: '支付通道',
-      dataIndex: 'channel',
-      key: 'channel',
-      render: (text: string) => {
-        return text === 'wechat' ? <Tag color="#87d068">微信</Tag> : <Tag color="#108ee9">支付宝</Tag>
-      }
+      title: '交易金额',
+      dataIndex: 'amount',
+      key: 'amount',
+      align: 'left',
+      width: 200,
+      sorter: {
+        compare: (a, b) => a.amount - b.amount
+      },
+      render: (record: number) => <div className="table-font table_amount">{record}</div>
     },
     {
-      title: '创建时间',
+      title: '支付笔数',
+      dataIndex: 'paid',
+      key: 'paid',
+      width: 200,
+      sorter: {
+        compare: (a, b) => a.paid - b.paid
+      },
+      render: (record: number) => <div className="table-font">{record}</div>
+    },
+    {
+      title: '未支付笔数',
+      dataIndex: 'unpaid',
+      key: 'unpaid',
+      width: 200,
+      sorter: {
+        compare: (a, b) => a.unpaid - b.unpaid
+      },
+      render: (record: number) => <div className="table-font table_unpaid">{record}</div>
+    },
+    {
+      title: '创建于',
       dataIndex: 'create_at',
-      key: 'create_at'
+      key: 'create_at',
+      align: 'center',
+      width: 140,
+      sorter: {
+        compare: (a, b) => a.unpaid - b.unpaid
+      }
     },
     {
       title: '操作',
       key: 'action',
-      render: (record: any) => (
-        <>
-          {/* <div
-            onClick={() => {
-              history.push(`/merchant/${record.id}`)
-              dispatch(setMenu({ menuIndex: 0, title: '商户详情', path: '/detail' }))
-            }}
-          >
-            详情
-          </div>
-          <div onClick={() => deleteMerchant(record.id)}>删除</div> */}
-        </>
+      align: 'center',
+      width: 100,
+      render: () => (
+        <div className="table_action">
+          <EllipsisOutlined />
+        </div>
       )
     }
   ]
@@ -126,18 +235,15 @@ const Merchant: FC = () => {
         <MerchantForm form={form} />
       </FormModal>
       <Card>
-        <div className="table-card-comp-wrapper">
-          <div className="table-card-container">
-            <Table
-              columns={columns}
-              dataSource={data}
-              rowKey={(record, index) => index}
-              pagination={{
-                hideOnSinglePage: true
-              }}
-            />
-          </div>
-        </div>
+        <Table
+          columns={columns}
+          dataSource={data}
+          rowKey={(record, index) => index}
+          pagination={{
+            hideOnSinglePage: true
+          }}
+          footer={() => '共 3 个条目'}
+        />
       </Card>
     </div>
   )

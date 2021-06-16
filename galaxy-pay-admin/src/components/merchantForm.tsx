@@ -20,9 +20,9 @@ export const MerchantForm: React.FC<Merchant> = ({ form }) => {
     }
   }
 
-  const onFormChange = e => {
-    setFormChannel(e.target.value)
-  }
+  // const onFormChange = e => {
+  //   setFormChannel(e.target.value)
+  // }
 
   return (
     <div>

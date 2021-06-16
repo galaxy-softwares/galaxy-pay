@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
 import './index.less'
+import { PlusOutlined } from '@ant-design/icons'
 import { Button, Layout } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppState } from '../state/store'
@@ -18,7 +19,7 @@ const RenderAction = () => {
   return (
     <>
       {path === '/' ? (
-        <Button type="primary" onClick={() => handleOpenSoftwareCreate()}>
+        <Button type="primary" onClick={() => handleOpenSoftwareCreate()} icon={<PlusOutlined />}>
           创建商户
         </Button>
       ) : (
@@ -40,9 +41,7 @@ const Headers: FC = () => {
 
   return (
     <Header>
-      <div className="flex-grow-1">
-        <strong>{title}</strong>
-      </div>
+      <div className="flex-grow-1 header_title">{title}</div>
       <div className="flex-grow-0 flex-align-items-center">
         <RenderAction />
       </div>

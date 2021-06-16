@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { FC } from 'react'
 import { Table, Card } from 'antd'
-import './index.less'
 
 const Detail: FC = () => {
   const [data] = useState([])
