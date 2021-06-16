@@ -1,5 +1,4 @@
 import { Entity, Column } from 'typeorm';
-import { TradeChannel } from '../../common/enum/trade.enum';
 import { Base } from './base.entity';
 
 @Entity()
@@ -7,7 +6,9 @@ export class Software extends Base {
   @Column()
   merchant_id: string;
 
-  @Column()
+  @Column({
+    comment: '系统随机分配APPID,用于请求的时使用',
+  })
   appid: string;
 
   @Column({
@@ -15,11 +16,14 @@ export class Software extends Base {
   })
   secret_key: string;
 
-  @Column()
+  @Column({
+    comment: '项目名称',
+  })
   name: string;
 
   @Column({
     comment: '请求白名单地址,多个逗号分开',
+    type: 'text',
   })
   domain_url: string;
 
@@ -38,12 +42,4 @@ export class Software extends Base {
 
   @Column()
   return_url: string;
-
-  @Column({
-    comment: '支付宝还是微信',
-    type: 'enum',
-    enum: TradeChannel,
-    default: TradeChannel.alipay,
-  })
-  channel: TradeChannel;
 }

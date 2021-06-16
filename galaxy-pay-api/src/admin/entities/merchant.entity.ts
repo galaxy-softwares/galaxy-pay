@@ -8,7 +8,7 @@ export class Merchant extends Base {
   name: string;
 
   @Column({
-    comment: '商户配置',
+    comment: '支付商户配置',
     type: 'text',
   })
   config: string;
