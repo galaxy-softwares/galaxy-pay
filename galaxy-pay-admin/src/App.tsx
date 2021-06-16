@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
-import './App.css'
+import './App.less'
+
 import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import BaseLayout from './layouts/baseLayout'
 import Merchant from './view/merchant'

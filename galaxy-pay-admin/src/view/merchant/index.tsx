@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useState, useCallback } from 'react'
 import { Table, notification, Card } from 'antd'
-import { ModalFrom } from '../../components/modalForm'
 import './index.less'
 import { Form, Tag } from 'antd'
 import { merchantGetList, merchantCreateInfo, merchantDelete } from '../../request/merchant'
@@ -9,15 +8,23 @@ import { useDispatch } from 'react-redux'
 import { setVisible } from '../../state/actions/modal.action'
 import { useHistory } from 'react-router-dom'
 import { setMenu } from '../../state/actions/menu.actions'
+import { FormModal } from '../../components/FormModel/formModel'
 
 const Merchant: FC = () => {
   const [form] = Form.useForm()
-  const [data, setData] = useState([])
+  const [data, setData] = useState([
+    {
+      id: 1,
+      name: '测试',
+      channel: 'wechat',
+      create_at: '测试'
+    }
+  ])
   const history = useHistory()
   const dispatch = useDispatch()
   const initMerchant = useCallback(async () => {
-    const result = await merchantGetList()
-    setData(result.data)
+    // const result = await merchantGetList()
+    // setData(result.data)
   }, [])
 
   useEffect(() => {
@@ -53,7 +60,7 @@ const Merchant: FC = () => {
       key: 'action',
       render: (record: any) => (
         <>
-          <div
+          {/* <div
             onClick={() => {
               history.push(`/merchant/${record.id}`)
               dispatch(setMenu({ menuIndex: 0, title: '商户详情', path: '/detail' }))
@@ -61,7 +68,7 @@ const Merchant: FC = () => {
           >
             详情
           </div>
-          <div onClick={() => deleteMerchant(record.id)}>删除</div>
+          <div onClick={() => deleteMerchant(record.id)}>删除</div> */}
         </>
       )
     }
@@ -99,9 +106,11 @@ const Merchant: FC = () => {
 
   return (
     <div>
-      <ModalFrom
-        title={'项目创建'}
-        onClose={null}
+      <FormModal
+        title="项目创建"
+        onCancel={() => {
+          console.log('this is jb')
+        }}
         onCreate={() => {
           form
             .validateFields()
@@ -115,16 +124,20 @@ const Merchant: FC = () => {
         }}
       >
         <MerchantForm form={form} />
-      </ModalFrom>
+      </FormModal>
       <Card>
-        <Table
-          columns={columns}
-          dataSource={data}
-          rowKey={(record, index) => index}
-          pagination={{
-            hideOnSinglePage: true
-          }}
-        />
+        <div className="table-card-comp-wrapper">
+          <div className="table-card-container">
+            <Table
+              columns={columns}
+              dataSource={data}
+              rowKey={(record, index) => index}
+              pagination={{
+                hideOnSinglePage: true
+              }}
+            />
+          </div>
+        </div>
       </Card>
     </div>
   )

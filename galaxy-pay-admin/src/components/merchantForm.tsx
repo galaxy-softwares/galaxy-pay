@@ -1,13 +1,9 @@
 import React, { useState } from 'react'
-import { Form, Input, Radio } from 'antd'
+import { Form, Input, Select } from 'antd'
 import { CloudUploadOutlined } from '@ant-design/icons'
 import { FormInstance } from 'antd/es/form'
 import { UploadFile } from './uploadFile'
-
-const layout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 16 }
-}
+const { Option } = Select
 
 interface Merchant {
   form: FormInstance
@@ -32,7 +28,7 @@ export const MerchantForm: React.FC<Merchant> = ({ form }) => {
     <div>
       <Form
         preserve={false}
-        {...layout}
+        layout="vertical"
         form={form}
         initialValues={{
           channel: formChannel
@@ -41,11 +37,11 @@ export const MerchantForm: React.FC<Merchant> = ({ form }) => {
         <Form.Item name="name" label="项目名称" rules={[{ required: true, message: '项目名称不能为空' }]}>
           <Input placeholder="请输入项目名称" />
         </Form.Item>
-        <Form.Item name="channel" label="支付通道" rules={[{ required: false, message: '请选择通道' }]}>
-          <Radio.Group onChange={onFormChange}>
-            <Radio value="wechat">微信</Radio>
-            <Radio value="alipay">支付宝</Radio>
-          </Radio.Group>
+        <Form.Item name="channel" label="支付通道" rules={[{ required: true }]}>
+          <Select placeholder="请选择支付通道" allowClear>
+            <Option value="wechat">微信</Option>
+            <Option value="alipay">支付宝</Option>
+          </Select>
         </Form.Item>
         {formChannel === 'wechat' ? (
           <>
@@ -55,7 +51,7 @@ export const MerchantForm: React.FC<Merchant> = ({ form }) => {
             <Form.Item name="mch_key" label="MCH_KEY" rules={[{ required: true, message: '项目名称不能为空' }]}>
               <Input placeholder="微信支付密钥" />
             </Form.Item>
-            <Form.Item name="apiclient_cert" label="apiclient_cert">
+            <Form.Item name="apiclient_cert" label="apiclient_cert" required>
               <Input
                 placeholder="证书文件，特定操作需要,譬如打款功能！"
                 addonAfter={
