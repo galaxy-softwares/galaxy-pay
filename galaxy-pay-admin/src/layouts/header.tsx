@@ -1,7 +1,8 @@
 import React, { FC } from 'react'
 import './index.less'
 import { PlusOutlined } from '@ant-design/icons'
-import { Button, Layout } from 'antd'
+import { Button, Input, Layout } from 'antd'
+import { SearchOutlined } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppState } from '../state/store'
 import { setVisible } from '../state/actions/modal.action'
@@ -23,7 +24,11 @@ const RenderAction = () => {
           创建商户
         </Button>
       ) : (
-        <></>
+        <>
+          <div className="margin-10">
+            <Input placeholder="搜索" suffix={<SearchOutlined />} />
+          </div>
+        </>
       )}
       {path === '/detail' ? (
         <Button type="primary" onClick={() => history.go(-1)}>

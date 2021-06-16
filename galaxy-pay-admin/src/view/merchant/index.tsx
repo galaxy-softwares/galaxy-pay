@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState, useCallback } from 'react'
-import { Table, notification, Card, Avatar, Space } from 'antd'
+import { Table, notification, Card, Avatar, Space, Input } from 'antd'
 import { Form } from 'antd'
-import { EllipsisOutlined } from '@ant-design/icons'
+import { EllipsisOutlined, SearchOutlined } from '@ant-design/icons'
 import { merchantGetList, merchantCreateInfo, merchantDelete } from '../../request/merchant'
 import { MerchantForm } from '../../components/merchantForm'
 import { useDispatch } from 'react-redux'
@@ -234,6 +234,7 @@ const Merchant: FC = () => {
       >
         <MerchantForm form={form} />
       </FormModal>
+
       <Card>
         <Table
           columns={columns}

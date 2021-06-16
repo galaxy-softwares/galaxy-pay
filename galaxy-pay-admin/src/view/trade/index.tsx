@@ -1,20 +1,10 @@
-import React, { FC, useState, useCallback, useEffect } from 'react'
+import React, { FC, useState } from 'react'
 import './index.less'
 import { Card, Table, Tag } from 'antd'
 import { WechatOutlined, AlipayCircleOutlined } from '@ant-design/icons'
-import { tradeGetList } from '../../request/trade'
 
 const Trade: FC = () => {
   const [data, setData] = useState([])
-
-  const initOrder = useCallback(async () => {
-    const result = await tradeGetList()
-    setData(result.data.data)
-  }, [])
-
-  useEffect(() => {
-    initOrder()
-  }, [initOrder])
 
   const columns = [
     {
@@ -96,7 +86,7 @@ const Trade: FC = () => {
 
   return (
     <div>
-      <Card bordered={false}>
+      <Card>
         <Table
           columns={columns}
           dataSource={data}
@@ -105,6 +95,7 @@ const Trade: FC = () => {
             hideOnSinglePage: false,
             defaultPageSize: 7
           }}
+          footer={() => '共 3 个条目'}
         />
       </Card>
     </div>
