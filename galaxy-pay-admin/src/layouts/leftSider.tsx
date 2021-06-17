@@ -1,6 +1,6 @@
 import React, { useEffect, FC } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { AppstoreOutlined, CopyOutlined } from '@ant-design/icons'
+import { AppstoreOutlined, CopyOutlined, AppstoreAddOutlined } from '@ant-design/icons'
 import { Layout } from 'antd'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import { AppState } from '../state/store'
@@ -9,14 +9,24 @@ const { Sider } = Layout
 
 const menuList = [
   {
-    title: '商户管理',
+    title: '项目管理',
     icon: <AppstoreOutlined />,
-    path: '/'
+    path: '/sotfware'
   },
   {
-    title: '账单',
+    title: '支付应用',
+    icon: <AppstoreAddOutlined />,
+    path: '/apppay'
+  },
+  {
+    title: '支付账单',
     icon: <CopyOutlined />,
     path: '/trade'
+  },
+  {
+    title: '打款账单',
+    icon: <CopyOutlined />,
+    path: '/asd'
   }
 ]
 
@@ -47,8 +57,8 @@ const LeftSider: FC = () => {
 
   return (
     <Sider width={190} className="slider">
-      <div className="App-logo">支付平台</div>
-      <div id="menu-list">
+      <div className="app__logo">logo</div>
+      <div id="menu__list">
         {menuList.map((item, index) => {
           return (
             <div key={index}>

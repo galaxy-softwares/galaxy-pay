@@ -2,17 +2,12 @@ import React, { FC, useState } from 'react'
 import './index.less'
 import { Card, Table, Tag } from 'antd'
 import { WechatOutlined, AlipayCircleOutlined } from '@ant-design/icons'
+import { CardTable } from '../../components/CardTable/cardTable'
 
 const Trade: FC = () => {
   const [data, setData] = useState([])
 
   const columns = [
-    {
-      title: '创建时间',
-      dataIndex: 'create_at',
-      key: 'create_at',
-      width: 150
-    },
     {
       title: '账单号',
       dataIndex: 'sys_trade_no',
@@ -37,7 +32,7 @@ const Trade: FC = () => {
       key: 'appid'
     },
     {
-      title: '金额',
+      title: '支付金额',
       dataIndex: 'trade_amount',
       key: 'trade_amount',
       render: text => {
@@ -45,7 +40,7 @@ const Trade: FC = () => {
       }
     },
     {
-      title: '状态',
+      title: '支付状态',
       dataIndex: 'trade_status',
       key: 'trade_status',
       render: (text: string) => {
@@ -57,7 +52,7 @@ const Trade: FC = () => {
       dataIndex: 'trade_type',
       key: 'trade_type',
       render: (text: string) => {
-        const trade_type = ['支付', '退款', '打款']
+        const trade_type = ['支付', '退款']
         return <Tag color="purple">{trade_type[text]}</Tag>
       }
     },
@@ -81,23 +76,18 @@ const Trade: FC = () => {
           </Tag>
         )
       }
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'create_at',
+      key: 'create_at',
+      width: 150
     }
   ]
 
   return (
     <div>
-      <Card>
-        <Table
-          columns={columns}
-          dataSource={data}
-          rowKey={(record, index) => index}
-          pagination={{
-            hideOnSinglePage: false,
-            defaultPageSize: 7
-          }}
-          footer={() => '共 3 个条目'}
-        />
-      </Card>
+      <CardTable columns={columns} data={data} title="Trade" />
     </div>
   )
 }

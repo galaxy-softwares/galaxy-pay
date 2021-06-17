@@ -1,15 +1,15 @@
 import React, { FC, useEffect, useState, useCallback } from 'react'
-import { Table, notification, Card, Avatar, Space, Input } from 'antd'
+import { Table, notification, Card, Avatar, Space, Input, Button, Tag } from 'antd'
 import { Form } from 'antd'
-import { EllipsisOutlined, SearchOutlined } from '@ant-design/icons'
+import { EllipsisOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons'
 import { merchantGetList, merchantCreateInfo, merchantDelete } from '../../request/merchant'
 import { MerchantForm } from '../../components/merchantForm'
 import { useDispatch } from 'react-redux'
 import { setVisible } from '../../state/actions/modal.action'
-import { useHistory } from 'react-router-dom'
 // import { setMenu } from '../../state/actions/menu.actions'
 import { FormModal } from '../../components/FormModel/formModel'
 import { ColumnsType } from 'antd/lib/table'
+import { CardTable } from '../../components/CardTable/cardTable'
 
 type dataType = {
   id: number
@@ -17,82 +17,45 @@ type dataType = {
   amount: number
   order: number
   paid: number
-  unpaid: number
-  software: number
+  software: string
   create_at: string
 }
 
-const Merchant: FC = () => {
+export const AppPayPage: FC = () => {
   const [form] = Form.useForm()
+
   const [data, setData] = useState([
     {
       id: 1,
-      name: '测试项目1',
+      name: '小程序支付',
       amount: 999123,
       order: 1000,
       paid: 999,
-      unpaid: 1,
-      software: 10,
+      channel: 'wechat',
+      appid: 'FRZcaCHvpwDnBWVE',
+      software: '百筐易购',
       create_at: '2021-06-16'
     },
     {
       id: 2,
-      name: '测试项目2',
+      name: 'APP支付',
       amount: 999123,
       order: 1000,
       paid: 999,
-      unpaid: 1,
-      software: 10,
+      channel: 'alipay',
+      appid: '3PRF12wtGlp4qcyC',
+      software: '百筐易购',
       create_at: '2021-06-16'
     },
     {
       id: 3,
-      name: '测试项目3',
+      name: 'H5支付',
       amount: 999123,
       order: 1000,
       paid: 999,
-      unpaid: 1,
-      software: 10,
-      create_at: '2021-06-16'
-    },
-    {
-      id: 4,
-      name: '测试项目4',
-      amount: 999123,
-      order: 1000,
-      paid: 999,
-      unpaid: 1,
-      software: 10,
-      create_at: '2021-06-16'
-    },
-    {
-      id: 5,
-      name: '测试项目5',
-      amount: 999123,
-      order: 1000,
-      paid: 999,
-      unpaid: 1,
-      software: 10,
-      create_at: '2021-06-16'
-    },
-    {
-      id: 6,
-      name: '测试项目6',
-      amount: 999123,
-      order: 1000,
-      paid: 999,
-      unpaid: 1,
-      software: 10,
-      create_at: '2021-06-16'
-    },
-    {
-      id: 7,
-      name: '测试项目7',
-      amount: 999123,
-      order: 1000,
-      paid: 999,
-      unpaid: 1,
-      software: 10,
+      channel: 'alipay',
+      appid: '94KkzJtcuhVpBT3R',
+      software: '百筐易购',
       create_at: '2021-06-16'
     }
   ])
@@ -119,15 +82,21 @@ const Merchant: FC = () => {
       }
     },
     {
-      title: '项目名称',
+      title: '应用名称',
       dataIndex: 'name',
       key: 'name',
-      render: (record: number) => (
-        <Space size={10}>
-          <Avatar size={30} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"></Avatar>
-          {record}
-        </Space>
+      render: (value: number, record) => (
+        <div>
+          {value}
+          <span className="small_desc ">{record.software}</span>
+        </div>
       )
+    },
+    {
+      title: 'APPID',
+      dataIndex: 'appid',
+      key: 'appid',
+      width: 200
     },
     {
       title: '交易金额',
@@ -151,24 +120,19 @@ const Merchant: FC = () => {
       render: (record: number) => <div className="table-font">{record}</div>
     },
     {
-      title: '未支付笔数',
-      dataIndex: 'unpaid',
-      key: 'unpaid',
-      width: 200,
-      sorter: {
-        compare: (a, b) => a.unpaid - b.unpaid
-      },
-      render: (record: number) => <div className="table-font table_unpaid">{record}</div>
+      title: '支付通道',
+      dataIndex: 'channel',
+      key: 'channel',
+      width: 120,
+      align: 'center',
+      render: (value: string) => <Tag color={value === 'wechat' ? '#87d068' : '#2db7f5'}>{value}</Tag>
     },
     {
       title: '创建于',
       dataIndex: 'create_at',
       key: 'create_at',
       align: 'center',
-      width: 140,
-      sorter: {
-        compare: (a, b) => a.unpaid - b.unpaid
-      }
+      width: 140
     },
     {
       title: '操作',
@@ -187,15 +151,15 @@ const Merchant: FC = () => {
     notification.open(config)
   }
 
-  const deleteMerchant = async id => {
-    const { status } = await merchantDelete(id)
-    if (status === 201) {
-      console.log('删除成功！')
-    }
-    merchantGetList().then((res: any) => {
-      setData(res.data)
-    })
-  }
+  // const deleteMerchant = async id => {
+  //   const { status } = await merchantDelete(id)
+  //   if (status === 201) {
+  //     console.log('删除成功！')
+  //   }
+  //   merchantGetList().then((res: any) => {
+  //     setData(res.data)
+  //   })
+  // }
 
   const create = async form => {
     const { status } = await merchantCreateInfo(form)
@@ -213,12 +177,16 @@ const Merchant: FC = () => {
     })
   }
 
+  const handleOpenSoftwareCreate = () => {
+    dispatch(setVisible(true))
+  }
+
   return (
     <div>
       <FormModal
         title="项目创建"
         onCancel={() => {
-          console.log('this is jb')
+          console.log('不知道为啥失败了！')
         }}
         onCreate={() => {
           form
@@ -234,20 +202,14 @@ const Merchant: FC = () => {
       >
         <MerchantForm form={form} />
       </FormModal>
-
-      <Card>
-        <Table
-          columns={columns}
-          dataSource={data}
-          rowKey={(record, index) => index}
-          pagination={{
-            hideOnSinglePage: true
-          }}
-          footer={() => '共 3 个条目'}
-        />
-      </Card>
+      <div>
+        <Space>
+          <Button type="primary" onClick={() => handleOpenSoftwareCreate()} icon={<PlusOutlined />}>
+            创建应用
+          </Button>
+        </Space>
+      </div>
+      <CardTable columns={columns} data={data} title="AppPay" />
     </div>
   )
 }
-
-export default Merchant

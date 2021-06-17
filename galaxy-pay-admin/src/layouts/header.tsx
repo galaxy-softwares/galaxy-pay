@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import './index.less'
 import { PlusOutlined } from '@ant-design/icons'
-import { Button, Input, Layout } from 'antd'
+import { Avatar, Breadcrumb, Button, Input, Layout } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppState } from '../state/store'
@@ -43,12 +43,16 @@ const RenderAction = () => {
 
 const Headers: FC = () => {
   const { title } = useSelector((state: AppState) => state.menuReducer)
-
   return (
     <Header>
-      <div className="flex-grow-1 header_title">{title}</div>
+      <div className="flex-grow-1 header__breadcrumb">
+        <Breadcrumb separator=">">
+          <Breadcrumb.Item>Home</Breadcrumb.Item>
+          <Breadcrumb.Item href="">Application Center</Breadcrumb.Item>
+        </Breadcrumb>
+      </div>
       <div className="flex-grow-0 flex-align-items-center">
-        <RenderAction />
+        <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
       </div>
     </Header>
   )

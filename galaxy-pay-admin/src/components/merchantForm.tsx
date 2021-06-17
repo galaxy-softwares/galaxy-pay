@@ -20,9 +20,9 @@ export const MerchantForm: React.FC<Merchant> = ({ form }) => {
     }
   }
 
-  // const onFormChange = e => {
-  //   setFormChannel(e.target.value)
-  // }
+  const onFormChange = value => {
+    setFormChannel(value)
+  }
 
   return (
     <div>
@@ -34,21 +34,34 @@ export const MerchantForm: React.FC<Merchant> = ({ form }) => {
           channel: formChannel
         }}
       >
-        <Form.Item name="name" label="项目名称" rules={[{ required: true, message: '项目名称不能为空' }]}>
+        <Form.Item name="software" label="归属项目" rules={[{ required: true }]}>
+          <Select placeholder="请选择归属项目" allowClear>
+            <Option value="0">不造</Option>
+            <Option value="1">百筐易购</Option>
+          </Select>
+        </Form.Item>
+        <Form.Item name="name" label="应用名称" rules={[{ required: true, message: '应用名称不能为空' }]}>
           <Input placeholder="请输入项目名称" />
         </Form.Item>
+        <Form.Item name="type" label="应用类型" rules={[{ required: true }]}>
+          <Select placeholder="请选择应用类型" allowClear>
+            <Option value="small">小程序</Option>
+            <Option value="app">APP</Option>
+            <Option value="h5">H5</Option>
+          </Select>
+        </Form.Item>
         <Form.Item name="channel" label="支付通道" rules={[{ required: true }]}>
-          <Select placeholder="请选择支付通道" allowClear>
+          <Select placeholder="请选择支付通道" allowClear onChange={onFormChange}>
             <Option value="wechat">微信</Option>
             <Option value="alipay">支付宝</Option>
           </Select>
         </Form.Item>
         {formChannel === 'wechat' ? (
           <>
-            <Form.Item name="mch_id" label="MCHID" rules={[{ required: true, message: '项目名称不能为空' }]}>
+            <Form.Item name="mch_id" label="MCHID" rules={[{ required: true, message: '' }]}>
               <Input placeholder="微信支付分配的商户号id" />
             </Form.Item>
-            <Form.Item name="mch_key" label="MCH_KEY" rules={[{ required: true, message: '项目名称不能为空' }]}>
+            <Form.Item name="mch_key" label="MCH_KEY" rules={[{ required: true, message: '' }]}>
               <Input placeholder="微信支付密钥" />
             </Form.Item>
             <Form.Item name="apiclient_cert" label="apiclient_cert" required>
