@@ -24,9 +24,11 @@ type dataType = {
 export const AppPayPage: FC = () => {
   const [form] = Form.useForm()
 
-  const [data, setData] = useState([
-    {
-      id: 1,
+  const data = []
+  for (let i = 1; i <= 20; i++) {
+    console.log(11)
+    data.push({
+      id: i,
       name: '小程序支付',
       amount: 999123,
       order: 1000,
@@ -35,40 +37,19 @@ export const AppPayPage: FC = () => {
       appid: 'FRZcaCHvpwDnBWVE',
       software: '百筐易购',
       create_at: '2021-06-16'
-    },
-    {
-      id: 2,
-      name: 'APP支付',
-      amount: 999123,
-      order: 1000,
-      paid: 999,
-      channel: 'alipay',
-      appid: '3PRF12wtGlp4qcyC',
-      software: '百筐易购',
-      create_at: '2021-06-16'
-    },
-    {
-      id: 3,
-      name: 'H5支付',
-      amount: 999123,
-      order: 1000,
-      paid: 999,
-      channel: 'alipay',
-      appid: '94KkzJtcuhVpBT3R',
-      software: '百筐易购',
-      create_at: '2021-06-16'
-    }
-  ])
+    })
+  }
+
   // const history = useHistory()
   const dispatch = useDispatch()
-  const initMerchant = useCallback(async () => {
-    // const result = await merchantGetList()
-    // setData(result.data)
-  }, [])
+  // const initMerchant = useCallback(async () => {
+  //   const result = await merchantGetList()
+  //   setData(result.data)
+  // }, [])
 
-  useEffect(() => {
-    initMerchant()
-  }, [initMerchant])
+  // useEffect(() => {
+  // initMerchant()
+  // }, [initMerchant])
 
   const columns: ColumnsType<dataType> = [
     {
@@ -172,9 +153,9 @@ export const AppPayPage: FC = () => {
       })
     }
     dispatch(setVisible(false))
-    merchantGetList().then((res: any) => {
-      setData(res.data)
-    })
+    // merchantGetList().then((res: any) => {
+    //   setData(res.data)
+    // })
   }
 
   const handleOpenSoftwareCreate = () => {

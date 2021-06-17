@@ -19,7 +19,8 @@ export const CardTable: React.FC<any> = ({ columns, data, title }) => {
         dataSource={data}
         rowKey={(record, index) => index}
         pagination={{
-          hideOnSinglePage: false
+          hideOnSinglePage: false,
+          pageSize: 8
         }}
       />
       <div className="_2005">123</div>
