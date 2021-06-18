@@ -25,49 +25,4 @@
 <div align="center">
   <img src="https://github.com/martin-yin/galaxy_pay/blob/master/project_process.jpg" width="700" height="500">
 </div> 
-
 <p align="center">支付流程介绍</p>
-
-## 安装
-
-```bash
-$ npm install
-```
-
-## 运行
-
-```bash
-# development
-$ npm run start
-
-// 数据登陆账号插入
-INSERT INTO `user` VALUES (1, '2020-08-13 17:48:54.426045', '2020-08-13 17:48:54.426045', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '523431532@qq.com');
-
-# watch mode
-$ npm run start:dev
-
-```
-
-## 使用
-
-需要先去配置后台配置对应的支付参数，拿到系统生成的APPID。然后你就可以愉快的去发送请求了~
-
-```bash
-curl --location --request POST 'http://127.0.0.1:3100/alipay/page' \
---header 'Content-Type: application/x-www-form-urlencoded' \
---data-urlencode 'appid=j5Se66PgGopFwkfyEv6xMVBYtacbiOCI' \
---data-urlencode 'money=0.01' \
---data-urlencode 'out_trade_no=1241234234234253454' \
---data-urlencode 'body=不知道' \
---data-urlencode 'notify_url=https://pay-test.utools.club/alipay_notify_url' \
---data-urlencode 'return_url=https://pay-test.utools.club'
-```
-
-
-## 最后
-
-to be or not to be, this is a question.
-
-
-
-
