@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react'
 import './index.less'
-import { Card, Table, Tag } from 'antd'
+import { Tag } from 'antd'
 import { WechatOutlined, AlipayCircleOutlined } from '@ant-design/icons'
 import { CardTable } from '../../components/CardTable/cardTable'
 

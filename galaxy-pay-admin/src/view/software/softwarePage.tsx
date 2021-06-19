@@ -1,7 +1,7 @@
-import { Avatar, Card, Input, Space, Table } from 'antd'
+import { Avatar, Button, Space } from 'antd'
 import { ColumnsType } from 'antd/lib/table'
 import React, { FC, useState } from 'react'
-import { SearchOutlined, EllipsisOutlined } from '@ant-design/icons'
+import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons'
 import { CardTable } from '../../components/CardTable/cardTable'
 type dataType = {
   id: number
@@ -33,6 +33,18 @@ export const SoftwarePage: FC = () => {
       )
     },
     {
+      title: 'return_url',
+      dataIndex: 'return_url',
+      key: 'return_url',
+      align: 'center'
+    },
+    {
+      title: 'callback_url',
+      dataIndex: 'callback_url',
+      key: 'callback_url',
+      align: 'center'
+    },
+    {
       title: '创建于',
       dataIndex: 'create_at',
       key: 'create_at',
@@ -55,77 +67,71 @@ export const SoftwarePage: FC = () => {
     {
       id: 1,
       name: '测试项目1',
-      amount: 999123,
-      order: 1000,
-      paid: 999,
-      unpaid: 1,
-      software: 10,
+      return_url: 'test.dancin.cn',
+      notify_url: 'test.dancin.cn',
+      callback_url: 'test.dancin.cn',
       create_at: '2021-06-16'
     },
     {
       id: 2,
       name: '测试项目2',
-      amount: 999123,
-      order: 1000,
-      paid: 999,
-      unpaid: 1,
-      software: 10,
+      return_url: 'test.dancin.cn',
+      notify_url: 'test.dancin.cn',
+      callback_url: 'test.dancin.cn',
       create_at: '2021-06-16'
     },
     {
       id: 3,
       name: '测试项目3',
-      amount: 999123,
-      order: 1000,
-      paid: 999,
-      unpaid: 1,
-      software: 10,
+      return_url: 'test.dancin.cn',
+      notify_url: 'test.dancin.cn',
+      callback_url: 'test.dancin.cn',
       create_at: '2021-06-16'
     },
     {
       id: 4,
       name: '测试项目4',
-      amount: 999123,
-      order: 1000,
-      paid: 999,
-      unpaid: 1,
-      software: 10,
+      return_url: 'test.dancin.cn',
+      notify_url: 'test.dancin.cn',
+      callback_url: 'test.dancin.cn',
       create_at: '2021-06-16'
     },
     {
       id: 5,
       name: '测试项目5',
-      amount: 999123,
-      order: 1000,
-      paid: 999,
-      unpaid: 1,
-      software: 10,
+      return_url: '',
+      notify_url: '',
+      callback_url: '',
       create_at: '2021-06-16'
     },
     {
       id: 6,
       name: '测试项目6',
-      amount: 999123,
-      order: 1000,
-      paid: 999,
-      unpaid: 1,
-      software: 10,
+      return_url: '',
+      notify_url: '',
+      callback_url: '',
       create_at: '2021-06-16'
     },
     {
       id: 7,
       name: '测试项目7',
-      amount: 999123,
-      order: 1000,
-      paid: 999,
-      unpaid: 1,
-      software: 10,
+      return_url: '',
+      notify_url: '',
+      callback_url: '',
       create_at: '2021-06-16'
     }
   ])
   return (
     <div>
-      <CardTable columns={columns} data={data} title="Software" />
+      <div className="page__title_warp">
+        <div className="title">项目管理</div>
+        <div className="create">
+          <Button type="primary" icon={<PlusOutlined />}>
+            创建项目
+          </Button>
+        </div>
+      </div>
+      <CardTable columns={columns} data={data} title="" />
     </div>
   )
 }

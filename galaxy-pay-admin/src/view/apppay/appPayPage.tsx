@@ -1,8 +1,8 @@
 import React, { FC, useEffect, useState, useCallback } from 'react'
-import { Table, notification, Card, Avatar, Space, Input, Button, Tag } from 'antd'
+import { notification, Button, Tag } from 'antd'
 import { Form } from 'antd'
-import { EllipsisOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons'
-import { merchantGetList, merchantCreateInfo, merchantDelete } from '../../request/merchant'
+import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons'
+import { merchantCreateInfo } from '../../request/merchant'
 import { MerchantForm } from '../../components/merchantForm'
 import { useDispatch } from 'react-redux'
 import { setVisible } from '../../state/actions/modal.action'
@@ -101,7 +101,7 @@ export const AppPayPage: FC = () => {
       render: (record: number) => <div className="table-font">{record}</div>
     },
     {
-      title: '支付通道',
+      title: '支付应用通道',
       dataIndex: 'channel',
       key: 'channel',
       width: 120,
@@ -183,14 +183,15 @@ export const AppPayPage: FC = () => {
       >
         <MerchantForm form={form} />
       </FormModal>
-      <div>
-        <Space>
-          <Button type="primary" onClick={() => handleOpenSoftwareCreate()} icon={<PlusOutlined />}>
+      <div className="page__title_warp">
+        <div className="title">支付应用</div>
+        <div className="create">
+          <Button type="primary" onClick={handleOpenSoftwareCreate} icon={<PlusOutlined />}>
             创建应用
           </Button>
-        </Space>
+        </div>
       </div>
-      <CardTable columns={columns} data={data} title="AppPay" />
+      <CardTable columns={columns} data={data} title="" />
     </div>
   )
 }
