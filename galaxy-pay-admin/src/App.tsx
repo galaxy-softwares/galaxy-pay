@@ -10,7 +10,7 @@ import Detail from './view/apppay/detail'
 import { SoftwarePage } from './view/software/softwarePage'
 
 const Routers = [
-  { path: '/', name: 'Sotfware', component: SoftwarePage, auth: true },
+  { path: '/softwares', name: 'Sotfware', component: SoftwarePage, auth: true },
   { path: '/apppay', name: 'AppPay', component: AppPayPage, auth: true },
   { path: '/Trade', name: 'Trade', component: Trade, auth: true },
   { path: '/merchant/:id', name: 'Detail', component: Detail, auth: true }
@@ -35,7 +35,7 @@ const App: FC = () => {
           )
         })}
         <Route path="/login" component={Login} />
-        <Redirect from={'*'} to={'/'} />
+        <Redirect from={'*'} to={'/softwares'} />
       </Switch>
     </Router>
   )

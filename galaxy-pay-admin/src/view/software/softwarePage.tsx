@@ -1,8 +1,12 @@
-import { Avatar, Button, Space } from 'antd'
+import { Avatar, Button, Form, Space } from 'antd'
 import { ColumnsType } from 'antd/lib/table'
 import React, { FC, useState } from 'react'
 import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons'
 import { CardTable } from '../../components/CardTable/cardTable'
+import { FormModal } from '../../components/FormModel/formModel'
+import { SoftwareForm } from '../../components/softwareForm'
+import { useDispatch } from 'react-redux'
+import { setVisible } from '../../state/actions/modal.action'
 type dataType = {
   id: number
   name: string
@@ -10,6 +14,11 @@ type dataType = {
 }
 
 export const SoftwarePage: FC = () => {
+  const [form] = Form.useForm()
+  const dispatch = useDispatch()
+  const handleOpenSoftwareCreate = () => {
+    dispatch(setVisible(true))
+  }
   const columns: ColumnsType<dataType> = [
     {
       title: '#',
@@ -123,10 +132,29 @@ export const SoftwarePage: FC = () => {
   ])
   return (
     <div>
+      <FormModal
+        title="项目创建"
+        onCancel={() => {
+          console.log('不知道为啥失败了！')
+        }}
+        onCreate={() => {
+          form
+            .validateFields()
+            .then((values: any) => {
+              // create(values)
+              form.resetFields()
+            })
+            .catch(info => {
+              console.log('Validate Failed:', info)
+            })
+        }}
+      >
+        <SoftwareForm form={form} />
+      </FormModal>
       <div className="page__title_warp">
         <div className="title">项目管理</div>
         <div className="create">
-          <Button type="primary" icon={<PlusOutlined />}>
+          <Button type="primary" onClick={handleOpenSoftwareCreate} icon={<PlusOutlined />}>
             创建项目
           </Button>
         </div>

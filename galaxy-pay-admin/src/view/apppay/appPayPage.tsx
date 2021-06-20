@@ -3,7 +3,7 @@ import { notification, Button, Tag } from 'antd'
 import { Form } from 'antd'
 import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons'
 import { merchantCreateInfo } from '../../request/merchant'
-import { MerchantForm } from '../../components/merchantForm'
+import { SoftwareForm } from '../../components/softwareForm'
 import { useDispatch } from 'react-redux'
 import { setVisible } from '../../state/actions/modal.action'
 // import { setMenu } from '../../state/actions/menu.actions'
@@ -181,7 +181,7 @@ export const AppPayPage: FC = () => {
             })
         }}
       >
-        <MerchantForm form={form} />
+        <SoftwareForm form={form} />
       </FormModal>
       <div className="page__title_warp">
         <div className="title">支付应用</div>
