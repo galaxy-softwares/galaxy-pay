@@ -3,20 +3,20 @@ import './App.less'
 
 import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import BaseLayout from './layouts/baseLayout'
-import { AppPayPage } from './view/apppay/appPayPage'
+import { PayAppPage } from './view/payapp/payAppPage'
 import Login from './view/login'
 import Trade from './view/trade'
-import Detail from './view/apppay/detail'
+import PayAppPageModifyPage from './view/payapp/payAppModifyPage'
 import { SoftwarePage } from './view/software/softwarePage'
 import { HomePage } from './view/home/HomePage'
 
 const Routers = [
   { path: '/', name: 'Home', component: HomePage, auth: true },
   { path: '/softwares', name: 'Sotfware', component: SoftwarePage, auth: true },
-  { path: '/apppay', name: 'AppPay', component: AppPayPage, auth: true },
-  { path: '/apppay/modify', name: 'AppPay', component: AppPayPage, auth: true },
-  { path: '/Trade', name: 'Trade', component: Trade, auth: true },
-  { path: '/merchant/:id', name: 'Detail', component: Detail, auth: true }
+  { path: '/payapps', name: 'AppPay', component: PayAppPage, auth: true },
+  { path: '/payapps/modify', name: 'AppPayModify', component: PayAppPageModifyPage, auth: true },
+  { path: '/trade', name: 'Trade', component: Trade, auth: true }
+  // { path: '/merchant/:id', name: 'Detail', component: Detail, auth: true }
 ]
 
 const App: FC = () => {

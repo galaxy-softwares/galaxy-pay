@@ -22,17 +22,17 @@ const menuList = [
   {
     title: '支付应用',
     icon: <AppstoreAddOutlined />,
-    path: '/apppay'
+    path: '/payapps'
   },
   {
     title: '支付账单',
     icon: <CopyOutlined />,
-    path: '/trade'
+    path: '/trades'
   },
   {
     title: '打款账单',
     icon: <CopyOutlined />,
-    path: '/asd'
+    path: '/payments'
   }
 ]
 
@@ -51,8 +51,6 @@ const LeftSider: FC = () => {
         dispatch(setMenu({ menuIndex: index, path: location.pathname }))
       }
     })
-
-    console.log(location.pathname.split('/').filter(i => i))
     dispatch(setMenuBreadcrumb(location.pathname.split('/').filter(i => i)))
   }
 

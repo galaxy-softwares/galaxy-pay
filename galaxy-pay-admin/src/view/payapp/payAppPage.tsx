@@ -22,7 +22,7 @@ type dataType = {
   create_at: string
 }
 
-export const AppPayPage: FC = () => {
+export const PayAppPage: FC = () => {
   const [form] = Form.useForm()
 
   const data = []
@@ -185,7 +185,7 @@ export const AppPayPage: FC = () => {
           <Button
             type="primary"
             onClick={() => {
-              history.push('/apppay/modify')
+              history.push('/payapps/modify')
             }}
             icon={<PlusOutlined />}
           >

@@ -6,7 +6,7 @@ import { useAppState } from '../stores'
 const { Header } = Layout
 const breadcrumbNameMap = {
   softwares: '项目管理',
-  apppay: '支付应用',
+  payapps: '支付应用',
   trade: '支付账单',
   modify: '支付应用操作'
 }
