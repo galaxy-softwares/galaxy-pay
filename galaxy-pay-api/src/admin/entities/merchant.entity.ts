@@ -1,23 +1,23 @@
-import { TradeChannel } from 'src/common/enum/trade.enum';
-import { Column, Entity } from 'typeorm';
-import { Base } from './base.entity';
+import { TradeChannel } from 'src/common/enum/trade.enum'
+import { Column, Entity } from 'typeorm'
+import { Base } from './base.entity'
 
 @Entity()
 export class Merchant extends Base {
   @Column()
-  name: string;
+  name: string
 
   @Column({
     comment: '支付商户配置',
-    type: 'text',
+    type: 'text'
   })
-  config: string;
+  config: string
 
   @Column({
     comment: '支付类型',
     type: 'enum',
     enum: TradeChannel,
-    default: TradeChannel.alipay,
+    default: TradeChannel.alipay
   })
-  channel: TradeChannel;
+  channel: TradeChannel
 }

@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { TypeOrmOptionsFactory, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { GpaConfigService } from './config.service';
+import { Injectable } from '@nestjs/common'
+import { TypeOrmOptionsFactory, TypeOrmModuleOptions } from '@nestjs/typeorm'
+import { GpaConfigService } from './config.service'
 
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
@@ -10,7 +10,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
     return {
       ...this.gpaConfigService.get('database'),
       autoLoadEntities: true,
-      keepConnectionAlive: true,
-    };
+      keepConnectionAlive: true
+    }
   }
 }

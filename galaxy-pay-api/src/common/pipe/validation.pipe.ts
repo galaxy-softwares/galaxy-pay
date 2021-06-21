@@ -4,39 +4,39 @@ import {
   ArgumentMetadata,
   UnprocessableEntityException,
   HttpException,
-  HttpStatus,
-} from '@nestjs/common';
-import { validate } from 'class-validator';
-import { plainToClass } from 'class-transformer';
+  HttpStatus
+} from '@nestjs/common'
+import { validate } from 'class-validator'
+import { plainToClass } from 'class-transformer'
 
 @Injectable()
 export class ValidationPipe implements PipeTransform<any> {
   async transform(value: any, metadata: ArgumentMetadata) {
-    const { metatype } = metadata;
+    const { metatype } = metadata
 
     if (value instanceof Object && Object.keys(value).length <= 0) {
-      throw new UnprocessableEntityException('无效数据');
+      throw new UnprocessableEntityException('无效数据')
     }
 
     if (!metatype || !this.toValidate(metatype)) {
-      return value;
+      return value
     }
 
-    const object = plainToClass(metatype, value);
-    const errors = await validate(object, {});
+    const object = plainToClass(metatype, value)
+    const errors = await validate(object, {})
 
     if (errors.length > 0) {
-      const error = errors.shift();
-      const constraints = error.constraints;
-      Object.keys(constraints).forEach((key) => {
-        throw new HttpException(constraints[key], HttpStatus.FORBIDDEN);
-      });
+      const error = errors.shift()
+      const constraints = error.constraints
+      Object.keys(constraints).forEach(key => {
+        throw new HttpException(constraints[key], HttpStatus.FORBIDDEN)
+      })
     }
-    return object;
+    return object
   }
 
   private toValidate(metatype): boolean {
-    const types = [String, Boolean, Number, Array, Object];
-    return !types.find((type) => metatype === type);
+    const types = [String, Boolean, Number, Array, Object]
+    return !types.find(type => metatype === type)
   }
 }

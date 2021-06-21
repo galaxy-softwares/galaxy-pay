@@ -1,4 +1,4 @@
-import * as Joi from '@hapi/joi';
+import * as Joi from '@hapi/joi'
 
 export const schema = Joi.object({
   // 开发环境
@@ -22,10 +22,10 @@ export const schema = Joi.object({
 
   // 日志
   LOGGER_FILE: Joi.boolean().default(false),
-  LOGGER_CONSOLE: Joi.boolean().default(true),
-});
+  LOGGER_CONSOLE: Joi.boolean().default(true)
+})
 
 export const options = {
   allowUnknown: true, // 控制是否在环境变量中允许未知键。默认是true
-  abortEarly: true, // 如果为true，则在第一个错误时停止验证；如果为false，则返回所有错误。默认为false
-};
+  abortEarly: true // 如果为true，则在第一个错误时停止验证；如果为false，则返回所有错误。默认为false
+}

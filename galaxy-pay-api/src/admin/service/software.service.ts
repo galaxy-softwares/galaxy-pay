@@ -1,20 +1,20 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { BaseService } from './base.service';
-import { Software } from 'src/admin/entities/software.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { TradeChannel } from 'src/common/enum/trade.enum';
-import { SoftwareDto } from '../dtos/software.dto';
-import { AlipayConfig, WechatConfig } from 'galaxy-pay-config';
-import { Merchant } from '../entities';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
+import { BaseService } from './base.service'
+import { Software } from 'src/admin/entities/software.entity'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+import { TradeChannel } from 'src/common/enum/trade.enum'
+import { SoftwareDto } from '../dtos/software.dto'
+import { AlipayConfig, WechatConfig } from 'galaxy-pay-config'
+import { Merchant } from '../entities'
 
 @Injectable()
 export class SoftwareService extends BaseService<Software> {
   constructor(
     @InjectRepository(Software)
-    private readonly softwareRepository: Repository<Software>,
+    private readonly softwareRepository: Repository<Software>
   ) {
-    super(softwareRepository);
+    super(softwareRepository)
   }
 
   /**
@@ -25,13 +25,8 @@ export class SoftwareService extends BaseService<Software> {
     const software: any = await this.softwareRepository
       .createQueryBuilder('software')
       .where({ appid })
-      .leftJoinAndMapOne(
-        'software.merchant',
-        Merchant,
-        'merchant',
-        'software.merchant_id = merchant.id',
-      )
-      .getOne();
+      .leftJoinAndMapOne('software.merchant', Merchant, 'merchant', 'software.merchant_id = merchant.id')
+      .getOne()
     if (software) {
       if (software.merchant.channel == TradeChannel.wechat) {
         const payConfig: WechatConfig = {
@@ -39,29 +34,29 @@ export class SoftwareService extends BaseService<Software> {
           ...JSON.parse(software.merchant.config),
           callback_url: software.callback_url,
           return_url: software.return_url,
-          notify_url: software.notify_url,
-        };
+          notify_url: software.notify_url
+        }
         return {
           domain_url: software.domain_url.split(','),
           secret_key: software.secret_key,
-          payConfig,
-        };
+          payConfig
+        }
       } else {
         const payConfig: AlipayConfig = {
           ...JSON.parse(software.config),
           ...JSON.parse(software.merchant.config),
           callback_url: software.callback_url,
           return_url: software.return_url,
-          notify_url: software.notify_url,
-        };
+          notify_url: software.notify_url
+        }
         return {
           domain_url: software.domain_url.split(','),
           secret_key: software.secret_key,
-          payConfig,
-        };
+          payConfig
+        }
       }
     } else {
-      throw new HttpException('未查询到支付配置,请检查appid', HttpStatus.BAD_REQUEST);
+      throw new HttpException('未查询到支付配置,请检查appid', HttpStatus.BAD_REQUEST)
     }
   }
 
@@ -119,7 +114,7 @@ export class SoftwareService extends BaseService<Software> {
    * 查询项目（因为不会有太多的项目索性不做分页查询!）
    */
   find() {
-    return this.softwareRepository.find();
+    return this.softwareRepository.find()
   }
 
   /**
@@ -127,9 +122,9 @@ export class SoftwareService extends BaseService<Software> {
    * @param chars string
    */
   randomString(chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') {
-    let result = '';
-    for (let i = 32; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
-    return result;
+    let result = ''
+    for (let i = 32; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)]
+    return result
   }
 
   /**
@@ -137,8 +132,8 @@ export class SoftwareService extends BaseService<Software> {
    * @param data SoftwareDto
    */
   async createSoftware(data: SoftwareDto): Promise<Software> {
-    const software = this.softwareRepository.create(this.generateSoftware(data));
-    return await this.softwareRepository.save(software);
+    const software = this.softwareRepository.create(this.generateSoftware(data))
+    return await this.softwareRepository.save(software)
   }
 
   /**
@@ -146,8 +141,8 @@ export class SoftwareService extends BaseService<Software> {
    * @param data SoftwareDto
    */
   private generateSoftware(data): Software {
-    let alipay = {};
-    let wechat = {};
+    let alipay = {}
+    let wechat = {}
     if (data.channel === 'wechat') {
       wechat = {
         appid: data.appid,
@@ -161,8 +156,8 @@ export class SoftwareService extends BaseService<Software> {
         return_url: data.return_url,
         notify_url: data.notify_url,
         refund_notify_url: data.refund_notify_url,
-        apiclient_cert: data.apiclient_cert,
-      };
+        apiclient_cert: data.apiclient_cert
+      }
     } else {
       alipay = {
         appid: data.appid,
@@ -171,22 +166,22 @@ export class SoftwareService extends BaseService<Software> {
         public_key: data.public_key,
         callback_url: data.callback_url,
         return_url: data.return_url,
-        notify_url: data.notify_url,
-      };
+        notify_url: data.notify_url
+      }
     }
     const software: any = {
       name: data.name,
       domain_url: data.domain_url,
       alipay: JSON.stringify(alipay),
-      wechat: JSON.stringify(wechat),
-    };
-    if (data.id) {
-      software.id = data.id;
-    } else {
-      software.appid = this.randomString();
-      software.secret_key = this.randomString();
+      wechat: JSON.stringify(wechat)
     }
-    return software;
+    if (data.id) {
+      software.id = data.id
+    } else {
+      software.appid = this.randomString()
+      software.secret_key = this.randomString()
+    }
+    return software
   }
 
   /**
@@ -194,7 +189,7 @@ export class SoftwareService extends BaseService<Software> {
    * @param data SoftwareDto
    */
   async updateSoftware(data: SoftwareDto): Promise<Software> {
-    const software = this.softwareRepository.create(this.generateSoftware(data));
-    return await this.softwareRepository.save(software);
+    const software = this.softwareRepository.create(this.generateSoftware(data))
+    return await this.softwareRepository.save(software)
   }
 }

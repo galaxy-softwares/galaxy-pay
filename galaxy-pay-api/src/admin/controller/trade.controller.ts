@@ -1,5 +1,5 @@
-import { Controller, ValidationPipe, UseGuards, UsePipes, Get } from '@nestjs/common';
-import { TradeService, JwtAuthGuard } from '../service';
+import { Controller, ValidationPipe, UseGuards, UsePipes, Get } from '@nestjs/common'
+import { TradeService, JwtAuthGuard } from '../service'
 
 @Controller('trade')
 @UsePipes(new ValidationPipe())
@@ -9,6 +9,6 @@ export class TradeController {
 
   @Get()
   async find() {
-    return this.tradeService.find();
+    return this.tradeService.find()
   }
 }

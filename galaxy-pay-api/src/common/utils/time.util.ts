@@ -1,13 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common'
 import {
   getTime,
   format,
   differenceInSeconds,
   differenceInMinutes,
   differenceInHours,
-  differenceInDays,
-} from 'date-fns';
-import { zhCN } from 'date-fns/locale';
+  differenceInDays
+} from 'date-fns'
+import { zhCN } from 'date-fns/locale'
 
 @Injectable()
 export class TimeUtil {
@@ -15,28 +15,28 @@ export class TimeUtil {
    * 格式化日期
    */
   public dateFormat = (fm: string, date: Date = new Date()) => {
-    return format(date, fm, { locale: zhCN });
-  };
+    return format(date, fm, { locale: zhCN })
+  }
 
   /**
    * 获取当前时间戳
    */
   get TimeStamp(): number {
-    return getTime(new Date());
+    return getTime(new Date())
   }
 
   /**
    * 获取当前日期 (YYYY-MM-DD)
    */
   get CurrentDate(): string {
-    return format(new Date(), 'yyyy-MM-dd');
+    return format(new Date(), 'yyyy-MM-dd')
   }
 
   /**
    * 获取当前时间 (YYYY-MM-DD HH:mm:ss)
    */
   get CurrentTime(): string {
-    return format(new Date(), 'yyyy-MM-dd HH:mm:ss');
+    return format(new Date(), 'yyyy-MM-dd HH:mm:ss')
   }
 
   /**
@@ -47,24 +47,24 @@ export class TimeUtil {
    */
   secondToDate(seconds: number): string {
     // 计算天数
-    const days = seconds / 86400;
+    const days = seconds / 86400
     // 计算小时数
-    let remain = seconds % 86400;
-    const hours = remain / 3600;
+    let remain = seconds % 86400
+    const hours = remain / 3600
     // 计算分钟数
-    remain = seconds % 3600;
-    const mins = remain / 60;
+    remain = seconds % 3600
+    const mins = remain / 60
     // 计算秒数
-    const secs = remain % 60;
+    const secs = remain % 60
 
     if (days >= 1) {
-      return `${days.toFixed(2)}天`;
+      return `${days.toFixed(2)}天`
     } else if (hours >= 1) {
-      return `${hours.toFixed(2)}小时`;
+      return `${hours.toFixed(2)}小时`
     } else if (mins >= 1) {
-      return `${mins.toFixed(2)}分钟 ${secs}秒`;
+      return `${mins.toFixed(2)}分钟 ${secs}秒`
     } else {
-      return `${seconds}秒`;
+      return `${seconds}秒`
     }
   }
 
@@ -75,43 +75,43 @@ export class TimeUtil {
    * @param type {string}
    */
   diffTime(dateLeft: number | Date, dateRight: number | Date, type = ''): string | number {
-    const timediff = differenceInSeconds(dateRight, dateLeft);
+    const timediff = differenceInSeconds(dateRight, dateLeft)
 
     // 计算天数
-    const days = timediff / 86400;
+    const days = timediff / 86400
     // 计算小时数
-    let remain = timediff % 86400;
-    const hours = remain / 3600;
+    let remain = timediff % 86400
+    const hours = remain / 3600
     // 计算分钟数
-    remain = timediff % 3600;
-    const mins = remain / 60;
+    remain = timediff % 3600
+    const mins = remain / 60
     // 计算秒数
-    const secs = remain % 60;
+    const secs = remain % 60
 
     if (type !== '') {
       switch (type) {
         case 'day':
-          return days;
-          break;
+          return days
+          break
         case 'hour':
-          return hours;
-          break;
+          return hours
+          break
         case 'min':
-          return mins;
-          break;
+          return mins
+          break
         case 'sec':
-          return timediff;
-          break;
+          return timediff
+          break
       }
     } else {
       if (days >= 1) {
-        return `${differenceInDays(dateRight, dateLeft)}天`;
+        return `${differenceInDays(dateRight, dateLeft)}天`
       } else if (hours >= 1) {
-        return `${differenceInHours(dateRight, dateLeft)}小时`;
+        return `${differenceInHours(dateRight, dateLeft)}小时`
       } else if (mins >= 1) {
-        return `${differenceInMinutes(dateRight, dateLeft)}分钟 ${secs}秒`;
+        return `${differenceInMinutes(dateRight, dateLeft)}分钟 ${secs}秒`
       } else {
-        return `${timediff}秒`;
+        return `${timediff}秒`
       }
     }
   }

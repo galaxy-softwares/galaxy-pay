@@ -1,15 +1,15 @@
-import { IsNotEmpty } from 'class-validator';
-import { TradeChannel } from 'src/common/enum/trade.enum';
+import { IsNotEmpty } from 'class-validator'
+import { TradeChannel } from 'src/common/enum/trade.enum'
 
 export class MerchantDto {
-  id?: number;
+  id?: number
 
-  appid: string;
+  appid: string
 
   @IsNotEmpty({ message: '项目名称不可或缺' })
-  name: string;
+  name: string
 
-  secret_key: string;
+  secret_key: string
 
-  channel: TradeChannel;
+  channel: TradeChannel
 }

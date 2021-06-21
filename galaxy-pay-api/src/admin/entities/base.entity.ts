@@ -1,16 +1,16 @@
-import { CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn } from 'typeorm'
 
 export abstract class Base {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   @CreateDateColumn({
-    comment: '创建时间',
+    comment: '创建时间'
   })
-  create_at: number;
+  create_at: number
 
   @UpdateDateColumn({
-    comment: '更新时间',
+    comment: '更新时间'
   })
-  update_at: number;
+  update_at: number
 }
