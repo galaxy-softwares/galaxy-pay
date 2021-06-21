@@ -2,13 +2,15 @@ import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { JwtModule } from '@nestjs/jwt'
 import { PassportModule } from '@nestjs/passport'
-import { User, Software, Trade, Merchant } from './entities'
+import { User, Software, Trade } from './entities'
 import { AuthController, SoftwareController, TradeController, FileController } from './controller'
 import { AuthService, SoftwareService, UserService, TradeService, JwtAuthGuard, JwtStrategy } from './service'
+import { Payapp } from './entities/payapp.entity'
+import { PayappController } from './controller/payapp.controller'
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Software, Trade, Merchant]),
+    TypeOrmModule.forFeature([User, Software, Trade, Payapp]),
     JwtModule.register({
       secretOrPrivateKey: '1AGy4bCUoECDZ4yI6h8DxHDwgj84EqStMNyab8nPChQ=',
       signOptions: {
@@ -17,7 +19,7 @@ import { AuthService, SoftwareService, UserService, TradeService, JwtAuthGuard, 
     }),
     PassportModule.register({ defaultStrategy: 'jwt' })
   ],
-  controllers: [AuthController, SoftwareController, TradeController, FileController],
+  controllers: [AuthController, SoftwareController, PayappController, TradeController, FileController],
   providers: [AuthService, SoftwareService, UserService, TradeService, JwtAuthGuard, JwtStrategy],
   exports: [SoftwareService, TradeService]
 })

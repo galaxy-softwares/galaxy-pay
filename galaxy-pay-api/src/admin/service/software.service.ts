@@ -6,7 +6,7 @@ import { Repository } from 'typeorm'
 import { TradeChannel } from 'src/common/enum/trade.enum'
 import { SoftwareDto } from '../dtos/software.dto'
 import { AlipayConfig, WechatConfig } from 'galaxy-pay-config'
-import { Merchant } from '../entities'
+// import { Merchant } from '../entities'
 
 @Injectable()
 export class SoftwareService extends BaseService<Software> {
@@ -22,42 +22,43 @@ export class SoftwareService extends BaseService<Software> {
    * @param appid string
    */
   async findSoftwarePayConfig(appid: string) {
-    const software: any = await this.softwareRepository
-      .createQueryBuilder('software')
-      .where({ appid })
-      .leftJoinAndMapOne('software.merchant', Merchant, 'merchant', 'software.merchant_id = merchant.id')
-      .getOne()
-    if (software) {
-      if (software.merchant.channel == TradeChannel.wechat) {
-        const payConfig: WechatConfig = {
-          ...JSON.parse(software.config),
-          ...JSON.parse(software.merchant.config),
-          callback_url: software.callback_url,
-          return_url: software.return_url,
-          notify_url: software.notify_url
-        }
-        return {
-          domain_url: software.domain_url.split(','),
-          secret_key: software.secret_key,
-          payConfig
-        }
-      } else {
-        const payConfig: AlipayConfig = {
-          ...JSON.parse(software.config),
-          ...JSON.parse(software.merchant.config),
-          callback_url: software.callback_url,
-          return_url: software.return_url,
-          notify_url: software.notify_url
-        }
-        return {
-          domain_url: software.domain_url.split(','),
-          secret_key: software.secret_key,
-          payConfig
-        }
-      }
-    } else {
-      throw new HttpException('未查询到支付配置,请检查appid', HttpStatus.BAD_REQUEST)
-    }
+    // const software: any = await this.softwareRepository
+    //   .createQueryBuilder('software')
+    //   .where({ appid })
+    //   .leftJoinAndMapOne('software.merchant', Merchant, 'merchant', 'software.merchant_id = merchant.id')
+    //   .getOne()
+    // if (software) {
+    //   if (software.merchant.channel == TradeChannel.wechat) {
+    //     const payConfig: WechatConfig = {
+    //       ...JSON.parse(software.config),
+    //       ...JSON.parse(software.merchant.config),
+    //       callback_url: software.callback_url,
+    //       return_url: software.return_url,
+    //       notify_url: software.notify_url
+    //     }
+    //     return {
+    //       domain_url: software.domain_url.split(','),
+    //       secret_key: software.secret_key,
+    //       payConfig
+    //     }
+    //   } else {
+    //     const payConfig: AlipayConfig = {
+    //       ...JSON.parse(software.config),
+    //       ...JSON.parse(software.merchant.config),
+    //       callback_url: software.callback_url,
+    //       return_url: software.return_url,
+    //       notify_url: software.notify_url
+    //     }
+    //     return {
+    //       domain_url: software.domain_url.split(','),
+    //       secret_key: software.secret_key,
+    //       payConfig
+    //     }
+    //   }
+    // } else {
+    //   throw new HttpException('未查询到支付配置,请检查appid', HttpStatus.BAD_REQUEST)
+    // }
+    return null
   }
 
   /**
@@ -132,7 +133,7 @@ export class SoftwareService extends BaseService<Software> {
    * @param data SoftwareDto
    */
   async createSoftware(data: SoftwareDto): Promise<Software> {
-    const software = this.softwareRepository.create(this.generateSoftware(data))
+    const software = this.softwareRepository.create(data)
     return await this.softwareRepository.save(software)
   }
 

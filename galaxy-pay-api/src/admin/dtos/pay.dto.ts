@@ -1,4 +1,5 @@
 import { IsNotEmpty } from 'class-validator'
+import { TradeChannel } from 'src/common/enum/trade.enum'
 
 export class AlipayQuery {
   @IsNotEmpty({ message: 'appid不能为空' })
@@ -58,4 +59,22 @@ export class WechatPayDto {
   return_url?: string
 
   notify_url?: string
+}
+
+export class PayappDto {
+  name: string
+
+  softwar_id: string
+
+  payapp_id: string
+
+  payapp_secret_key: string
+
+  payapp_type: string
+
+  callback_url: string
+
+  domain_url: string
+
+  channel: TradeChannel
 }

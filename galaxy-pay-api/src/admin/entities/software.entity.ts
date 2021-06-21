@@ -3,43 +3,18 @@ import { Base } from './base.entity'
 
 @Entity()
 export class Software extends Base {
-  @Column()
-  merchant_id: string
-
-  @Column({
-    comment: '系统随机分配APPID,用于请求的时使用'
-  })
-  appid: string
-
-  @Column({
-    comment: '系统随机生成的字符串, 用于双方系统加密使用'
-  })
-  secret_key: string
-
   @Column({
     comment: '项目名称'
   })
   name: string
 
   @Column({
-    comment: '请求白名单地址,多个逗号分开',
-    type: 'text'
-  })
-  domain_url: string
-
-  @Column({
-    type: 'text'
-  })
-  config: string
-
-  @Column()
-  notify_url: string
-
-  @Column({
-    unique: true
+    comment: '请求回调地址'
   })
   callback_url: string
 
-  @Column()
+  @Column({
+    comment: '支付成功后跳转地址'
+  })
   return_url: string
 }
