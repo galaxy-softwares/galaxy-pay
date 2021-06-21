@@ -6,7 +6,7 @@ import { CardTable } from '../../components/CardTable/cardTable'
 import { FormModal } from '../../components/FormModel/formModel'
 import { SoftwareForm } from '../../components/softwareForm'
 import { useDispatch } from 'react-redux'
-import { setVisible } from '../../state/actions/modal.action'
+import { setVisible } from '../../stores/app.store'
 type dataType = {
   id: number
   name: string
@@ -16,7 +16,7 @@ type dataType = {
 export const SoftwarePage: FC = () => {
   const [form] = Form.useForm()
   const dispatch = useDispatch()
-  const handleOpenSoftwareCreate = () => {
+  const handleOpenModal = () => {
     dispatch(setVisible(true))
   }
   const columns: ColumnsType<dataType> = [
@@ -154,7 +154,7 @@ export const SoftwarePage: FC = () => {
       <div className="page__title_warp">
         <div className="title">项目管理</div>
         <div className="create">
-          <Button type="primary" onClick={handleOpenSoftwareCreate} icon={<PlusOutlined />}>
+          <Button type="primary" onClick={handleOpenModal} icon={<PlusOutlined />}>
             创建项目
           </Button>
         </div>

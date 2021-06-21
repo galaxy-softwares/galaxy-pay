@@ -1,9 +1,10 @@
 import React from 'react'
 import { Button, Modal } from 'antd'
 import './formMdel.less'
-import { useDispatch, useSelector } from 'react-redux'
-import { setVisible } from '../../state/actions/modal.action'
-import { AppState } from '../../state/store'
+import { useDispatch } from 'react-redux'
+import { setVisible } from '../../stores/app.store'
+import { useAppState } from '../../stores'
+
 interface IProps {
   title: string
   onCreate: () => void
@@ -11,7 +12,7 @@ interface IProps {
 }
 
 export const FormModal: React.FC<IProps> = ({ title, onCreate, onCancel, children }) => {
-  const { visible } = useSelector((state: AppState) => state.modalReducer)
+  const { visible } = useAppState(state => state.appsotre)
   const dispatch = useDispatch()
   const colse = () => {
     dispatch(setVisible(false))

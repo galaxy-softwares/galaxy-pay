@@ -5,7 +5,7 @@ import { WechatOutlined, AlipayCircleOutlined } from '@ant-design/icons'
 import { CardTable } from '../../components/CardTable/cardTable'
 
 const Trade: FC = () => {
-  const [data, setData] = useState([])
+  const [data] = useState([])
 
   const columns = [
     {

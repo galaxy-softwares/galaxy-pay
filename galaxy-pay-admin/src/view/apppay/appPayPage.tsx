@@ -1,15 +1,16 @@
-import React, { FC, useEffect, useState, useCallback } from 'react'
+import React, { FC } from 'react'
 import { notification, Button, Tag } from 'antd'
 import { Form } from 'antd'
 import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons'
 import { merchantCreateInfo } from '../../request/merchant'
 import { SoftwareForm } from '../../components/softwareForm'
 import { useDispatch } from 'react-redux'
-import { setVisible } from '../../state/actions/modal.action'
 // import { setMenu } from '../../state/actions/menu.actions'
 import { FormModal } from '../../components/FormModel/formModel'
 import { ColumnsType } from 'antd/lib/table'
 import { CardTable } from '../../components/CardTable/cardTable'
+import { setVisible } from '../../stores/app.store'
+import { useHistory } from 'react-router-dom'
 
 type dataType = {
   id: number
@@ -26,7 +27,6 @@ export const AppPayPage: FC = () => {
 
   const data = []
   for (let i = 1; i <= 20; i++) {
-    console.log(11)
     data.push({
       id: i,
       name: '小程序支付',
@@ -40,7 +40,7 @@ export const AppPayPage: FC = () => {
     })
   }
 
-  // const history = useHistory()
+  const history = useHistory()
   const dispatch = useDispatch()
   // const initMerchant = useCallback(async () => {
   //   const result = await merchantGetList()
@@ -158,10 +158,6 @@ export const AppPayPage: FC = () => {
     // })
   }
 
-  const handleOpenSoftwareCreate = () => {
-    dispatch(setVisible(true))
-  }
-
   return (
     <div>
       <FormModal
@@ -186,7 +182,13 @@ export const AppPayPage: FC = () => {
       <div className="page__title_warp">
         <div className="title">支付应用</div>
         <div className="create">
-          <Button type="primary" onClick={handleOpenSoftwareCreate} icon={<PlusOutlined />}>
+          <Button
+            type="primary"
+            onClick={() => {
+              history.push('/apppay/modify')
+            }}
+            icon={<PlusOutlined />}
+          >
             创建应用
           </Button>
         </div>

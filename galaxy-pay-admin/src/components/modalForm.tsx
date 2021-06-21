@@ -1,8 +1,8 @@
 import { Button, Modal } from 'antd'
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { AppState } from '../state/store'
-import { setVisible } from '../state/actions/modal.action'
+import { useDispatch } from 'react-redux'
+import { useAppState } from '../stores'
+import { setVisible } from '../stores/app.store'
 
 interface ModalFormProps {
   onCreate: () => void
@@ -11,7 +11,7 @@ interface ModalFormProps {
 }
 
 export const ModalFrom: React.FC<ModalFormProps> = ({ onCreate, onClose, title, children }) => {
-  const { visible } = useSelector((state: AppState) => state.modalReducer)
+  const { visible } = useAppState(state => state.appsotre)
   const dispatch = useDispatch()
   const colse = () => {
     dispatch(setVisible(false))

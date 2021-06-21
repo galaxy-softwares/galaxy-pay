@@ -2,8 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App'
 import { Provider } from 'react-redux'
-import configureStore from './state/store'
-const store = configureStore()
+import store from './stores'
 
 const render = (Router: React.FC) => {
   ReactDOM.render(

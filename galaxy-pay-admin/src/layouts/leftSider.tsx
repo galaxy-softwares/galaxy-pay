@@ -1,17 +1,23 @@
-import React, { useEffect, FC } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { AppstoreOutlined, CopyOutlined, AppstoreAddOutlined } from '@ant-design/icons'
+import React, { FC } from 'react'
+import { useDispatch } from 'react-redux'
+import { AppstoreOutlined, CopyOutlined, AppstoreAddOutlined, DashboardOutlined } from '@ant-design/icons'
 import { Layout } from 'antd'
-import { Link, useHistory, useLocation } from 'react-router-dom'
-import { AppState } from '../state/store'
-import { setMenu } from '../state/actions/menu.actions'
+import { Link, useHistory } from 'react-router-dom'
+import { useAppState } from '../stores'
+import { setMenu, setMenuBreadcrumb } from '../stores/app.store'
+
 const { Sider } = Layout
 
 const menuList = [
   {
+    title: '首页',
+    icon: <DashboardOutlined />,
+    path: '/'
+  },
+  {
     title: '项目管理',
     icon: <AppstoreOutlined />,
-    path: '/sotfware'
+    path: '/softwares'
   },
   {
     title: '支付应用',
@@ -31,29 +37,24 @@ const menuList = [
 ]
 
 const LeftSider: FC = () => {
-  const { menuIndex } = useSelector((state: AppState) => state.menuReducer)
+  const { activeMenu } = useAppState(state => state.appsotre)
   const history = useHistory()
-  const location = useLocation()
   const dispatch = useDispatch()
 
   history.listen(location => {
-    console.log(location)
     setMenuInfo(location)
   })
 
   const setMenuInfo = location => {
-    // eslint-disable-next-line array-callback-return
     menuList.map((item, index) => {
       if (item.path === location.pathname) {
-        dispatch(setMenu({ menuIndex: index, title: item.title, path: location.pathname }))
+        dispatch(setMenu({ menuIndex: index, path: location.pathname }))
       }
     })
-  }
 
-  useEffect(() => {
-    setMenuInfo(location)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, ['menuState'])
+    console.log(location.pathname.split('/').filter(i => i))
+    dispatch(setMenuBreadcrumb(location.pathname.split('/').filter(i => i)))
+  }
 
   return (
     <Sider width={190} className="slider">
@@ -63,7 +64,7 @@ const LeftSider: FC = () => {
           return (
             <div key={index}>
               <Link to={item.path}>
-                <div className={`list-item ${menuIndex === index ? 'active' : ''}`}>
+                <div className={`list-item ${activeMenu.menuIndex === index ? 'active' : ''}`}>
                   {item.icon}
                   <p>{item.title}</p>
                 </div>

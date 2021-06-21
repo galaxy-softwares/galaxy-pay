@@ -8,10 +8,13 @@ import Login from './view/login'
 import Trade from './view/trade'
 import Detail from './view/apppay/detail'
 import { SoftwarePage } from './view/software/softwarePage'
+import { HomePage } from './view/home/HomePage'
 
 const Routers = [
+  { path: '/', name: 'Home', component: HomePage, auth: true },
   { path: '/softwares', name: 'Sotfware', component: SoftwarePage, auth: true },
   { path: '/apppay', name: 'AppPay', component: AppPayPage, auth: true },
+  { path: '/apppay/modify', name: 'AppPay', component: AppPayPage, auth: true },
   { path: '/Trade', name: 'Trade', component: Trade, auth: true },
   { path: '/merchant/:id', name: 'Detail', component: Detail, auth: true }
 ]
