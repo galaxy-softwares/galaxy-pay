@@ -1,11 +1,10 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { notification, Button, Tag } from 'antd'
 import { Form } from 'antd'
 import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons'
 import { merchantCreateInfo } from '../../request/merchant'
 import { SoftwareForm } from '../../components/softwareForm'
-import { useDispatch } from 'react-redux'
-// import { setMenu } from '../../state/actions/menu.actions'
+import { useDispatch, useStore } from 'react-redux'
 import { FormModal } from '../../components/FormModel/formModel'
 import { ColumnsType } from 'antd/lib/table'
 import { CardTable } from '../../components/CardTable/cardTable'
@@ -24,22 +23,7 @@ type dataType = {
 
 export const PayAppPage: FC = () => {
   const [form] = Form.useForm()
-
-  const data = []
-  for (let i = 1; i <= 20; i++) {
-    data.push({
-      id: i,
-      name: '小程序支付',
-      amount: 999123,
-      order: 1000,
-      paid: 999,
-      channel: 'wechat',
-      appid: 'FRZcaCHvpwDnBWVE',
-      software: '百筐易购',
-      create_at: '2021-06-16'
-    })
-  }
-
+  const [payApps, setPayApp] = useState([])
   const history = useHistory()
   const dispatch = useDispatch()
   // const initMerchant = useCallback(async () => {
@@ -193,7 +177,7 @@ export const PayAppPage: FC = () => {
           </Button>
         </div>
       </div>
-      <CardTable columns={columns} data={data} title="" />
+      <CardTable columns={columns} data={payApps} title="" />
     </div>
   )
 }

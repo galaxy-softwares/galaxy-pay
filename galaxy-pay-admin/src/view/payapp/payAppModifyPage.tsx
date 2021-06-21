@@ -1,16 +1,26 @@
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { FC } from 'react'
 import { Card, Form, Input, Button, Select, Row, Col } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import { UploadFile } from '../../components/uploadFile'
 import { CloudUploadOutlined } from '@ant-design/icons'
+import { getSoftwares } from '../../request/software'
 const { Option } = Select
 const PayAppPageModifyPage: FC = () => {
   const [form] = useForm()
-
   const [formChannel, setFormChannel] = useState('')
-
   const [certificate, setCertificate] = useState('')
+
+  const [softwares, setSoftwares] = useState([])
+
+  const initSoftwareList = useCallback(async () => {
+    const { data } = await getSoftwares()
+    setSoftwares(data)
+  }, [])
+
+  useEffect(() => {
+    initSoftwareList()
+  }, [initSoftwareList])
 
   const channelChange = e => {
     setFormChannel(e)
@@ -135,16 +145,25 @@ const PayAppPageModifyPage: FC = () => {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item name="softwareId" label="归属项目" rules={[{ required: true, message: '请选择归属项目' }]}>
+            <Form.Item name="softwar_id" label="归属项目" rules={[{ required: true, message: '请选择归属项目' }]}>
               <Select placeholder="请选择归属项目" allowClear>
-                <Option value="male">百款易购</Option>
-                <Option value="female">百款易购</Option>
+                {softwares.length > 0 ? (
+                  softwares.map(item => {
+                    return (
+                      <>
+                        <Option value={item.id}>{item.name}</Option>
+                      </>
+                    )
+                  })
+                ) : (
+                  <></>
+                )}
               </Select>
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item name="payType" label="支付类型" rules={[{ required: true, message: '请选择支付类型' }]}>
-              <Select placeholder="请选择归属项目">
+            <Form.Item name="payType" label="应用类型" rules={[{ required: true, message: '请选择应用类型' }]}>
+              <Select placeholder="请选择应用类型">
                 <Option value="h5">H5</Option>
                 <Option value="wechatSmall">小程序</Option>
                 <Option value="app">app支付</Option>

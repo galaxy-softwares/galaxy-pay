@@ -1,12 +1,14 @@
-import { Avatar, Button, Form, Space } from 'antd'
+import { Avatar, Button, Form, message, Space } from 'antd'
 import { ColumnsType } from 'antd/lib/table'
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState, useCallback } from 'react'
 import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons'
 import { CardTable } from '../../components/CardTable/cardTable'
 import { FormModal } from '../../components/FormModel/formModel'
 import { SoftwareForm } from '../../components/softwareForm'
 import { useDispatch } from 'react-redux'
 import { setVisible } from '../../stores/app.store'
+import {} from 'react'
+import { createSoftware, getSoftwares } from '../../request/software'
 type dataType = {
   id: number
   name: string
@@ -19,6 +21,17 @@ export const SoftwarePage: FC = () => {
   const handleOpenModal = () => {
     dispatch(setVisible(true))
   }
+  const [data, setData] = useState()
+
+  const initSoftwareList = useCallback(async () => {
+    const { data } = await getSoftwares()
+    setData(data)
+  }, [])
+
+  useEffect(() => {
+    initSoftwareList()
+  }, [initSoftwareList])
+
   const columns: ColumnsType<dataType> = [
     {
       title: '#',
@@ -72,64 +85,15 @@ export const SoftwarePage: FC = () => {
       )
     }
   ]
-  const [data, setData] = useState([
-    {
-      id: 1,
-      name: '测试项目1',
-      return_url: 'test.dancin.cn',
-      notify_url: 'test.dancin.cn',
-      callback_url: 'test.dancin.cn',
-      create_at: '2021-06-16'
-    },
-    {
-      id: 2,
-      name: '测试项目2',
-      return_url: 'test.dancin.cn',
-      notify_url: 'test.dancin.cn',
-      callback_url: 'test.dancin.cn',
-      create_at: '2021-06-16'
-    },
-    {
-      id: 3,
-      name: '测试项目3',
-      return_url: 'test.dancin.cn',
-      notify_url: 'test.dancin.cn',
-      callback_url: 'test.dancin.cn',
-      create_at: '2021-06-16'
-    },
-    {
-      id: 4,
-      name: '测试项目4',
-      return_url: 'test.dancin.cn',
-      notify_url: 'test.dancin.cn',
-      callback_url: 'test.dancin.cn',
-      create_at: '2021-06-16'
-    },
-    {
-      id: 5,
-      name: '测试项目5',
-      return_url: '',
-      notify_url: '',
-      callback_url: '',
-      create_at: '2021-06-16'
-    },
-    {
-      id: 6,
-      name: '测试项目6',
-      return_url: '',
-      notify_url: '',
-      callback_url: '',
-      create_at: '2021-06-16'
-    },
-    {
-      id: 7,
-      name: '测试项目7',
-      return_url: '',
-      notify_url: '',
-      callback_url: '',
-      create_at: '2021-06-16'
+
+  const create = async form => {
+    const res = await createSoftware(form)
+    if (res.status == 201) {
+      message.success('创建成功！')
+      dispatch(setVisible(false))
     }
-  ])
+  }
+
   return (
     <div>
       <FormModal
@@ -141,7 +105,7 @@ export const SoftwarePage: FC = () => {
           form
             .validateFields()
             .then((values: any) => {
-              // create(values)
+              create(values)
               form.resetFields()
             })
             .catch(info => {

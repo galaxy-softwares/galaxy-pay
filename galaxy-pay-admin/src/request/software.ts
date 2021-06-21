@@ -1,8 +1,8 @@
 import { request } from '../utils/request'
 
-export const softwareGetList = () => request('get', '/software')
+export const getSoftwares = () => request('get', '/software')
 
-export const softwareCreateInfo = data => request('post', '/software', data)
+export const createSoftware = data => request('post', '/software', data)
 
 export const softwareUpdateInfo = data => request('put', '/software', data)
 
