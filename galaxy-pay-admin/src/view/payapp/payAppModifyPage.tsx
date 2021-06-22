@@ -4,7 +4,7 @@ import { Card, Form, Input, Button, Select, Row, Col } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import { UploadFile } from '../../components/uploadFile'
 import { CloudUploadOutlined } from '@ant-design/icons'
-import { getSoftwares } from '../../request/software'
+import { createPayapp, getSoftwares } from '../../request/software'
 const { Option } = Select
 const PayAppPageModifyPage: FC = () => {
   const [form] = useForm()
@@ -28,6 +28,20 @@ const PayAppPageModifyPage: FC = () => {
 
   const certificateChange = e => {
     setCertificate(e)
+  }
+
+  const create = () => {
+    form
+      .validateFields()
+      .then((values: any) => {
+        // create(values)
+        console.log(values)
+        createPayapp(values)
+        // form.resetFields()
+      })
+      .catch(info => {
+        console.log('Validate Failed:', info)
+      })
   }
 
   const alipayFormRender = () => {
@@ -145,7 +159,7 @@ const PayAppPageModifyPage: FC = () => {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item name="softwar_id" label="归属项目" rules={[{ required: true, message: '请选择归属项目' }]}>
+            <Form.Item name="software_id" label="归属项目" rules={[{ required: true, message: '请选择归属项目' }]}>
               <Select placeholder="请选择归属项目" allowClear>
                 {softwares.length > 0 ? (
                   softwares.map(item => {
@@ -162,10 +176,10 @@ const PayAppPageModifyPage: FC = () => {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item name="payType" label="应用类型" rules={[{ required: true, message: '请选择应用类型' }]}>
+            <Form.Item name="app_type" label="应用类型" rules={[{ required: true, message: '请选择应用类型' }]}>
               <Select placeholder="请选择应用类型">
                 <Option value="h5">H5</Option>
-                <Option value="wechatSmall">小程序</Option>
+                <Option value="wechat_small">小程序</Option>
                 <Option value="app">app支付</Option>
               </Select>
             </Form.Item>
@@ -226,7 +240,9 @@ const PayAppPageModifyPage: FC = () => {
         {formChannel == 'wechat' ? wechatFormRender() : <></>}
         {alipayFormRender()}
         <Form.Item>
-          <Button type="primary">添加</Button>
+          <Button onClick={create} type="primary">
+            添加
+          </Button>
         </Form.Item>
       </Form>
     </Card>

@@ -4,6 +4,8 @@ export const getSoftwares = () => request('get', '/software')
 
 export const createSoftware = data => request('post', '/software', data)
 
+export const createPayapp = data => request('post', '/payapp', data)
+
 export const softwareUpdateInfo = data => request('put', '/software', data)
 
 /**
