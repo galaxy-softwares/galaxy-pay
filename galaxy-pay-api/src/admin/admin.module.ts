@@ -7,6 +7,7 @@ import { AuthController, SoftwareController, TradeController, FileController } f
 import { AuthService, SoftwareService, UserService, TradeService, JwtAuthGuard, JwtStrategy } from './service'
 import { Payapp } from './entities/payapp.entity'
 import { PayappController } from './controller/payapp.controller'
+import { PayappService } from './service/payapp.service'
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { PayappController } from './controller/payapp.controller'
     PassportModule.register({ defaultStrategy: 'jwt' })
   ],
   controllers: [AuthController, SoftwareController, PayappController, TradeController, FileController],
-  providers: [AuthService, SoftwareService, UserService, TradeService, JwtAuthGuard, JwtStrategy],
+  providers: [AuthService, SoftwareService, PayappService, UserService, TradeService, JwtAuthGuard, JwtStrategy],
   exports: [SoftwareService, TradeService]
 })
 export class AdminModule {}

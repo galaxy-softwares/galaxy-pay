@@ -64,7 +64,7 @@ export class WechatPayDto {
 export class PayappDto {
   name: string
 
-  softwar_id: string
+  software_id: string
 
   payapp_id: string
 

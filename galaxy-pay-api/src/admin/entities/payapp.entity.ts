@@ -12,7 +12,7 @@ export class Payapp extends Base {
   @Column({
     comment: '归属项目'
   })
-  softwar_id: string
+  software_id: string
 
   @Column({
     comment: '系统随机分配APPID,用于请求的时使用'
@@ -22,17 +22,22 @@ export class Payapp extends Base {
   @Column({
     comment: '系统随机生成的字符串, 用于双方系统加密使用'
   })
-  payapp_secret_key: string
+  pay_secret_key: string
 
   @Column({
     comment: '应用类型'
   })
-  payapp_type: string
+  app_type: string
 
   @Column({
     comment: '回调地址'
   })
   callback_url: string
+
+  @Column({
+    comment: '回调地址'
+  })
+  return_url: string
 
   @Column({
     comment: '请求白名单地址,多个逗号分开',

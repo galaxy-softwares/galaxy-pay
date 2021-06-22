@@ -25,18 +25,21 @@ export class PayappService extends BaseService<Payapp> {
    * 生成项目参数
    * @param data
    */
+
   private generatePayapp(data): Payapp {
     const payapp: any = {
       name: data.name,
       domain_url: data.domain_url,
-      softwar_id: data.softwar_id,
-      payapp_type: data.payapp_type
+      software_id: data.software_id,
+      payapp_type: data.payapp_type,
+      callback_url: data.callback_url,
+      return_url: data.return_url
     }
     if (data.id) {
       payapp.id = data.id
     } else {
       payapp.payapp_id = this.randomString()
-      payapp.payapp_secret_key = this.randomString()
+      payapp.pay_secret_key = this.randomString()
     }
     if (data.channel === 'wechat') {
       payapp.config = JSON.stringify({
@@ -44,17 +47,13 @@ export class PayappService extends BaseService<Payapp> {
         mch_id: data.mch_id,
         mch_key: data.mch_key,
         app_secret: data.app_secret,
-        callback_url: data.callback_url,
-        return_url: data.return_url,
         apiclient_cert: data.apiclient_cert
       })
     } else {
       payapp.config = JSON.stringify({
         appid: data.appid,
         private_key: data.private_key,
-        public_key: data.public_key,
-        callback_url: data.callback_url,
-        return_url: data.return_url
+        public_key: data.public_key
       })
     }
     return payapp
