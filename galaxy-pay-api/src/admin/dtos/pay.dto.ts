@@ -66,7 +66,7 @@ export class PayappDto {
   name: string
 
   @IsNotEmpty({ message: '请选择归属项目' })
-  software_id: string
+  software_id: number
 
   pay_app_type: string
 
