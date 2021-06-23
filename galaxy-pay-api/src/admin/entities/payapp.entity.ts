@@ -17,7 +17,7 @@ export class Payapp extends Base {
   @Column({
     comment: '系统随机分配APPID,用于请求的时使用'
   })
-  payapp_id: string
+  pay_app_id: string
 
   @Column({
     comment: '系统随机生成的字符串, 用于双方系统加密使用'
@@ -27,7 +27,7 @@ export class Payapp extends Base {
   @Column({
     comment: '应用类型'
   })
-  app_type: string
+  payapp_type: string
 
   @Column({
     comment: '回调地址'

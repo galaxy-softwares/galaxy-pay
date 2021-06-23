@@ -62,19 +62,18 @@ export class WechatPayDto {
 }
 
 export class PayappDto {
+  @IsNotEmpty({ message: '支付应用名称不能为空' })
   name: string
 
+  @IsNotEmpty({ message: '请选择归属项目' })
   software_id: string
 
-  payapp_id: string
-
-  payapp_secret_key: string
-
-  payapp_type: string
+  pay_app_type: string
 
   callback_url: string
 
   domain_url: string
 
+  @IsNotEmpty({ message: '请选择支付通道' })
   channel: TradeChannel
 }

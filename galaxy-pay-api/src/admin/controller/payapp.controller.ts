@@ -12,7 +12,7 @@ export class PayappController {
 
   @Get()
   get() {
-    // return this.payappService.find()
+    return this.payappService.findPayapp()
   }
 
   @Post()

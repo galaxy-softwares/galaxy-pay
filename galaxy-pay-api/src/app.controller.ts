@@ -28,7 +28,7 @@ export class AppController {
     this.loggerService.info(`支付宝异步通知:${JSON.stringify(data)}`)
     const trade = await this.tradeService.findOrder(data.out_trade_no)
     const { payConfig, secret_key } = await this.softwareService.findSoftwarePayConfig(trade.appid)
-    delete data.pay_type
+    delete data.pay_app_type
     const sign_result = this.aliSignUtil.responSignVerify(data, payConfig.public_key)
     if (sign_result) {
       const status = await this.tradeService.paySuccess(data.out_trade_no, TradeChannel.alipay, data.trade_no)

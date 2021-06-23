@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { BaseService } from './base.service'
 import { Software } from 'src/admin/entities/software.entity'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { createQueryBuilder, Repository } from 'typeorm'
 import { Payapp } from '../entities'
 import { PayappDto } from '../dtos/pay.dto'
 
@@ -33,12 +33,13 @@ export class PayappService extends BaseService<Payapp> {
       software_id: data.software_id,
       payapp_type: data.payapp_type,
       callback_url: data.callback_url,
-      return_url: data.return_url
+      return_url: data.return_url,
+      channel: data.channel
     }
     if (data.id) {
       payapp.id = data.id
     } else {
-      payapp.payapp_id = this.randomString()
+      payapp.pay_app_id = this.randomString()
       payapp.pay_secret_key = this.randomString()
     }
     if (data.channel === 'wechat') {
@@ -49,18 +50,34 @@ export class PayappService extends BaseService<Payapp> {
         app_secret: data.app_secret,
         apiclient_cert: data.apiclient_cert
       })
-    } else {
+    } else if (data.certificate == '10') {
       payapp.config = JSON.stringify({
         appid: data.appid,
         private_key: data.private_key,
         public_key: data.public_key
+      })
+    } else if (data.certificate == '20') {
+      payapp.config = JSON.stringify({
+        appid: data.appid,
+        app_cert_public_key: data.app_cert_public_key,
+        alipay_cert_public_key: data.alipay_cert_public_key,
+        alipay_root_cert: data.alipay_root_cert
       })
     }
     return payapp
   }
 
   async createPayapp(data: PayappDto): Promise<Payapp> {
-    const software = this.payappRepository.create(this.generatePayapp(data))
-    return await this.payappRepository.save(software)
+    const payapp = this.payappRepository.create(this.generatePayapp(data))
+    return await this.payappRepository.save(payapp)
+  }
+
+  async findPayapp() {
+    const user = await createQueryBuilder(Payapp, 'payapp')
+      // .leftJoinAndSelect('payapp.software', 'software', 'software.id = payapp.software_id')
+      .leftJoinAndMapOne('payapp.software', Software, 'software', 'software.id = payapp.software_id')
+      .getMany()
+    console.log(user, '=====')
+    return user
   }
 }
