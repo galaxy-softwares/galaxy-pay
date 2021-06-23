@@ -31,7 +31,7 @@ export class PayappService extends BaseService<Payapp> {
       name: data.name,
       domain_url: data.domain_url,
       software_id: data.software_id,
-      payapp_type: data.payapp_type,
+      pay_app_type: data.pay_app_type,
       callback_url: data.callback_url,
       return_url: data.return_url,
       channel: data.channel
@@ -50,15 +50,17 @@ export class PayappService extends BaseService<Payapp> {
         app_secret: data.app_secret,
         apiclient_cert: data.apiclient_cert
       })
-    } else if (data.certificate == '10') {
+    } else if (data.certificate == 10) {
       payapp.config = JSON.stringify({
         appid: data.appid,
+        certificate: data.certificate,
         private_key: data.private_key,
         public_key: data.public_key
       })
-    } else if (data.certificate == '20') {
+    } else if (data.certificate == 20) {
       payapp.config = JSON.stringify({
         appid: data.appid,
+        certificate: data.certificate,
         app_cert_public_key: data.app_cert_public_key,
         alipay_cert_public_key: data.alipay_cert_public_key,
         alipay_root_cert: data.alipay_root_cert

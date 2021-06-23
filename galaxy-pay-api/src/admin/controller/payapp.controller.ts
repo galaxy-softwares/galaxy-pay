@@ -1,4 +1,4 @@
-import { Controller, Get, UsePipes, UseGuards, Post, Body, Request } from '@nestjs/common'
+import { Controller, Get, UsePipes, UseGuards, Post, Body, Request, Param } from '@nestjs/common'
 import { JwtAuthGuard } from '../service'
 import { ValidationPipe } from 'src/common/pipe/validation.pipe'
 import { PayappService } from '../service/payapp.service'
@@ -13,6 +13,12 @@ export class PayappController {
   @Get()
   get() {
     return this.payappService.findPayapp()
+  }
+
+  @Get(':id')
+  async getPayapp(@Param() params) {
+    const payapp = await this.payappService.findOneById(params.id)
+    return { ...payapp, ...JSON.parse(payapp.config) }
   }
 
   @Post()

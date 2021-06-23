@@ -12,7 +12,7 @@ export class Payapp extends Base {
   @Column({
     comment: '归属项目'
   })
-  software_id: string
+  software_id: number
 
   @Column({
     comment: '系统随机分配APPID,用于请求的时使用'
@@ -27,15 +27,17 @@ export class Payapp extends Base {
   @Column({
     comment: '应用类型'
   })
-  payapp_type: string
+  pay_app_type: string
 
   @Column({
-    comment: '回调地址'
+    comment: '回调地址',
+    default: ''
   })
   callback_url: string
 
   @Column({
-    comment: '回调地址'
+    comment: '回调地址',
+    default: ''
   })
   return_url: string
 
