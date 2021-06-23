@@ -10,7 +10,7 @@ export const userGetInfo = () =>
 export const userUpdateInfo = (id, data) => request<UserInfo>('put', `/user/${id}`, data)
 
 export const uploadFile = file => {
-  const data = new FormData()
-  data.append('file', file)
-  return request('post', '/file/uploadP12', data)
+  const formData = new FormData()
+  formData.append('file', file)
+  return request('post', '/file/uploadP12', formData)
 }

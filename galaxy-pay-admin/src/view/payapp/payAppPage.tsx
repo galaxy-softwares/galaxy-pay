@@ -1,15 +1,10 @@
-import React, { FC, useState } from 'react'
-import { notification, Button, Tag } from 'antd'
-import { Form } from 'antd'
+import React, { FC, useCallback, useEffect, useState } from 'react'
+import { Button, Tag } from 'antd'
 import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons'
-import { merchantCreateInfo } from '../../request/merchant'
-import { SoftwareForm } from '../../components/softwareForm'
-import { useDispatch } from 'react-redux'
-import { FormModal } from '../../components/FormModel/formModel'
 import { ColumnsType } from 'antd/lib/table'
 import { CardTable } from '../../components/CardTable/cardTable'
-import { setVisible } from '../../stores/app.store'
 import { useHistory } from 'react-router-dom'
+import { getPayapp } from '../../request/payapp'
 
 type dataType = {
   id: number
@@ -22,18 +17,18 @@ type dataType = {
 }
 
 export const PayAppPage: FC = () => {
-  const [form] = Form.useForm()
-  const [payApps, setPayApp] = useState([])
+  const [payAppList, setPayAppList] = useState()
   const history = useHistory()
-  const dispatch = useDispatch()
-  // const initMerchant = useCallback(async () => {
-  //   const result = await merchantGetList()
-  //   setData(result.data)
-  // }, [])
 
-  // useEffect(() => {
-  // initMerchant()
-  // }, [initMerchant])
+  const initPayappData = useCallback(async () => {
+    const result = await getPayapp()
+    console.log(result.data, 'result')
+    setPayAppList(result.data)
+  }, [])
+
+  useEffect(() => {
+    initPayappData()
+  }, [initPayappData])
 
   const columns: ColumnsType<dataType> = [
     {
@@ -50,18 +45,29 @@ export const PayAppPage: FC = () => {
       title: '应用名称',
       dataIndex: 'name',
       key: 'name',
-      render: (value: number, record) => (
+      render: (value: number, record: any) => (
         <div>
           {value}
-          <span className="small_desc ">{record.software}</span>
+          <span className="small_desc ">{record.software?.name}</span>
         </div>
       )
     },
     {
-      title: 'APPID',
-      dataIndex: 'appid',
-      key: 'appid',
+      title: 'pay_app_id',
+      dataIndex: 'pay_app_id',
+      key: 'pay_app_id',
       width: 200
+    },
+    {
+      title: '密钥',
+      dataIndex: 'pay_secret_key',
+      key: 'pay_secret_key',
+      width: 200
+    },
+    {
+      title: 'payapp_type',
+      dataIndex: 'payapp_type',
+      key: 'payapp_type'
     },
     {
       title: '交易金额',
@@ -90,7 +96,9 @@ export const PayAppPage: FC = () => {
       key: 'channel',
       width: 120,
       align: 'center',
-      render: (value: string) => <Tag color={value === 'wechat' ? '#87d068' : '#2db7f5'}>{value}</Tag>
+      render: (value: string) => (
+        <Tag color={value === 'wechat' ? '#87d068' : '#2db7f5'}>{value === 'wechat' ? '微信' : '支付宝'}</Tag>
+      )
     },
     {
       title: '创建于',
@@ -112,57 +120,8 @@ export const PayAppPage: FC = () => {
     }
   ]
 
-  const openNotification = config => {
-    notification.open(config)
-  }
-
-  // const deleteMerchant = async id => {
-  //   const { status } = await merchantDelete(id)
-  //   if (status === 201) {
-  //     console.log('删除成功！')
-  //   }
-  //   merchantGetList().then((res: any) => {
-  //     setData(res.data)
-  //   })
-  // }
-
-  const create = async form => {
-    const { status } = await merchantCreateInfo(form)
-    if (status === 201) {
-      openNotification({
-        key: 'softwareCreate',
-        type: 'success',
-        message: `${form.name} 创建完成！`,
-        duration: 3
-      })
-    }
-    dispatch(setVisible(false))
-    // merchantGetList().then((res: any) => {
-    //   setData(res.data)
-    // })
-  }
-
   return (
     <div>
-      <FormModal
-        title="项目创建"
-        onCancel={() => {
-          console.log('不知道为啥失败了！')
-        }}
-        onCreate={() => {
-          form
-            .validateFields()
-            .then((values: any) => {
-              create(values)
-              form.resetFields()
-            })
-            .catch(info => {
-              console.log('Validate Failed:', info)
-            })
-        }}
-      >
-        <SoftwareForm form={form} />
-      </FormModal>
       <div className="page__title_warp">
         <div className="title">支付应用</div>
         <div className="create">
@@ -177,7 +136,7 @@ export const PayAppPage: FC = () => {
           </Button>
         </div>
       </div>
-      <CardTable columns={columns} data={payApps} title="" />
+      <CardTable columns={columns} data={payAppList} title="" />
     </div>
   )
 }

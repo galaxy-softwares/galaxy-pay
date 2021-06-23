@@ -4,7 +4,8 @@ import { Card, Form, Input, Button, Select, Row, Col } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import { UploadFile } from '../../components/uploadFile'
 import { CloudUploadOutlined } from '@ant-design/icons'
-import { createPayapp, getSoftwares } from '../../request/software'
+import { getSoftwares } from '../../request/software'
+import { createPayapp } from '../../request/payapp'
 const { Option } = Select
 const PayAppPageModifyPage: FC = () => {
   const [form] = useForm()
@@ -24,6 +25,7 @@ const PayAppPageModifyPage: FC = () => {
 
   const channelChange = e => {
     setFormChannel(e)
+    setCertificate('')
   }
 
   const certificateChange = e => {
@@ -34,10 +36,8 @@ const PayAppPageModifyPage: FC = () => {
     form
       .validateFields()
       .then((values: any) => {
-        // create(values)
-        console.log(values)
         createPayapp(values)
-        // form.resetFields()
+        form.resetFields()
       })
       .catch(info => {
         console.log('Validate Failed:', info)
@@ -52,12 +52,26 @@ const PayAppPageModifyPage: FC = () => {
             <Form.Item name="appid" label="APPID" rules={[{ required: true, message: '项目名称不能为空' }]}>
               <Input placeholder="支付宝开放平台审核通过的应用APPID" />
             </Form.Item>
-            <Form.Item name="public_key" label="支付宝公钥" rules={[{ required: true, message: '项目名称不能为空' }]}>
-              <Input placeholder="支付宝公钥" />
-            </Form.Item>
-            <Form.Item name="private_key" label="支付宝私钥" rules={[{ required: true, message: '项目名称不能为空' }]}>
-              <Input placeholder="支付宝私钥" />
-            </Form.Item>
+            <Row gutter={[16, 0]}>
+              <Col span={12}>
+                <Form.Item
+                  name="public_key"
+                  label="支付宝公钥"
+                  rules={[{ required: true, message: '项目名称不能为空' }]}
+                >
+                  <Input placeholder="支付宝公钥" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="private_key"
+                  label="支付宝私钥"
+                  rules={[{ required: true, message: '项目名称不能为空' }]}
+                >
+                  <Input placeholder="支付宝私钥" />
+                </Form.Item>
+              </Col>
+            </Row>
           </>
         )
       } else if (certificate == '20') {
@@ -67,12 +81,13 @@ const PayAppPageModifyPage: FC = () => {
               <Input placeholder="支付宝开放平台审核通过的应用APPID" />
             </Form.Item>
             <Form.Item
-              name="appCertPublicKey"
+              name="app_cert_public_key"
               label="应用公钥证书"
               rules={[{ required: true, message: '应用公钥证书' }]}
             >
               <Input
                 placeholder="应用公钥证书"
+                disabled
                 addonAfter={
                   <UploadFile uploadSuccess={null} accept={'*'} uploadFail={null}>
                     <CloudUploadOutlined />
@@ -81,12 +96,13 @@ const PayAppPageModifyPage: FC = () => {
               />
             </Form.Item>
             <Form.Item
-              name="alipayCertPublicKey"
+              name="alipay_cert_public_key"
               label="支付宝公钥证书"
               rules={[{ required: true, message: '支付宝公钥证书' }]}
             >
               <Input
                 placeholder="支付宝公钥证书"
+                disabled
                 addonAfter={
                   <UploadFile uploadSuccess={null} accept={'*'} uploadFail={null}>
                     <CloudUploadOutlined />
@@ -94,9 +110,14 @@ const PayAppPageModifyPage: FC = () => {
                 }
               />
             </Form.Item>
-            <Form.Item name="alipayRootCert" label="支付宝根证书" rules={[{ required: true, message: '支付宝根证书' }]}>
+            <Form.Item
+              name="alipay_root_cert"
+              label="支付宝根证书"
+              rules={[{ required: true, message: '支付宝根证书' }]}
+            >
               <Input
                 placeholder="支付宝根证书"
+                disabled
                 addonAfter={
                   <UploadFile uploadSuccess={null} accept={'*'} uploadFail={null}>
                     <CloudUploadOutlined />
@@ -176,7 +197,7 @@ const PayAppPageModifyPage: FC = () => {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item name="app_type" label="应用类型" rules={[{ required: true, message: '请选择应用类型' }]}>
+            <Form.Item name="pay_app_type" label="应用类型" rules={[{ required: true, message: '请选择应用类型' }]}>
               <Select placeholder="请选择应用类型">
                 <Option value="h5">H5</Option>
                 <Option value="wechat_small">小程序</Option>
