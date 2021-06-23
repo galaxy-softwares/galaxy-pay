@@ -1,18 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { FC } from 'react'
-import { Card, Form, Input, Button, Select, Row, Col } from 'antd'
+import { Card, Form, Input, Button, Select, Row, Col, message } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import { UploadFile } from '../../components/uploadFile'
 import { CloudUploadOutlined } from '@ant-design/icons'
-import { getSoftwares } from '../../request/software'
-import { createPayapp } from '../../request/payapp'
+import { getSoftware, getSoftwares } from '../../request/software'
+import { createPayapp, getPayapp } from '../../request/payapp'
+import { useParams } from 'react-router-dom'
 const { Option } = Select
 const PayAppPageModifyPage: FC = () => {
   const [form] = useForm()
   const [formChannel, setFormChannel] = useState('')
-  const [certificate, setCertificate] = useState('')
-
+  const [certificate, setCertificate] = useState(0)
   const [softwares, setSoftwares] = useState([])
+
+  const params: any = useParams()
 
   const initSoftwareList = useCallback(async () => {
     const { data } = await getSoftwares()
@@ -23,21 +25,36 @@ const PayAppPageModifyPage: FC = () => {
     initSoftwareList()
   }, [initSoftwareList])
 
-  const channelChange = e => {
-    setFormChannel(e)
-    setCertificate('')
+  useEffect(() => {
+    if (params.id) {
+      const initPayappData = async () => {
+        const { data } = await getPayapp(params.id)
+        setFormChannel(data.channel)
+        setCertificate(data.certificate ? data.certificate : 0)
+        form.setFieldsValue({ ...data })
+      }
+      initPayappData()
+    }
+  }, [form, params.id])
+
+  const channelChange = (value: string) => {
+    setFormChannel(value)
+    setCertificate(0)
   }
 
-  const certificateChange = e => {
-    setCertificate(e)
+  const certificateChange = (value: number) => {
+    setCertificate(value)
   }
 
   const create = () => {
     form
       .validateFields()
-      .then((values: any) => {
-        createPayapp(values)
-        form.resetFields()
+      .then(async (values: any) => {
+        const { status } = await createPayapp(values)
+        if (status == 201) {
+          message.success('创建支付应用成功！')
+        }
+        // form.resetFields()
       })
       .catch(info => {
         console.log('Validate Failed:', info)
@@ -46,7 +63,7 @@ const PayAppPageModifyPage: FC = () => {
 
   const alipayFormRender = () => {
     if (formChannel == 'alipay') {
-      if (certificate == '10') {
+      if (certificate == 10) {
         return (
           <>
             <Form.Item name="appid" label="APPID" rules={[{ required: true, message: '项目名称不能为空' }]}>
@@ -74,7 +91,7 @@ const PayAppPageModifyPage: FC = () => {
             </Row>
           </>
         )
-      } else if (certificate == '20') {
+      } else if (certificate == 20) {
         return (
           <>
             <Form.Item name="appid" label="APPID" rules={[{ required: true, message: '项目名称不能为空' }]}>
@@ -183,10 +200,12 @@ const PayAppPageModifyPage: FC = () => {
             <Form.Item name="software_id" label="归属项目" rules={[{ required: true, message: '请选择归属项目' }]}>
               <Select placeholder="请选择归属项目" allowClear>
                 {softwares.length > 0 ? (
-                  softwares.map(item => {
+                  softwares.map((item, index) => {
                     return (
                       <>
-                        <Option value={item.id}>{item.name}</Option>
+                        <Option key={index} value={item.id}>
+                          {item.name}
+                        </Option>
                       </>
                     )
                   })
@@ -249,8 +268,8 @@ const PayAppPageModifyPage: FC = () => {
                 rules={[{ required: true, message: '请选择是否是证书模式' }]}
               >
                 <Select placeholder="请选择是否是证书模式" onChange={certificateChange}>
-                  <Option value="10">公钥模式</Option>
-                  <Option value="20">根证书模式</Option>
+                  <Option value={10}>公钥模式</Option>
+                  <Option value={20}>根证书模式</Option>
                 </Select>
               </Form.Item>
             ) : (
