@@ -8,6 +8,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp()
+    const res = ctx.getResponse()
     const req = ctx.getRequest()
 
     const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR
@@ -20,5 +21,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     this.loggerService.setContext(AllExceptionsFilter.name)
     this.loggerService.exception(status, data, req, exception)
+    res.status(status).json(data)
   }
 }

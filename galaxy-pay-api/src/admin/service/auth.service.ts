@@ -2,6 +2,19 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { UserService } from './user.service'
 import { JwtService } from '@nestjs/jwt'
 import * as crypto from 'crypto-js'
+// export function Test() {
+//   return (target, _, descriptor: PropertyDescriptor) => {
+//     const method = descriptor.value
+//     let ret
+//     descriptor.value = async function (...args) {
+//       args[0] = { username: 'admin', password: '123456789' }
+//       console.log(args, '-----------------------')
+//       ret = method.apply(target, args)
+//       return ret
+//     }
+//     return descriptor
+//   }
+// }
 
 @Injectable()
 export class AuthService {
@@ -13,6 +26,7 @@ export class AuthService {
 
   async login(data) {
     const { username, password } = data
+    console.log(username, password, '被修改了！')
     const user = await this.userService.findUserByWhere({ username: username })
 
     if (!user) {
