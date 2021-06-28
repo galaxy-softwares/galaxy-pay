@@ -11,7 +11,7 @@ export class AlipayQuery {
 
 export class AliPayDto {
   @IsNotEmpty({ message: 'appid不能为空' })
-  appid: string
+  pay_app_id: string
 
   @IsNotEmpty({ message: '付款金额不能为空！' })
   money: string
@@ -43,7 +43,7 @@ export class WechatPayQuery {
 
 export class WechatPayDto {
   @IsNotEmpty({ message: 'appid不能为空' })
-  appid: string
+  pay_app_id: string
 
   @IsNotEmpty({ message: '付款金额不能为空！' })
   money: string

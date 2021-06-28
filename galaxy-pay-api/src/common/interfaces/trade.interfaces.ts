@@ -1,7 +1,7 @@
 import { TradeChannel, TradeStatus, TradeType } from '../enum/trade.enum'
 
 export interface CreateTrade {
-  appid: string
+  pay_app_id: string
 
   sys_trade_no: string
 

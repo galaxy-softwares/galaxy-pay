@@ -3,7 +3,7 @@ import { AppController } from './app.controller'
 import { AdminModule } from './admin/admin.module'
 import { CommonModule } from './common/common.module'
 import { ApiModule } from './api/api.module'
-import { PayModule } from 'galaxy-pay-config'
+import { PayModule } from './pay'
 
 @Module({
   imports: [HttpModule, AdminModule, CommonModule, PayModule, ApiModule],

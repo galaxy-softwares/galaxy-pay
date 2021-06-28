@@ -5,7 +5,7 @@ import { Base } from './base.entity'
 @Entity()
 export class Trade extends Base {
   @Column()
-  appid: string
+  pay_app_id: string
 
   @Column({
     comment: '支付/退款/打款 编号',
@@ -48,7 +48,8 @@ export class Trade extends Base {
   return_url: string
 
   @Column({
-    comment: '支付完成之后对应的支付宝或者微信异步回调地址'
+    comment: '支付完成之后对应的支付宝或者微信异步回调地址',
+    default: ''
   })
   notify_url: string
 

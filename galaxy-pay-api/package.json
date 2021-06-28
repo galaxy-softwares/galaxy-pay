@@ -38,6 +38,7 @@
     ]
   },
   "dependencies": {
+    "@fidm/x509": "^1.2.1",
     "@hapi/joi": "^17.1.1",
     "@nestjs/common": "^7.4.4",
     "@nestjs/config": "^0.5.0",

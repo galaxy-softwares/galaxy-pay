@@ -1,5 +1,7 @@
 const qs = require('qs')
 const md5 = require('md5')
+const path = require('path')
+
 /**
  * 生成签名
  * @param param
@@ -12,6 +14,10 @@ export const makeSignStr = (param: Object, key: string) => {
   param_str = md5(param_str.toLocaleLowerCase())
   param_str = param_str.toLocaleUpperCase()
   return `${param_str}`
+}
+
+export const joinPath = file => {
+  return path.join(__dirname, `../../../${file}`)
 }
 
 /**

@@ -2,7 +2,7 @@ import { IsNotEmpty } from 'class-validator'
 
 export class WechatRefundPayDto {
   @IsNotEmpty({ message: 'appid不能为空' })
-  appid: string
+  pay_app_id: string
 
   @IsNotEmpty({ message: '退款订单不能为空！' })
   sys_transaction_no: string
@@ -24,7 +24,7 @@ export class WechatRefundPayDto {
 
 export class AliPayRefundDto {
   @IsNotEmpty({ message: 'appid不能为空' })
-  appid: string
+  pay_app_id: string
 
   @IsNotEmpty({ message: '退款编号不能为空！' })
   sys_transaction_no: string

@@ -30,13 +30,19 @@ export class Payapp extends Base {
   pay_app_type: string
 
   @Column({
+    comment: '通知地址',
+    default: ''
+  })
+  notify_url: string
+
+  @Column({
     comment: '回调地址',
     default: ''
   })
   callback_url: string
 
   @Column({
-    comment: '回调地址',
+    comment: '支付完成跳转地址',
     default: ''
   })
   return_url: string

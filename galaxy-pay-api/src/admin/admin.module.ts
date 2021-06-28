@@ -22,6 +22,6 @@ import { PayappService } from './service/payapp.service'
   ],
   controllers: [AuthController, SoftwareController, PayappController, TradeController, FileController],
   providers: [AuthService, SoftwareService, PayappService, UserService, TradeService, JwtAuthGuard, JwtStrategy],
-  exports: [SoftwareService, TradeService]
+  exports: [SoftwareService, TradeService, PayappService]
 })
 export class AdminModule {}

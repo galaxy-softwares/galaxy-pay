@@ -1,25 +1,25 @@
-import { Controller, HttpException, HttpStatus, Post, UploadedFile, UseInterceptors } from '@nestjs/common'
+import { Body, Controller, HttpException, HttpStatus, Post, UploadedFile, UseInterceptors } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { createWriteStream } from 'fs'
 import * as path from 'path'
 
 @Controller('file')
 export class FileController {
-  @Post('uploadP12')
+  @Post('uploadFile')
   @UseInterceptors(FileInterceptor('file'))
-  uploadFile(@UploadedFile() file) {
+  uploadFile(@Body() body, @UploadedFile() file) {
     const fileType = file.mimetype.split('/')[1]
-
-    if (fileType !== 'x-pkcs12') {
+    if (fileType !== 'x-pkcs12' && fileType !== 'x-x509-ca-cert') {
       throw new HttpException('文件格式不正确！', HttpStatus.BAD_REQUEST)
     }
+    const suffixType = file.originalname.split('.')[1]
     // 这里捕获错误，因为上传可能有各种各样的未知原因报错
     try {
-      const fileName = Date.parse(Date())
-      const writeImage = createWriteStream(path.join(__dirname, '../../../', 'upload', `${fileName}.p12`))
-      writeImage.write(file.buffer)
+      const fileName = `${body.fileName}_${Date.parse(Date())}.${suffixType}`
+      const writeFile = createWriteStream(path.join(__dirname, '../../../', 'upload', fileName))
+      writeFile.write(file.buffer)
       return {
-        path: `/upload/${fileName}.p12`,
+        path: `/upload/${fileName}`,
         size: file.size,
         mimetype: file.mimetype
       }

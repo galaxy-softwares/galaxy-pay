@@ -27,7 +27,7 @@ export class AppController {
     const data = req.body
     this.loggerService.info(`支付宝异步通知:${JSON.stringify(data)}`)
     const trade = await this.tradeService.findOrder(data.out_trade_no)
-    const { payConfig, secret_key } = await this.softwareService.findSoftwarePayConfig(trade.appid)
+    const { payConfig, secret_key } = await this.softwareService.findSoftwarePayConfig(trade.pay_app_id)
     delete data.pay_app_type
     const sign_result = this.aliSignUtil.responSignVerify(data, payConfig.public_key)
     if (sign_result) {
@@ -51,7 +51,7 @@ export class AppController {
       if (order.trade_status == '1') {
         res.end(this.weChatNotifyParserUtil.generateSuccessMessage())
       }
-      const { payConfig, secret_key } = await this.softwareService.findSoftwarePayConfig(order.appid)
+      const { payConfig, secret_key } = await this.softwareService.findSoftwarePayConfig(order.pay_app_id)
       // 先拿到微信得签名
       const data_sign = data.sign
       // 不进行签名验证

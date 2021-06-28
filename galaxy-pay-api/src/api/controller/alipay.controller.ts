@@ -4,6 +4,8 @@ import { PayGuard } from 'src/common/guard/pay.guard'
 import { AliPayDto, AlipayQuery } from 'src/admin/dtos/pay.dto'
 import { AliPayRefundDto } from 'src/admin/dtos/refund.dto'
 import { ApiTradeSerivce } from '../service/api.trade.service'
+import { TradeChannel } from 'src/common/enum/trade.enum'
+import { joinPath } from 'src/common/utils/indedx'
 import {
   AliAppPayService,
   AliCertUtil,
@@ -17,7 +19,6 @@ import {
   AliTradePayService,
   AliWapPayService
 } from 'galaxy-pay-config'
-import { TradeChannel } from 'src/common/enum/trade.enum'
 
 @Controller('alipay')
 @UseGuards(PayGuard)
@@ -38,18 +39,26 @@ export class AlipayController {
    */
   public isAliPayCert(alipay_config: AlipayConfig): AlipayConfig {
     try {
-      if (alipay_config.app_cert_sn) {
-        const { app_cert_sn, alipay_root_cert_sn, public_key } = this.aliCertUtil.getCertPattern(
-          alipay_config.app_cert_sn,
-          alipay_config.alipay_root_cert_sn,
-          alipay_config.alipay_cert_public_key
+      if (alipay_config.certificate == 20) {
+        const alipay_sn = this.aliCertUtil.getCertPattern(
+          joinPath(alipay_config.app_cert_public_key),
+          joinPath(alipay_config.alipay_cert_public_key_rsa2),
+          joinPath(alipay_config.alipay_root_cert)
         )
-        return { ...alipay_config, public_key, alipay_root_cert_sn, app_cert_sn }
+        return { ...alipay_config, ...alipay_sn }
       } else {
         return alipay_config
       }
     } catch (e) {
       throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST)
+    }
+  }
+
+  private transformationKey(key: string, type = 'private') {
+    if (type == 'public') {
+      return `-----BEGIN PUBLIC KEY-----\r\n${key}\r\n-----END PUBLIC KEY-----`
+    } else {
+      return `-----BEGIN RSA PRIVATE KEY-----\r\n${key}\r\n-----END RSA PRIVATE KEY-----`
     }
   }
 

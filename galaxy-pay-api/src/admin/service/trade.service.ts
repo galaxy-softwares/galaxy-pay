@@ -49,13 +49,14 @@ export class TradeService extends BaseService<Trade> {
         trade.trade_channel = data.trade_channel
         trade.trade_body = data.trade_body
         trade.trade_amount = data.trade_amount
-        trade.appid = data.appid
+        trade.pay_app_id = data.pay_app_id
         return await this.tradeRepository.save(trade)
       } else {
+        console.log(data, '----------')
         return await this.tradeRepository.save(data)
       }
     } catch (e) {
-      throw new HttpException('支付账单生成失败！', HttpStatus.BAD_REQUEST)
+      throw new HttpException(`支付账单生成失败！${e}`, HttpStatus.BAD_REQUEST)
     }
   }
 
