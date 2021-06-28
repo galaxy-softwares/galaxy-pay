@@ -4,8 +4,8 @@ import { Card, Form, Input, Button, Select, Row, Col, message } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import { UploadFile } from '../../components/uploadFile'
 import { CloudUploadOutlined } from '@ant-design/icons'
-import { getSoftware, getSoftwares } from '../../request/software'
-import { createPayapp, getPayapp } from '../../request/payapp'
+import { getSoftwares } from '../../request/software'
+import { createPayapp, getPayapp, updatePayapp } from '../../request/payapp'
 import { useParams } from 'react-router-dom'
 const { Option } = Select
 const PayAppPageModifyPage: FC = () => {
@@ -46,15 +46,30 @@ const PayAppPageModifyPage: FC = () => {
     setCertificate(value)
   }
 
-  const create = () => {
+  const onUploadDone = data => {
+    if (data) {
+      form.setFieldsValue({
+        [data.name]: data.path
+      })
+    }
+  }
+
+  const onSubmit = () => {
     form
       .validateFields()
       .then(async (values: any) => {
-        const { status } = await createPayapp(values)
-        if (status == 201) {
-          message.success('创建支付应用成功！')
+        if (params.id) {
+          values.id = params.id
+          const { status } = await updatePayapp(values)
+          if (status == 200) {
+            message.success('修改支付应用成功！')
+          }
+        } else {
+          const { status } = await createPayapp(values)
+          if (status == 201) {
+            message.success('创建支付应用成功！')
+          }
         }
-        // form.resetFields()
       })
       .catch(info => {
         console.log('Validate Failed:', info)
@@ -94,34 +109,56 @@ const PayAppPageModifyPage: FC = () => {
       } else if (certificate == 20) {
         return (
           <>
+            <Row gutter={[16, 0]}>
+              <Col span={12}>
+                <Form.Item
+                  name="public_key"
+                  label="支付宝公钥"
+                  rules={[{ required: true, message: '项目名称不能为空' }]}
+                >
+                  <Input placeholder="支付宝公钥" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="private_key"
+                  label="支付宝私钥"
+                  rules={[{ required: true, message: '项目名称不能为空' }]}
+                >
+                  <Input placeholder="支付宝私钥" />
+                </Form.Item>
+              </Col>
+            </Row>
             <Form.Item name="appid" label="APPID" rules={[{ required: true, message: '项目名称不能为空' }]}>
               <Input placeholder="支付宝开放平台审核通过的应用APPID" />
             </Form.Item>
             <Form.Item
               name="app_cert_public_key"
               label="应用公钥证书"
+              extra="appCertPublicKey_xxxx.crt"
               rules={[{ required: true, message: '应用公钥证书' }]}
             >
               <Input
-                placeholder="应用公钥证书"
+                placeholder="应用公钥证书 app_cert_public_key"
                 disabled
                 addonAfter={
-                  <UploadFile uploadSuccess={null} accept={'*'} uploadFail={null}>
+                  <UploadFile name="app_cert_public_key" uploadSuccess={onUploadDone}>
                     <CloudUploadOutlined />
                   </UploadFile>
                 }
               />
             </Form.Item>
             <Form.Item
-              name="alipay_cert_public_key"
+              name="alipay_cert_public_key_rsa2"
               label="支付宝公钥证书"
+              extra="alipayCertPublicKey_RSA2.crt"
               rules={[{ required: true, message: '支付宝公钥证书' }]}
             >
               <Input
-                placeholder="支付宝公钥证书"
+                placeholder="应用公钥证书 alipay_cert_public_key_rsa2"
                 disabled
                 addonAfter={
-                  <UploadFile uploadSuccess={null} accept={'*'} uploadFail={null}>
+                  <UploadFile name="alipay_cert_public_key_rsa2" uploadSuccess={onUploadDone}>
                     <CloudUploadOutlined />
                   </UploadFile>
                 }
@@ -130,13 +167,14 @@ const PayAppPageModifyPage: FC = () => {
             <Form.Item
               name="alipay_root_cert"
               label="支付宝根证书"
+              extra="alipayRootCert.crt"
               rules={[{ required: true, message: '支付宝根证书' }]}
             >
               <Input
-                placeholder="支付宝根证书"
+                placeholder="支付宝根证书 alipay_root_cert"
                 disabled
                 addonAfter={
-                  <UploadFile uploadSuccess={null} accept={'*'} uploadFail={null}>
+                  <UploadFile name="alipay_root_cert" uploadSuccess={onUploadDone}>
                     <CloudUploadOutlined />
                   </UploadFile>
                 }
@@ -176,7 +214,7 @@ const PayAppPageModifyPage: FC = () => {
             <Input
               placeholder="证书文件，特定操作需要！"
               addonAfter={
-                <UploadFile uploadSuccess={null} accept={'*'} uploadFail={null}>
+                <UploadFile name="apiclient_cert" uploadSuccess={onUploadDone} accept={'*'}>
                   <CloudUploadOutlined />
                 </UploadFile>
               }
@@ -225,8 +263,13 @@ const PayAppPageModifyPage: FC = () => {
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item name="return_url" label="跳转地址" tooltip="当支付完成时，进行的网页跳转。APP和小程序则无需填写">
-              <Input placeholder="支付完成后跳转页面,PC端 支付必填！" />
+            <Form.Item
+              name="notify_url"
+              label="支付通知地址"
+              tooltip="支付完成时, 支付系统通知地址"
+              rules={[{ required: true, message: '请输入notify_url' }]}
+            >
+              <Input placeholder="支付完成时, 支付系统通知地址" />
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -237,6 +280,11 @@ const PayAppPageModifyPage: FC = () => {
               rules={[{ required: true, message: '请输入callback_url' }]}
             >
               <Input placeholder="支付完成时, 本系统回调地址" />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item name="return_url" label="跳转地址" tooltip="当支付完成时，进行的网页跳转。APP和小程序则无需填写">
+              <Input placeholder="支付完成后跳转页面,PC端 支付必填！" />
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -268,8 +316,8 @@ const PayAppPageModifyPage: FC = () => {
                 rules={[{ required: true, message: '请选择是否是证书模式' }]}
               >
                 <Select placeholder="请选择是否是证书模式" onChange={certificateChange}>
-                  <Option value={10}>公钥模式</Option>
-                  <Option value={20}>根证书模式</Option>
+                  <Option value={10}>公钥书</Option>
+                  <Option value={20}>公钥证书</Option>
                 </Select>
               </Form.Item>
             ) : (
@@ -280,8 +328,8 @@ const PayAppPageModifyPage: FC = () => {
         {formChannel == 'wechat' ? wechatFormRender() : <></>}
         {alipayFormRender()}
         <Form.Item>
-          <Button onClick={create} type="primary">
-            添加
+          <Button onClick={onSubmit} type="primary">
+            提交
           </Button>
         </Form.Item>
       </Form>

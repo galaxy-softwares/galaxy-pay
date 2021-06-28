@@ -1,33 +1,33 @@
-import React, { FC, useRef } from 'react'
-import { uploadFile } from '../request/user'
-
+import { message, Upload } from 'antd'
+import React, { FC } from 'react'
 interface UploadFileProps {
-  accept: string
+  accept?: string
+  name: string
   uploadSuccess: (data) => void
-  uploadFail: (data) => void
+  // uploadFail: (data) => void
 }
 
-export const UploadFile: FC<UploadFileProps> = ({ accept, uploadSuccess, uploadFail = null, children }) => {
-  const uploadRef = useRef(null)
-
-  const handleUpload = event => {
-    uploadFile(event.target.files[0]).then((res: any) => {
-      if (res) {
-        return uploadSuccess(res.data)
-      } else {
-        return uploadFail(res.message)
+export const UploadFile: FC<UploadFileProps> = ({ name, accept = '.crt', uploadSuccess, children }) => {
+  const props: any = {
+    name: 'file',
+    action: 'http://127.0.0.1:3200/file/uploadFile',
+    headers: {
+      authorization: 'authorization-text'
+    },
+    accept: accept,
+    showUploadList: false,
+    data: {
+      fileName: name
+    },
+    onChange(info) {
+      if (info.file.status === 'done') {
+        message.success(`${info.file.name} 上传成功！`)
+        return uploadSuccess({ name, path: info.file.response.path })
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} 上传失败稍后再试！`)
       }
-    })
+    }
   }
 
-  const handleClick = () => {
-    uploadRef.current.click()
-  }
-
-  return (
-    <div onClick={handleClick}>
-      {children}
-      <input onChange={handleUpload} ref={uploadRef} type="file" multiple accept={accept} style={{ display: 'none' }} />
-    </div>
-  )
+  return <Upload {...props}>{children}</Upload>
 }
