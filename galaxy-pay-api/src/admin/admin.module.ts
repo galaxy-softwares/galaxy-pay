@@ -8,6 +8,7 @@ import { AuthService, SoftwareService, UserService, TradeService, JwtAuthGuard, 
 import { Payapp } from './entities/payapp.entity'
 import { PayappController } from './controller/payapp.controller'
 import { PayappService } from './service/payapp.service'
+import { PayModule } from 'galaxy-pay-config'
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { PayappService } from './service/payapp.service'
         expiresIn: '12h'
       }
     }),
-    PassportModule.register({ defaultStrategy: 'jwt' })
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    PayModule
   ],
   controllers: [AuthController, SoftwareController, PayappController, TradeController, FileController],
   providers: [AuthService, SoftwareService, PayappService, UserService, TradeService, JwtAuthGuard, JwtStrategy],

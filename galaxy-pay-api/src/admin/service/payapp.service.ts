@@ -1,28 +1,64 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { BaseService } from './base.service'
 import { Software } from 'src/admin/entities/software.entity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { createQueryBuilder, Repository } from 'typeorm'
 import { Payapp } from '../entities'
 import { PayappDto } from '../dtos/pay.dto'
+import { AliCertUtil, AlipayConfig } from 'galaxy-pay-config'
+import { joinPath } from 'src/common/utils/indedx'
 
 @Injectable()
 export class PayappService extends BaseService<Payapp> {
   constructor(
     @InjectRepository(Payapp)
-    private readonly payappRepository: Repository<Payapp>
+    private readonly payappRepository: Repository<Payapp>,
+    private readonly aliCertUtil: AliCertUtil
   ) {
     super(payappRepository)
+  }
+
+  public isAliPayCert(alipay_config: AlipayConfig): AlipayConfig {
+    try {
+      alipay_config.private_key = this.transformationKey(alipay_config.private_key)
+      if (alipay_config.certificate == 20) {
+        const alipay_sn = this.aliCertUtil.getCertPattern(
+          joinPath(alipay_config.app_cert_public_key),
+          joinPath(alipay_config.alipay_root_cert),
+          joinPath(alipay_config.alipay_cert_public_key_rsa2)
+        )
+        alipay_sn.public_key = this.transformationKey(alipay_sn.public_key, 'public')
+        return { ...alipay_config, ...alipay_sn }
+      }
+      alipay_config.public_key = this.transformationKey(alipay_config.public_key, 'public')
+      return alipay_config
+    } catch (e) {
+      throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST)
+    }
   }
 
   async findPayappConfig(pay_app_id: string) {
     const payapp: any = await this.payappRepository.findOne({ pay_app_id })
     payapp.config = JSON.parse(payapp.config)
+
+    if (payapp.channel === 'alipay') {
+      payapp.config = this.isAliPayCert(payapp.config)
+    }
     return {
       callback_url: payapp.callback_url,
       return_url: payapp.return_url,
       domain_url: payapp.domain_url,
+      pay_secret_key: payapp.pay_secret_key,
+      notify_url: 'http://cznmzwu.nat.ipyingshe.com/alipay_notify_url',
       ...payapp.config
+    }
+  }
+
+  private transformationKey(key: string, type = 'private') {
+    if (type == 'public') {
+      return `-----BEGIN PUBLIC KEY-----\r\n${key}\r\n-----END PUBLIC KEY-----`
+    } else {
+      return `-----BEGIN RSA PRIVATE KEY-----\r\n${key}\r\n-----END RSA PRIVATE KEY-----`
     }
   }
 
@@ -66,8 +102,8 @@ export class PayappService extends BaseService<Payapp> {
       payapp.config = JSON.stringify({
         appid: data.appid,
         certificate: data.certificate,
-        private_key: `-----BEGIN RSA PRIVATE KEY-----\r\n${data.private_key}\r\n-----END RSA PRIVATE KEY-----`,
-        public_key: `-----BEGIN PUBLIC KEY-----\r\n${data.public_key}\r\n-----END PUBLIC KEY-----`
+        private_key: data.private_key,
+        public_key: data.public_key
       })
     } else if (data.certificate == 20) {
       payapp.config = {

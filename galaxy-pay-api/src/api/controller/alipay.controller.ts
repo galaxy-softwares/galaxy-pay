@@ -29,7 +29,7 @@ export class AlipayController {
     private readonly aliTradePayService: AliTradePayService,
     private readonly aliWapPayService: AliWapPayService,
     private readonly apiTradeService: ApiTradeSerivce,
-    private aliCertUtil: AliCertUtil,
+    private readonly aliCertUtil: AliCertUtil,
     @Inject(HttpService) protected readonly httpService: HttpService
   ) {}
 
@@ -37,30 +37,6 @@ export class AlipayController {
    * 判断是否是证书模式
    * @param alipay_config
    */
-  public isAliPayCert(alipay_config: AlipayConfig): AlipayConfig {
-    try {
-      if (alipay_config.certificate == 20) {
-        const alipay_sn = this.aliCertUtil.getCertPattern(
-          joinPath(alipay_config.app_cert_public_key),
-          joinPath(alipay_config.alipay_cert_public_key_rsa2),
-          joinPath(alipay_config.alipay_root_cert)
-        )
-        return { ...alipay_config, ...alipay_sn }
-      } else {
-        return alipay_config
-      }
-    } catch (e) {
-      throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST)
-    }
-  }
-
-  private transformationKey(key: string, type = 'private') {
-    if (type == 'public') {
-      return `-----BEGIN PUBLIC KEY-----\r\n${key}\r\n-----END PUBLIC KEY-----`
-    } else {
-      return `-----BEGIN RSA PRIVATE KEY-----\r\n${key}\r\n-----END RSA PRIVATE KEY-----`
-    }
-  }
 
   /**
    * app支付
@@ -78,7 +54,7 @@ export class AlipayController {
         total_amount: body.money,
         ...body.biz_count
       },
-      this.isAliPayCert(alipay_config)
+      alipay_config
     )
   }
 
@@ -90,6 +66,7 @@ export class AlipayController {
   @Post('page')
   async pagePay(@Body() body: AliPayDto, @PayConfig() alipay_config: AlipayConfig): Promise<string> {
     await this.apiTradeService.generateOrder(body, alipay_config)
+
     return this.aliPagePaySerice.pay(
       {
         product_code: 'FAST_INSTANT_TRADE_PAY',
@@ -98,7 +75,7 @@ export class AlipayController {
         total_amount: body.money,
         ...body.biz_count
       },
-      this.isAliPayCert(alipay_config)
+      alipay_config
     )
   }
 
@@ -113,7 +90,7 @@ export class AlipayController {
       {
         out_trade_no: body.out_trade_no
       },
-      this.isAliPayCert(alipay_config)
+      alipay_config
     )
   }
 
@@ -132,7 +109,7 @@ export class AlipayController {
         out_trade_no: body.out_trade_no,
         out_request_no: body.out_trade_no
       },
-      this.isAliPayCert(alipay_config)
+      alipay_config
     )
   }
 
@@ -152,7 +129,7 @@ export class AlipayController {
         total_amount: body.money,
         ...body.biz_count
       },
-      this.isAliPayCert(alipay_config)
+      alipay_config
     )
   }
 
@@ -172,7 +149,7 @@ export class AlipayController {
         total_amount: body.money,
         ...body.biz_count
       },
-      this.isAliPayCert(alipay_config)
+      alipay_config
     )
   }
 
@@ -191,7 +168,7 @@ export class AlipayController {
         refund_amount: body.money,
         refund_reason: body.body
       },
-      this.isAliPayCert(alipay_config)
+      alipay_config
     )
     if (refund_result.code == '10000') {
       if (await this.apiTradeService.refundSuccess(body.sys_trade_no, TradeChannel.alipay, refund_result.trade_no)) {
@@ -220,7 +197,7 @@ export class AlipayController {
         total_amount: body.money,
         ...body.biz_count
       },
-      this.isAliPayCert(alipay_config)
+      alipay_config
     )
   }
 
@@ -262,7 +239,7 @@ export class AlipayController {
       {
         out_trade_no: body.out_trade_no
       },
-      this.isAliPayCert(alipay_config)
+      alipay_config
     )
   }
 }
