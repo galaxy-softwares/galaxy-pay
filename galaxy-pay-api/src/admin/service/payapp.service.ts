@@ -91,31 +91,31 @@ export class PayappService extends BaseService<Payapp> {
       payapp.pay_secret_key = this.randomString()
     }
     if (data.channel === 'wechat') {
-      payapp.config = JSON.stringify({
+      payapp.config = {
         appid: data.appid,
         mch_id: data.mch_id,
         mch_key: data.mch_key,
         app_secret: data.app_secret,
         apiclient_cert: data.apiclient_cert
-      })
+      }
     } else if (data.certificate == 10) {
-      payapp.config = JSON.stringify({
+      payapp.config = {
         appid: data.appid,
         certificate: data.certificate,
         private_key: data.private_key,
         public_key: data.public_key
-      })
+      }
     } else if (data.certificate == 20) {
       payapp.config = {
         appid: data.appid,
         certificate: data.certificate,
         private_key: data.private_key,
-        public_key: data.public_key,
         app_cert_public_key: data.app_cert_public_key,
         alipay_cert_public_key_rsa2: data.alipay_cert_public_key_rsa2,
         alipay_root_cert: data.alipay_root_cert
       }
     }
+    payapp.config = JSON.stringify(payapp.config)
     return payapp
   }
 
@@ -126,6 +126,7 @@ export class PayappService extends BaseService<Payapp> {
 
   async updatePayapp(data: PayappDto): Promise<Payapp> {
     const payapp = this.payappRepository.create(this.generatePayapp(data))
+    console.log(payapp, 'payapp')
     return await this.payappRepository.save(payapp)
   }
 

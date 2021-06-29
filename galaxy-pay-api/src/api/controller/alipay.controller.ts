@@ -5,10 +5,9 @@ import { AliPayDto, AlipayQuery } from 'src/admin/dtos/pay.dto'
 import { AliPayRefundDto } from 'src/admin/dtos/refund.dto'
 import { ApiTradeSerivce } from '../service/api.trade.service'
 import { TradeChannel } from 'src/common/enum/trade.enum'
-import { joinPath } from 'src/common/utils/indedx'
+
 import {
   AliAppPayService,
-  AliCertUtil,
   AliPagePayService,
   AlipayConfig,
   AlipayTradeCloseRes,
@@ -29,7 +28,6 @@ export class AlipayController {
     private readonly aliTradePayService: AliTradePayService,
     private readonly aliWapPayService: AliWapPayService,
     private readonly apiTradeService: ApiTradeSerivce,
-    private readonly aliCertUtil: AliCertUtil,
     @Inject(HttpService) protected readonly httpService: HttpService
   ) {}
 
@@ -66,7 +64,6 @@ export class AlipayController {
   @Post('page')
   async pagePay(@Body() body: AliPayDto, @PayConfig() alipay_config: AlipayConfig): Promise<string> {
     await this.apiTradeService.generateOrder(body, alipay_config)
-
     return this.aliPagePaySerice.pay(
       {
         product_code: 'FAST_INSTANT_TRADE_PAY',
