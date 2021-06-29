@@ -49,12 +49,12 @@ export class AppController {
     try {
       const data = await this.weChatNotifyParserUtil.receiveReqData<WeChatPayNotifyRes>(req, 'pay')
       this.loggerService.info(`微信异步通知:${JSON.stringify(data)}`)
-      const order = await this.tradeService.findOrder(data.out_trade_no)
+      const trade = await this.tradeService.findOrder(data.out_trade_no)
       // 因为已经在支付查询的时候已经做了错误抛出所以不用再去判断是否存在账单。
-      if (order.trade_status == '1') {
+      if (trade.trade_status == '1') {
         res.end(this.weChatNotifyParserUtil.generateSuccessMessage())
       }
-      const pay_config = await this.payappService.findPayappConfig(order.pay_app_id)
+      const pay_config = await this.payappService.findPayappConfig(trade.pay_app_id)
       // 先拿到微信得签名
       const data_sign = data.sign
       // 不进行签名验证
@@ -67,7 +67,7 @@ export class AppController {
       const status = await this.tradeService.paySuccess(data.out_trade_no, TradeChannel.wechat, data.transaction_id)
       if (status) {
         const callback_result = await this.callbackRequest(
-          order.callback_url,
+          trade.callback_url,
           {
             out_trade_no: data.out_trade_no,
             trade_no: data.transaction_id

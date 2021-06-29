@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { FC } from 'react'
-import { Card, Steps, Form, Input, Button, Select, Row, Col, message, Space } from 'antd'
+import { Card, Steps, Form, Input, Button, Select, Row, Col, message, Space, Result } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import { UploadFile } from '../../components/uploadFile'
 import { CloudUploadOutlined } from '@ant-design/icons'
@@ -61,23 +61,25 @@ const PayAppPageModifyPage: FC = () => {
     initPayappData()
   }, [initPayappData])
 
-  const nextStep = () => {
-    formValidateFields(() => {
+  const stepChange = (type: string) => {
+    const current = type === 'next' ? payAppConfigure.current + 1 : payAppConfigure.current - 1
+    if (type == 'next') {
+      formValidateFields(() => {
+        setPayAppConfigure({
+          ...payAppConfigure,
+          current: payAppConfigure.current + 1
+        })
+      })
+    } else {
       setPayAppConfigure({
         ...payAppConfigure,
-        current: payAppConfigure.current + 1
+        current
       })
-    })
+      form.setFieldsValue({ ...formData })
+    }
   }
 
-  const prevStep = () => {
-    setPayAppConfigure({
-      ...payAppConfigure,
-      current: payAppConfigure.current - 1
-    })
-    form.setFieldsValue({ ...formData })
-  }
-
+  // 支付通道切换
   const channelChange = (value: string) => {
     setPayAppConfigure({
       ...payAppConfigure,
@@ -85,7 +87,7 @@ const PayAppPageModifyPage: FC = () => {
       channel: value
     })
   }
-
+  // 支付宝证书模式选择
   const certificateChange = (value: number) => {
     setPayAppConfigure({
       ...payAppConfigure,
@@ -93,12 +95,28 @@ const PayAppPageModifyPage: FC = () => {
     })
   }
 
+  // 上传支付宝/微信证书
   const onUploadDone = data => {
     if (data) {
       form.setFieldsValue({
         [data.name]: data.path
       })
     }
+  }
+
+  // 校验表单
+  const formValidateFields = (callback): void => {
+    form
+      .validateFields()
+      .then(async (values: any) => {
+        callback(values)
+        setFormData({
+          ...values
+        })
+      })
+      .catch(info => {
+        console.log('Validate Failed:', info)
+      })
   }
 
   const onSubmit = () => {
@@ -116,21 +134,11 @@ const PayAppPageModifyPage: FC = () => {
           message.success('创建支付应用成功！')
         }
       }
+      setPayAppConfigure({
+        ...payAppConfigure,
+        current: payAppConfigure.current + 1
+      })
     })
-  }
-
-  const formValidateFields = callback => {
-    form
-      .validateFields()
-      .then(async (values: any) => {
-        callback(values)
-        setFormData({
-          ...values
-        })
-      })
-      .catch(info => {
-        console.log('Validate Failed:', info)
-      })
   }
 
   const alipayFormRender = () => {
@@ -252,10 +260,10 @@ const PayAppPageModifyPage: FC = () => {
             <Form.Item name="software_id" label="归属项目" rules={[{ required: true, message: '请选择归属项目' }]}>
               <Select disabled={isEdit} placeholder="请选择归属项目" allowClear>
                 {softwares.length > 0 ? (
-                  softwares.map((item, index) => {
+                  softwares.map(item => {
                     return (
                       <>
-                        <Option key={index} value={item.id}>
+                        <Option key={item.id} value={item.id}>
                           {item.name}
                         </Option>
                       </>
@@ -338,6 +346,24 @@ const PayAppPageModifyPage: FC = () => {
     }
   }
 
+  const payAppCreateDone = () => {
+    const { current } = payAppConfigure
+    if (current == 2) {
+      return (
+        <Result
+          status="success"
+          title="操作成功"
+          subTitle=""
+          extra={[
+            <Button type="primary" key="console">
+              返回
+            </Button>
+          ]}
+        />
+      )
+    }
+  }
+
   const wechatFormRender = () => {
     const { channel, current } = payAppConfigure
     if (current == 1 && channel == 'wechat') {
@@ -379,6 +405,7 @@ const PayAppPageModifyPage: FC = () => {
       )
     }
   }
+
   return (
     <Card className="pay__app-modify">
       <div className="title">支付应用</div>
@@ -396,29 +423,23 @@ const PayAppPageModifyPage: FC = () => {
             <Form.Item>
               <Space>
                 {payAppConfigure.current == 1 ? (
-                  <Button onClick={onSubmit} type="primary">
-                    提交
-                  </Button>
+                  <>
+                    <Button onClick={onSubmit} type="primary">
+                      提交
+                    </Button>
+                    <Button type="primary" onClick={() => stepChange('pre')}>
+                      上一个
+                    </Button>
+                  </>
                 ) : (
-                  <></>
-                )}
-                {payAppConfigure.current == 1 ? (
-                  <Button type="primary" onClick={() => prevStep()}>
-                    上一个
-                  </Button>
-                ) : (
-                  <></>
-                )}
-                {payAppConfigure.current == 0 ? (
-                  <Button type="primary" onClick={() => nextStep()}>
+                  <Button type="primary" onClick={() => stepChange('next')}>
                     下一个
                   </Button>
-                ) : (
-                  <></>
                 )}
               </Space>
             </Form.Item>
           </Form>
+          {payAppCreateDone()}
         </div>
       </div>
     </Card>
