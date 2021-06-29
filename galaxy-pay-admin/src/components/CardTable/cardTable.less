@@ -1,0 +1,107 @@
+.card__table {
+    border-radius: 16px;
+    overflow: hidden;
+    .ant-card-body {
+        .ant-table-thead > tr > th {
+            background: #ffffff;
+        }
+        .ant-table-thead > tr > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+            background-color: #ffffff
+        }
+        .ant-table-footer {
+            background: #ffffff;    
+        }
+    }
+    .card__table_head {
+        margin-bottom: 16px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        .card__table_head_title {
+            font-size: 18px;
+            flex-grow: 1;
+            display: flex;
+            font-weight: bolder;
+        }
+        .card__table_head_search {
+            flex-grow: 0;
+            display: flex;
+            .ant-space-item {
+                height: 40px;
+            }
+        }
+    }
+
+    .ant-pagination-prev .ant-pagination-item-link, .ant-pagination-next .ant-pagination-item-link {
+        border: none;
+    }
+
+    .ant-pagination-item-active {
+        border-color: #6777ef;
+        background-color:#6777ef ;
+        border-radius: 6px;
+        a {
+            color: #ffffff;
+        }
+    }
+
+    .ant-pagination-item {
+        border-color: #ffffff;
+        font-weight: bolder;
+    }
+    .ant-tag {
+        padding: 0 8px;
+        border-radius: 8px;
+        line-height: 24px;
+    }
+}
+
+.small_desc {
+    display: block;
+    color: #ccc;
+    font-size: 80%;
+}
+
+.table-font {
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+}
+
+._2005 {
+    color: #ccc;
+    font-size: 12px;
+    position: absolute;
+    bottom: 23px;
+    left: 20px;
+}
+
+.table_amount {
+    color: #16c784;
+}
+  
+.table_unpaid {
+    color: #ea3943;
+}
+
+.table_action {
+    cursor: pointer;
+}
+
+.ant-input-affix-wrapper {
+    border-radius: 8px;
+    align-items: center;
+    overflow: hidden;
+    padding: 0px 16px;
+    font-size: 14px;
+    height: 40px;
+    line-height: 21px;
+}
+
+.ant-popover-inner {
+    border-radius: 12px;
+    min-width: 220px;
+}
+.ant-popover-inner-content {
+    padding-bottom: 4px;
+}
