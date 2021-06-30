@@ -7,6 +7,7 @@ export interface CustomFormItemIF {
   valueType: string
   col: number
   placeholder: string
+  editDisable?: boolean
   onChange?: (...value: any) => void
   options?: Array<CustomSelectOption>
   customformItemPros: FormItemProps
@@ -21,14 +22,15 @@ export type Columns = Array<CustomFormItemIF>
 
 interface CustomFormProps {
   columns: Columns
+  isEdit?: boolean
 }
 
-export const CustomForm: FC<CustomFormProps> = ({ columns }) => {
+export const CustomForm: FC<CustomFormProps> = ({ columns, isEdit }) => {
   return (
     <>
       <Row gutter={[16, 0]}>
         {columns.map((item, index) => {
-          return <CustomFormItem customFormItem={item} key={index}></CustomFormItem>
+          return <CustomFormItem isEdit={isEdit} customFormItem={item} key={index}></CustomFormItem>
         })}
       </Row>
     </>

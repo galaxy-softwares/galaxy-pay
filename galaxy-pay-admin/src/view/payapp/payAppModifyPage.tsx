@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { FC } from 'react'
-import { Card, Steps, Form, Button, message, Space } from 'antd'
+import { Card, Steps, Form, Button, message, Space, Select } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import { getSoftwares } from '../../request/software'
 import { createPayapp, getPayapp, updatePayapp } from '../../request/payapp'
@@ -12,8 +12,9 @@ import {
   payappCustomerAlipayForm,
   payappCustomerAlipayCertificateForm
 } from './payAppCustomerForm'
-const { Step } = Steps
 
+const { Step } = Steps
+const { Option } = Select
 const PayAppPageModifyPage: FC = () => {
   const [form] = useForm()
   const [formData, setFormData] = useState({})
@@ -26,10 +27,10 @@ const PayAppPageModifyPage: FC = () => {
   const [payappCustomerForm, setPayappCustomerForm] = useState(payappCustomerBasicForm)
   const params = useParams<{ id: string }>()
 
-  const initSoftwareList = useCallback(async () => {
+  const initCustomerFormData = useCallback(async () => {
     const { data } = await getSoftwares()
     data.map(software => {
-      payappCustomerBasicForm[1].options.push({
+      payappCustomerForm[1].options.push({
         value: software.id,
         text: software.name
       })
@@ -38,8 +39,14 @@ const PayAppPageModifyPage: FC = () => {
     customerFormChannel.onChange = (value: string) => {
       channelChange(value)
     }
+
+    console.log(payappCustomerForm)
     setPayappCustomerForm(payappCustomerForm)
   }, [])
+
+  useEffect(() => {
+    initCustomerFormData()
+  }, [initCustomerFormData])
 
   const initPayappData = useCallback(async () => {
     if (params.id) {
@@ -56,20 +63,17 @@ const PayAppPageModifyPage: FC = () => {
   }, [params.id])
 
   useEffect(() => {
-    initSoftwareList()
-  }, [initSoftwareList])
-
-  useEffect(() => {
     initPayappData()
   }, [initPayappData])
 
+  // step 切换
   const stepChange = (type: string) => {
     const current = type === 'next' ? payAppConfigure.current + 1 : payAppConfigure.current - 1
     if (type == 'next') {
       formValidateFields(() => {
         setPayAppConfigure({
           ...payAppConfigure,
-          current: payAppConfigure.current + 1
+          current: current
         })
       })
     } else {
@@ -77,42 +81,37 @@ const PayAppPageModifyPage: FC = () => {
         ...payAppConfigure,
         current
       })
-      form.setFieldsValue({ ...formData })
+      setFormData({
+        ...formData,
+        ...form.getFieldsValue()
+      })
     }
+    form.setFieldsValue({ ...formData })
   }
 
   // 支付通道切换
   const channelChange = (value: string) => {
-    // 判断是支付宝还是微信
-    // if (value === 'wechat') {
-    //   // payAppCustomerForm
-    // } else {
-    // }
-    setPayappCustomerForm(payappCustomerForm)
     setPayAppConfigure({
       ...payAppConfigure,
-      certificate: 10,
       channel: value
     })
   }
 
-  // 支付宝证书模式选择
+  // // 支付宝证书模式选择
   const certificateChange = (value: number) => {
     setPayAppConfigure({
       ...payAppConfigure,
       certificate: value
     })
   }
-
   // 上传支付宝/微信证书
-  const onUploadDone = data => {
-    if (data) {
-      form.setFieldsValue({
-        [data.name]: data.path
-      })
-    }
-  }
-
+  // const onUploadDone = data => {
+  //   if (data) {
+  //     form.setFieldsValue({
+  //       [data.name]: data.path
+  //     })
+  //   }
+  // }
   // 校验表单
   const formValidateFields = (callback): void => {
     form
@@ -128,6 +127,7 @@ const PayAppPageModifyPage: FC = () => {
       })
   }
 
+  // 提交表单
   const onSubmit = () => {
     formValidateFields(async values => {
       if (payAppConfigure.isEdit) {
@@ -137,34 +137,48 @@ const PayAppPageModifyPage: FC = () => {
           message.success('修改支付应用成功！')
         }
       } else {
-        console.log(formData, 'formData')
         const { status } = await createPayapp({ ...values, ...formData })
         if (status == 201) {
           message.success('创建支付应用成功！')
         }
       }
-      setPayAppConfigure({
-        ...payAppConfigure,
-        current: payAppConfigure.current + 1
-      })
     })
   }
 
-  const alipayFormRender = () => {
-    const { channel, current, certificate } = payAppConfigure
-    const certificate20 = () => {
-      return <CustomForm columns={payappCustomerAlipayCertificateForm} />
+  // 支付宝证书模式渲染
+  const alipayCertificateRender = (): JSX.Element => {
+    const { current, isEdit, channel } = payAppConfigure
+    if (current == 1 && channel == 'alipay') {
+      return (
+        <Form.Item
+          name="certificate"
+          label="支付宝证书模式"
+          rules={[{ required: true, message: '请选择支付宝证书模式' }]}
+        >
+          <Select disabled={isEdit} placeholder="请选择支付宝证书模式" onChange={certificateChange}>
+            <Option value={10}>公钥</Option>
+            <Option value={20}>公钥证书</Option>
+          </Select>
+        </Form.Item>
+      )
     }
-    const certificate10 = () => {
-      return <CustomForm columns={payappCustomerAlipayForm} />
-    }
+  }
 
+  // 支付宝渲染
+  const alipayFormRender = () => {
+    const { channel, current, certificate, isEdit } = payAppConfigure
     if (channel == 'alipay' && current == 1) {
       if (certificate == 10) {
         return certificate10()
       } else if (certificate == 20) {
         return certificate20()
       }
+    }
+    function certificate10() {
+      return <CustomForm isEdit={isEdit} columns={payappCustomerAlipayForm} />
+    }
+    function certificate20() {
+      return <CustomForm isEdit={isEdit} columns={payappCustomerAlipayCertificateForm} />
     }
   }
 
@@ -175,6 +189,7 @@ const PayAppPageModifyPage: FC = () => {
     }
   }
 
+  // 基础配置项渲染
   const baseFormRender = () => {
     const { current } = payAppConfigure
     if (current == 0) {
@@ -194,6 +209,7 @@ const PayAppPageModifyPage: FC = () => {
           <Form preserve={false} layout="vertical" form={form}>
             {baseFormRender()}
             {wechatFormRender()}
+            {alipayCertificateRender()}
             {alipayFormRender()}
             <Form.Item>
               <Space>

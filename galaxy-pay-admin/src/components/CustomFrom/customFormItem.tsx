@@ -5,20 +5,24 @@ const { Option } = Select
 
 interface formItem {
   customFormItem: CustomFormItemIF
+  isEdit?: boolean
 }
-export const CustomFormItem: FC<formItem> = ({ customFormItem }) => {
+export const CustomFormItem: FC<formItem> = ({ customFormItem, isEdit }) => {
   const { label } = customFormItem
   customFormItem.customformItemPros.label = label
 
-  const InputRender = (customFormItem: CustomFormItemIF): JSX.Element => {
+  function InputRender(customFormItem: CustomFormItemIF): JSX.Element {
     return (
       <Form.Item {...customFormItem.customformItemPros}>
-        <Input placeholder={customFormItem.placeholder} />
+        <Input
+          disabled={isEdit == true ? customFormItem.editDisable : false}
+          placeholder={customFormItem.placeholder}
+        />
       </Form.Item>
     )
   }
 
-  const selectRender = (customFormItem: CustomFormItemIF): JSX.Element => {
+  function selectRender(customFormItem: CustomFormItemIF): JSX.Element {
     const selectOptionRender = (options: Array<CustomSelectOption>) => {
       return (
         <>
@@ -34,7 +38,12 @@ export const CustomFormItem: FC<formItem> = ({ customFormItem }) => {
     }
     return (
       <Form.Item {...customFormItem.customformItemPros}>
-        <Select allowClear placeholder={customFormItem.placeholder} onChange={customFormItem.onChange}>
+        <Select
+          disabled={isEdit == true ? customFormItem.editDisable : false}
+          allowClear
+          placeholder={customFormItem.placeholder}
+          onChange={customFormItem.onChange}
+        >
           {selectOptionRender(customFormItem.options)}
         </Select>
       </Form.Item>
