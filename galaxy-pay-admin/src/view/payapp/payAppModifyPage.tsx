@@ -5,7 +5,7 @@ import { useForm } from 'antd/es/form/Form'
 import { getSoftwares } from '../../request/software'
 import { createPayapp, getPayapp, updatePayapp } from '../../request/payapp'
 import { useParams } from 'react-router-dom'
-import { CustomForm } from '../../components/CustomFrom/customForm'
+import { Columns, CustomForm } from '../../components/CustomFrom/customForm'
 import {
   payappCustomerBasicForm,
   payappCustomerWechatForm,
@@ -21,27 +21,27 @@ const PayAppPageModifyPage: FC = () => {
   const [payAppConfigure, setPayAppConfigure] = useState({
     current: 0,
     channel: '',
-    certificate: 10,
+    certificate: 0,
     isEdit: false
   })
-  const [payappCustomerForm, setPayappCustomerForm] = useState(payappCustomerBasicForm)
+
+  const [payappCustomerForm, setPayappCustomerForm] = useState<Columns>([])
   const params = useParams<{ id: string }>()
 
   const initCustomerFormData = useCallback(async () => {
     const { data } = await getSoftwares()
     data.map(software => {
-      payappCustomerForm[1].options.push({
+      payappCustomerBasicForm[1].options.push({
         value: software.id,
         text: software.name
       })
     })
-    const customerFormChannel = payappCustomerForm.find(({ label }) => label === '支付通道')
+    const customerFormChannel = payappCustomerBasicForm.find(({ label }) => label === '支付通道')
     customerFormChannel.onChange = (value: string) => {
       channelChange(value)
     }
 
-    console.log(payappCustomerForm)
-    setPayappCustomerForm(payappCustomerForm)
+    setPayappCustomerForm(payappCustomerBasicForm)
   }, [])
 
   useEffect(() => {
