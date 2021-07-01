@@ -8,24 +8,24 @@ export class Trade extends Base {
   pay_app_id: string
 
   @Column({
-    comment: '支付/退款/打款 编号',
+    comment: '支付 编号',
     unique: true
   })
   sys_trade_no: string
 
-  @Column({
-    comment: '退款编号(仅在退款时使用)  可以使用sys_trade_no sys_transaction_no',
-    default: ''
-  })
-  refund_trade_no: string
+  // @Column({
+  //   comment: '退款编号(仅在退款时使用)  可以使用sys_trade_no sys_transaction_no',
+  //   default: ''
+  // })
+  // refund_trade_no: string
 
-  @Column({
-    comment: '交易类型 0 支付 1 退款 2打款',
-    type: 'enum',
-    enum: TradeType,
-    default: TradeType.Trade
-  })
-  trade_type: TradeType
+  // @Column({
+  //   comment: '交易类型 0 支付 1 退款 2打款',
+  //   type: 'enum',
+  //   enum: TradeType,
+  //   default: TradeType.Trade
+  // })
+  // trade_type: TradeType
 
   @Column({
     comment: '订单状态 0未完成 1完成',

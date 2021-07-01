@@ -25,11 +25,6 @@ export class Payapp extends Base {
   pay_secret_key: string
 
   @Column({
-    comment: '应用类型'
-  })
-  pay_app_type: string
-
-  @Column({
     comment: '通知地址',
     default: ''
   })

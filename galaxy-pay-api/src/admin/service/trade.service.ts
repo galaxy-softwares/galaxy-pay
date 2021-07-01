@@ -3,9 +3,9 @@ import { BaseService } from './base.service'
 import { Trade } from 'src/admin/entities/trade.entity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { Software } from 'src/admin/entities/software.entity'
 import { TradeChannel, TradeStatus, TradeType } from 'src/common/enum/trade.enum'
 import { CreateTrade } from 'src/common/interfaces/trade.interfaces'
+import { Payapp } from '../entities'
 
 @Injectable()
 export class TradeService extends BaseService<Trade> {
@@ -23,7 +23,7 @@ export class TradeService extends BaseService<Trade> {
     try {
       const data = await this.tradeRepository
         .createQueryBuilder('trade')
-        .leftJoinAndMapOne('trade.software', Software, 'software', 'trade.appid = software.appid')
+        .leftJoinAndMapOne('trade.payapp', Payapp, 'payapp', 'trade.pay_app_id = payapp.pay_app_id')
         .orderBy('trade.id', 'ASC')
         .getManyAndCount()
 
@@ -32,7 +32,7 @@ export class TradeService extends BaseService<Trade> {
         count: data[1]
       }
     } catch (e) {
-      console.log(e)
+      throw new HttpException(`支付账单获取失败！${e}`, HttpStatus.BAD_REQUEST)
     }
   }
 
@@ -52,7 +52,6 @@ export class TradeService extends BaseService<Trade> {
         trade.pay_app_id = data.pay_app_id
         return await this.tradeRepository.save(trade)
       } else {
-        console.log(data, '----------')
         return await this.tradeRepository.save(data)
       }
     } catch (e) {
@@ -111,20 +110,20 @@ export class TradeService extends BaseService<Trade> {
    */
   async refundSuccess(sys_trade_no: string, channel: TradeChannel, sys_transaction_no: string): Promise<Trade> {
     try {
-      const trade = await this.tradeRepository.findOne({
-        sys_trade_no,
-        trade_type: TradeType.Refund,
-        trade_channel: channel
-      })
-      if (trade && trade.trade_status === TradeStatus.Success) {
-        return trade
-      } else if (trade) {
-        trade.sys_transaction_no = sys_transaction_no
-        trade.trade_status = TradeStatus.Success
-        if (await this.tradeRepository.save(trade)) {
-          return trade
-        }
-      }
+      // const trade = await this.tradeRepository.findOne({
+      //   sys_trade_no,
+      //   trade_type: TradeType.Refund,
+      //   trade_channel: channel
+      // })
+      // if (trade && trade.trade_status === TradeStatus.Success) {
+      //   return trade
+      // } else if (trade) {
+      //   trade.sys_transaction_no = sys_transaction_no
+      //   trade.trade_status = TradeStatus.Success
+      //   if (await this.tradeRepository.save(trade)) {
+      //     return trade
+      //   }
+      // }
       return null
     } catch (e) {
       throw new HttpException('订单支付状态修改失败！', HttpStatus.BAD_REQUEST)
