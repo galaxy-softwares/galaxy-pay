@@ -98,6 +98,7 @@ const PayAppPageModifyPage: FC = () => {
   }
   // 上传支付宝/微信证书
   const onUploadDone = ({ name, path }) => {
+    console.log(name, path)
     form.setFieldsValue({
       [name]: path
     })
@@ -240,12 +241,7 @@ const PayAppPageModifyPage: FC = () => {
       return (
         <CustomForm isEdit={isEdit} columns={payappCustomerWechatForm}>
           <Col span={24}>
-            <Form.Item
-              name="apiclient_cert"
-              label="微信证书"
-              tooltip="apiclient_cert.crt"
-              rules={[{ required: true, message: '微信证书' }]}
-            >
+            <Form.Item name="apiclient_cert" label="微信证书" tooltip="apiclient_cert.crt">
               <Input
                 placeholder="微信证书 apiclient_cert"
                 disabled

@@ -1,41 +1,44 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useCallback, useEffect, useState } from 'react'
 import './index.less'
 import { Tag } from 'antd'
 import { WechatOutlined, AlipayCircleOutlined } from '@ant-design/icons'
 import { CardTable } from '../../components/CardTable/cardTable'
+import { getTradeList } from '../../request/trade'
 
 const Trade: FC = () => {
-  const [data] = useState([])
+  const [taradeList, setTradeList] = useState([])
+
+  const initTradeList = useCallback(async () => {
+    const { data } = await getTradeList()
+    setTradeList(data.data)
+  }, [])
+
+  useEffect(() => {
+    initTradeList()
+  }, [initTradeList])
 
   const columns = [
     {
       title: '账单号',
       dataIndex: 'sys_trade_no',
-      key: 'out_trade_no',
-      width: 150
+      key: 'out_trade_no'
     },
     {
       title: '支付流水号',
       dataIndex: 'sys_transaction_no',
-      key: 'sys_transaction_no',
-      width: 150
+      key: 'sys_transaction_no'
     },
     {
       title: '项目名称',
-      dataIndex: 'software',
-      key: 'software',
-      render: (software: any) => <Tag color="#108ee9">{software.name}</Tag>
-    },
-    {
-      title: 'appid',
-      dataIndex: 'appid',
-      key: 'appid'
+      dataIndex: 'payapp',
+      key: 'payapp',
+      render: (payapp: any) => <Tag color="#108ee9">{payapp.name}</Tag>
     },
     {
       title: '支付金额',
       dataIndex: 'trade_amount',
       key: 'trade_amount',
-      render: text => {
+      render: (text: number) => {
         return `${text}`
       }
     },
@@ -46,20 +49,6 @@ const Trade: FC = () => {
       render: (text: string) => {
         return text === '1' ? <Tag color="#87d068">已完成</Tag> : <Tag color="#108ee9">未完成</Tag>
       }
-    },
-    {
-      title: '状态',
-      dataIndex: 'trade_type',
-      key: 'trade_type',
-      render: (text: string) => {
-        const trade_type = ['支付', '退款']
-        return <Tag color="purple">{trade_type[text]}</Tag>
-      }
-    },
-    {
-      title: '备注',
-      dataIndex: 'trade_body',
-      key: 'trade_body'
     },
     {
       title: '通道',
@@ -81,13 +70,13 @@ const Trade: FC = () => {
       title: '创建时间',
       dataIndex: 'create_at',
       key: 'create_at',
-      width: 150
+      width: 100
     }
   ]
 
   return (
     <div>
-      <CardTable columns={columns} data={data} title="Trade" />
+      <CardTable columns={columns} data={taradeList} title="支付账单" />
     </div>
   )
 }

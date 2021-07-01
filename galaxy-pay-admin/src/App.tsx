@@ -15,7 +15,7 @@ const Routers = [
   { path: '/softwares', name: 'Sotfware', component: SoftwarePage, auth: true },
   { path: '/payapps', name: 'AppPay', component: PayAppPage, auth: true },
   { path: '/payapps/modify/:id?', name: 'AppPayModify', component: PayAppPageModifyPage, auth: true },
-  { path: '/trade', name: 'Trade', component: Trade, auth: true }
+  { path: '/trades', name: 'Trade', component: Trade, auth: true }
 ]
 
 const App: FC = () => {

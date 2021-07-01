@@ -1,3 +1,3 @@
 import { request } from '../utils/request'
 
-export const tradeGetList = () => request('get', '/trade')
+export const getTradeList = () => request('get', '/trade')

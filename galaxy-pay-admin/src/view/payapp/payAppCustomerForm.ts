@@ -102,18 +102,18 @@ export const payappCustomerBasicForm: CustomerFormColumns = [
 
 export const payappCustomerWechatForm: CustomerFormColumns = [
   {
-    label: 'APPID',
+    label: 'appid',
     valueType: 'Input',
     placeholder: '微信开放平台审核通过应用的APPID',
     col: 12,
     editDisable: true,
     customformItemPros: {
       name: 'appid',
-      rules: [{ required: true, message: '项目名称不能为空' }]
+      rules: [{ required: true, message: 'appid不能为空' }]
     }
   },
   {
-    label: 'MCHID',
+    label: 'mch_id',
     valueType: 'Input',
     placeholder: '微信支付分配的商户号id',
     col: 12,
@@ -124,18 +124,18 @@ export const payappCustomerWechatForm: CustomerFormColumns = [
     }
   },
   {
-    label: 'MCH_KEY',
+    label: 'mch_key',
     valueType: 'Input',
-    placeholder: '微信支付密钥',
+    placeholder: '微信支付商户key',
     col: 12,
     editDisable: true,
     customformItemPros: {
       name: 'mch_key',
-      rules: [{ required: true, message: '微信支付密钥' }]
+      rules: [{ required: true, message: '微信支付商户key不能为空' }]
     }
   },
   {
-    label: 'APP_KEY',
+    label: 'app_secret',
     valueType: 'Input',
     placeholder: '开发者支付密钥',
     col: 12,
@@ -150,7 +150,7 @@ export const payappCustomerWechatForm: CustomerFormColumns = [
 // 支付宝公钥
 export const payappCustomerAlipayForm: CustomerFormColumns = [
   {
-    label: 'APPID',
+    label: 'appid',
     valueType: 'Input',
     placeholder: '支付宝开放平台审核通过的应用APPID',
     col: 12,
@@ -160,7 +160,7 @@ export const payappCustomerAlipayForm: CustomerFormColumns = [
     }
   },
   {
-    label: '支付宝应用私钥',
+    label: '支付宝应用私钥 private_key',
     valueType: 'Input',
     placeholder: '支付宝应用私钥',
     col: 12,
@@ -170,7 +170,7 @@ export const payappCustomerAlipayForm: CustomerFormColumns = [
     }
   },
   {
-    label: '支付宝公钥',
+    label: '支付宝公钥 public_key',
     valueType: 'Input',
     placeholder: '支付宝公钥',
     col: 24,
@@ -185,7 +185,7 @@ export const payappCustomerAlipayForm: CustomerFormColumns = [
 // 支付宝公钥证书
 export const payappCustomerAlipayCertificateForm: CustomerFormColumns = [
   {
-    label: 'APPID',
+    label: 'appid',
     valueType: 'Input',
     placeholder: '支付宝开放平台审核通过的应用APPID',
     col: 12,

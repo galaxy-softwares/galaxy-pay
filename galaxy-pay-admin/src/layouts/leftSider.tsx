@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { AppstoreOutlined, CopyOutlined, AppstoreAddOutlined, DashboardOutlined } from '@ant-design/icons'
 import { Layout } from 'antd'
@@ -53,6 +53,11 @@ const LeftSider: FC = () => {
     })
     dispatch(setMenuBreadcrumb(location.pathname.split('/').filter(i => i)))
   }
+
+  useEffect(() => {
+    setMenuInfo(history.location)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <Sider width={190} className="slider">

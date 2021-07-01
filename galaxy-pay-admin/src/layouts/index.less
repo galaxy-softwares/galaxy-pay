@@ -44,23 +44,24 @@
           background: #6777ef;
           position: absolute;
           height: 0;
-          transition: all .3s ease 0s;
+          transition: all .5s ease;
         }
-        &::before {
-          content: "";
-          position: absolute;
-          background: none repeat scroll 0 0 #6777ef;
-          height: 0%;
-          left: 0%;
-          border-radius: 4px;
-          top: 0%;
-          width: 0%;
-          z-index: -1;
-          transition: all .3s ease 0s;
-        }
+        // &::before {
+        //   content: "";
+        //   position: absolute;
+        //   background: none repeat scroll 0 0 #6777ef;
+        //   height: 0%;
+        //   left: 0%;
+        //   border-radius: 4px;
+        //   top: 0%;
+        //   width: 0%;
+        //   z-index: -1;
+        //   transition: all .1s ease;
+        // }
         &:hover {
-          transition: all .3s ease;
+          transition: all .1s ease;
           color: #ffffff;
+          background: #6777ef;
           &::after {
             height: 50px;
           }
@@ -83,7 +84,7 @@
         }
         &.active {
           background: #6777ef;
-          transition: all 3s ease;
+          transition: all 0.1s ease;
           position:relative;
           color: #fff;
         }

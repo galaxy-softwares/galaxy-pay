@@ -11,14 +11,13 @@ export const CardTable: React.FC<any> = ({ columns, data, title }) => {
         <Form preserve={false} layout="vertical">
           <Form.Item name="software" label="归属项目">
             <Select placeholder="请选择归属项目" allowClear>
-              <Option value="0">不造</Option>
               <Option value="1">百筐易购</Option>
             </Select>
           </Form.Item>
           <Form.Item name="type" label="支付应用通道">
             <Select placeholder="请选择应用类型" allowClear>
-              <Option value="small">支付宝</Option>
-              <Option value="app">微信</Option>
+              <Option value="alipay">支付宝</Option>
+              <Option value="wechat">微信</Option>
             </Select>
           </Form.Item>
         </Form>
