@@ -10,11 +10,11 @@ export abstract class BaseService<T> {
     return await this.repository.remove(await this.repository.findByIds(ids))
   }
 
-  async findUserByWhere(where): Promise<T> {
+  async findUserByWhere(where: { [key: string]: string | number | boolean }): Promise<T> {
     return await this.repository.findOne(where)
   }
 
-  async findOneByWhere(where: any): Promise<T> {
+  async findOneByWhere(where: { [key: string]: string | number | boolean }): Promise<T> {
     return await this.repository.findOne(where)
   }
 

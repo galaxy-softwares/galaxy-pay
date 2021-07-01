@@ -32,3 +32,14 @@ export const sortByKey = (obj: Object) => {
   }
   return newObj
 }
+
+/**
+ * 生成随机字符串
+ * @param chars
+ * @returns
+ */
+export const randomString = (chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'): string => {
+  let result = ''
+  for (let i = 32; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)]
+  return result
+}

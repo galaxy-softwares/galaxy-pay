@@ -6,7 +6,7 @@ import { createQueryBuilder, Repository } from 'typeorm'
 import { Payapp } from '../entities'
 import { PayappDto } from '../dtos/pay.dto'
 import { AliCertUtil, AlipayConfig } from 'galaxy-pay-config'
-import { joinPath } from 'src/common/utils/indedx'
+import { joinPath, randomString } from 'src/common/utils/indedx'
 
 @Injectable()
 export class PayappService extends BaseService<Payapp> {
@@ -49,7 +49,7 @@ export class PayappService extends BaseService<Payapp> {
       return_url: payapp.return_url,
       domain_url: payapp.domain_url,
       pay_secret_key: payapp.pay_secret_key,
-      notify_url: 'http://cznmzwu.nat.ipyingshe.com/alipay_notify_url',
+      notify_url: payapp.notify_url,
       ...payapp.config
     }
   }
@@ -60,12 +60,6 @@ export class PayappService extends BaseService<Payapp> {
     } else {
       return `-----BEGIN RSA PRIVATE KEY-----\r\n${key}\r\n-----END RSA PRIVATE KEY-----`
     }
-  }
-
-  randomString(chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') {
-    let result = ''
-    for (let i = 32; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)]
-    return result
   }
 
   /**
@@ -87,8 +81,8 @@ export class PayappService extends BaseService<Payapp> {
     if (data.id) {
       payapp.id = +data.id
     } else {
-      payapp.pay_app_id = this.randomString()
-      payapp.pay_secret_key = this.randomString()
+      payapp.pay_app_id = randomString()
+      payapp.pay_secret_key = randomString()
     }
     if (data.channel === 'wechat') {
       payapp.config = {
@@ -126,7 +120,6 @@ export class PayappService extends BaseService<Payapp> {
 
   async updatePayapp(data: PayappDto): Promise<Payapp> {
     const payapp = this.payappRepository.create(this.generatePayapp(data))
-    console.log(payapp, 'payapp')
     return await this.payappRepository.save(payapp)
   }
 

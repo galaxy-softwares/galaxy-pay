@@ -34,7 +34,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
 
     const now = Date.now()
     return next.handle().pipe(
-      map((data: any) => {
+      map((data: T) => {
         const logFormat = `响应内容: ${JSON.stringify(data)}\n结束... ${hex('#e4e700')(
           '耗时: ' + (Date.now() - now) + 'ms'
         )}`

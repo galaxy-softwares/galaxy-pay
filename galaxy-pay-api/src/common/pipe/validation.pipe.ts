@@ -10,8 +10,8 @@ import { validate } from 'class-validator'
 import { plainToClass } from 'class-transformer'
 
 @Injectable()
-export class ValidationPipe implements PipeTransform<any> {
-  async transform(value: any, metadata: ArgumentMetadata) {
+export class ValidationPipe implements PipeTransform {
+  async transform(value, metadata: ArgumentMetadata) {
     const { metatype } = metadata
 
     if (value instanceof Object && Object.keys(value).length <= 0) {

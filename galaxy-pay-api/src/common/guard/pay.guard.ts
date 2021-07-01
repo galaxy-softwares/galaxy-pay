@@ -8,10 +8,7 @@ export class PayGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<any> {
     const request = context.switchToHttp().getRequest()
-    const {
-      body,
-      headers: { host }
-    } = request
+    const { body } = request
 
     const config = await this.payappService.findPayappConfig(body.pay_app_id)
     // if (config.domain_url.indexOf(host) < 0) {

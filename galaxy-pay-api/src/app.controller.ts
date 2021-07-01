@@ -4,7 +4,7 @@ import { TradeService } from './admin/service'
 import { PayappService } from './admin/service/payapp.service'
 import { TradeChannel } from './common/enum/trade.enum'
 import { LoggerService } from './common/service/logger.service'
-import { joinPath, makeSignStr } from './common/utils/indedx'
+import { makeSignStr } from './common/utils/indedx'
 
 @Controller()
 export class AppController {
@@ -12,7 +12,6 @@ export class AppController {
     private readonly payappService: PayappService,
     private readonly aliSignUtil: AliSignUtil,
     private readonly tradeService: TradeService,
-    private readonly aliCertUtil: AliCertUtil,
     @Inject(WeChatSignUtil) protected readonly signUtil: WeChatSignUtil,
     @Inject(HttpService) protected readonly httpService: HttpService,
     @Inject(WeChatNotifyParserUtil) private readonly weChatNotifyParserUtil: WeChatNotifyParserUtil,

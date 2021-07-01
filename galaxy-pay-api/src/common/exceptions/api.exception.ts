@@ -2,9 +2,9 @@ import { HttpException, HttpStatus } from '@nestjs/common'
 
 export class ApiException extends HttpException {
   private errorMessage: string
-  private errorCode: any
+  private errorCode: number
 
-  constructor(errorMessage: string, errorCode: any, code: HttpStatus) {
+  constructor(errorMessage: string, errorCode: number, code: HttpStatus) {
     super(
       {
         code: code,
@@ -18,7 +18,7 @@ export class ApiException extends HttpException {
     this.errorCode = errorCode
   }
 
-  getErrorCode(): any {
+  getErrorCode(): number {
     return this.errorCode
   }
 
