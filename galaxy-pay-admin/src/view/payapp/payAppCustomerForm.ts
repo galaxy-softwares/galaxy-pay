@@ -1,6 +1,16 @@
-import { Columns } from '../../components/CustomFrom/customForm'
+import { CustomerFormColumns } from '../../components/CustomFrom/customForm'
+import { getSoftwares } from '../../request/software'
 
-export const payappCustomerBasicForm: Columns = [
+// 初始化自定义表单数据
+export const initPayappCustomerBasicForm = async (): Promise<CustomerFormColumns> => {
+  const { data } = await getSoftwares()
+  payappCustomerBasicForm[1].options = data.map(({ id, name }) => {
+    return { value: id, text: name }
+  })
+  return payappCustomerBasicForm
+}
+
+export const payappCustomerBasicForm: CustomerFormColumns = [
   {
     label: '应用名称',
     valueType: 'Input',
@@ -27,6 +37,7 @@ export const payappCustomerBasicForm: Columns = [
   {
     label: '支付通道',
     valueType: 'Select',
+    editDisable: true,
     placeholder: '请选择归属项目',
     col: 8,
     options: [
@@ -89,12 +100,13 @@ export const payappCustomerBasicForm: Columns = [
   }
 ]
 
-export const payappCustomerWechatForm: Columns = [
+export const payappCustomerWechatForm: CustomerFormColumns = [
   {
     label: 'APPID',
     valueType: 'Input',
     placeholder: '微信开放平台审核通过应用的APPID',
     col: 12,
+    editDisable: true,
     customformItemPros: {
       name: 'appid',
       rules: [{ required: true, message: '项目名称不能为空' }]
@@ -105,6 +117,7 @@ export const payappCustomerWechatForm: Columns = [
     valueType: 'Input',
     placeholder: '微信支付分配的商户号id',
     col: 12,
+    editDisable: true,
     customformItemPros: {
       name: 'mch_id',
       rules: [{ required: true, message: '商户号不能为空' }]
@@ -115,6 +128,7 @@ export const payappCustomerWechatForm: Columns = [
     valueType: 'Input',
     placeholder: '微信支付密钥',
     col: 12,
+    editDisable: true,
     customformItemPros: {
       name: 'mch_key',
       rules: [{ required: true, message: '微信支付密钥' }]
@@ -125,25 +139,16 @@ export const payappCustomerWechatForm: Columns = [
     valueType: 'Input',
     placeholder: '开发者支付密钥',
     col: 12,
+    editDisable: true,
     customformItemPros: {
       name: 'app_secret',
-      rules: [{ required: true, message: '开发者支付密钥不能为空' }]
-    }
-  },
-  {
-    label: 'apiclient_cert',
-    valueType: 'Input',
-    placeholder: '证书文件，特定操作需要！',
-    col: 24,
-    customformItemPros: {
-      name: 'apiclient_cert',
       rules: [{ required: true, message: '开发者支付密钥不能为空' }]
     }
   }
 ]
 
 // 支付宝公钥
-export const payappCustomerAlipayForm: Columns = [
+export const payappCustomerAlipayForm: CustomerFormColumns = [
   {
     label: 'APPID',
     valueType: 'Input',
@@ -178,7 +183,7 @@ export const payappCustomerAlipayForm: Columns = [
 ]
 
 // 支付宝公钥证书
-export const payappCustomerAlipayCertificateForm: Columns = [
+export const payappCustomerAlipayCertificateForm: CustomerFormColumns = [
   {
     label: 'APPID',
     valueType: 'Input',
@@ -199,39 +204,6 @@ export const payappCustomerAlipayCertificateForm: Columns = [
     customformItemPros: {
       name: 'private_key',
       rules: [{ required: true, message: '请输入支付宝 private_key' }]
-    }
-  },
-  {
-    label: '应用公钥证书 app_cert_public_key',
-    valueType: 'Input',
-    placeholder: '应用公钥证书 app_cert_public_key',
-    col: 24,
-    editDisable: true,
-    customformItemPros: {
-      name: 'app_cert_public_key',
-      rules: [{ required: true, message: '请上传支付宝应用公钥！' }]
-    }
-  },
-  {
-    label: '支付宝公钥证书 alipay_cert_public_key_rsa2',
-    valueType: 'Input',
-    placeholder: '支付宝公钥证书 alipay_cert_public_key_rsa2',
-    col: 24,
-    editDisable: true,
-    customformItemPros: {
-      name: 'alipay_cert_public_key_rsa2',
-      rules: [{ required: true, message: '请上传支付宝公钥证书！' }]
-    }
-  },
-  {
-    label: '支付宝根证书 alipay_root_cert',
-    valueType: 'Input',
-    placeholder: '支付宝根证书 alipay_root_cert',
-    col: 24,
-    editDisable: true,
-    customformItemPros: {
-      name: 'alipay_root_cert',
-      rules: [{ required: true, message: '请上传支付宝根证书！' }]
     }
   }
 ]

@@ -1,23 +1,25 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { FC } from 'react'
-import { Card, Steps, Form, Button, message, Space, Select } from 'antd'
+import { Card, Steps, Form, Input, Button, message, Space, Select, Col } from 'antd'
 import { useForm } from 'antd/es/form/Form'
-import { getSoftwares } from '../../request/software'
 import { createPayapp, getPayapp, updatePayapp } from '../../request/payapp'
-import { useParams } from 'react-router-dom'
-import { Columns, CustomForm } from '../../components/CustomFrom/customForm'
+import { useHistory, useParams } from 'react-router-dom'
+import { CustomerFormColumns, CustomForm } from '../../components/CustomFrom/customForm'
+import { CloudUploadOutlined } from '@ant-design/icons'
 import {
-  payappCustomerBasicForm,
+  initPayappCustomerBasicForm,
   payappCustomerWechatForm,
   payappCustomerAlipayForm,
   payappCustomerAlipayCertificateForm
 } from './payAppCustomerForm'
+import { UploadFile } from '../../components/uploadFile'
 
 const { Step } = Steps
 const { Option } = Select
 const PayAppPageModifyPage: FC = () => {
   const [form] = useForm()
   const [formData, setFormData] = useState({})
+  const history = useHistory()
   const [payAppConfigure, setPayAppConfigure] = useState({
     current: 0,
     channel: '',
@@ -25,23 +27,21 @@ const PayAppPageModifyPage: FC = () => {
     isEdit: false
   })
 
-  const [payappCustomerForm, setPayappCustomerForm] = useState<Columns>([])
+  const [payappCustomerForm, setPayappCustomerForm] = useState<CustomerFormColumns>([])
   const params = useParams<{ id: string }>()
 
   const initCustomerFormData = useCallback(async () => {
-    const { data } = await getSoftwares()
-    data.map(software => {
-      payappCustomerBasicForm[1].options.push({
-        value: software.id,
-        text: software.name
-      })
-    })
+    const payappCustomerBasicForm = await initPayappCustomerBasicForm()
+    // 后期打算放到redux 中
     const customerFormChannel = payappCustomerBasicForm.find(({ label }) => label === '支付通道')
     customerFormChannel.onChange = (value: string) => {
-      channelChange(value)
+      setPayAppConfigure({
+        ...payAppConfigure,
+        channel: value
+      })
     }
-
     setPayappCustomerForm(payappCustomerBasicForm)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -89,15 +89,7 @@ const PayAppPageModifyPage: FC = () => {
     form.setFieldsValue({ ...formData })
   }
 
-  // 支付通道切换
-  const channelChange = (value: string) => {
-    setPayAppConfigure({
-      ...payAppConfigure,
-      channel: value
-    })
-  }
-
-  // // 支付宝证书模式选择
+  // 支付宝证书模式选择
   const certificateChange = (value: number) => {
     setPayAppConfigure({
       ...payAppConfigure,
@@ -105,13 +97,12 @@ const PayAppPageModifyPage: FC = () => {
     })
   }
   // 上传支付宝/微信证书
-  // const onUploadDone = data => {
-  //   if (data) {
-  //     form.setFieldsValue({
-  //       [data.name]: data.path
-  //     })
-  //   }
-  // }
+  const onUploadDone = ({ name, path }) => {
+    form.setFieldsValue({
+      [name]: path
+    })
+  }
+
   // 校验表单
   const formValidateFields = (callback): void => {
     form
@@ -142,6 +133,7 @@ const PayAppPageModifyPage: FC = () => {
           message.success('创建支付应用成功！')
         }
       }
+      history.push('/payapps')
     })
   }
 
@@ -177,23 +169,104 @@ const PayAppPageModifyPage: FC = () => {
     function certificate10() {
       return <CustomForm isEdit={isEdit} columns={payappCustomerAlipayForm} />
     }
+
+    // 微信支付
     function certificate20() {
-      return <CustomForm isEdit={isEdit} columns={payappCustomerAlipayCertificateForm} />
+      return (
+        <CustomForm isEdit={isEdit} columns={payappCustomerAlipayCertificateForm}>
+          <Col span={24}>
+            <Form.Item
+              name="app_cert_public_key"
+              label="应用公钥证书"
+              tooltip="appCertPublicKey_xxxx.crt"
+              rules={[{ required: true, message: '应用公钥证书' }]}
+            >
+              <Input
+                placeholder="应用公钥证书 app_cert_public_key"
+                disabled={isEdit}
+                addonAfter={
+                  <UploadFile name="app_cert_public_key" uploadSuccess={onUploadDone}>
+                    <CloudUploadOutlined />
+                  </UploadFile>
+                }
+              />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item
+              name="alipay_cert_public_key_rsa2"
+              label="支付宝公钥证书"
+              tooltip="alipayCertPublicKey_RSA2.crt"
+              rules={[{ required: true, message: '支付宝公钥证书' }]}
+            >
+              <Input
+                placeholder="应用公钥证书 alipay_cert_public_key_rsa2"
+                disabled
+                addonAfter={
+                  <UploadFile name="alipay_cert_public_key_rsa2" uploadSuccess={onUploadDone}>
+                    <CloudUploadOutlined />
+                  </UploadFile>
+                }
+              />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item
+              name="alipay_root_cert"
+              label="支付宝根证书"
+              tooltip="alipayRootCert.crt"
+              rules={[{ required: true, message: '支付宝根证书' }]}
+            >
+              <Input
+                placeholder="支付宝根证书 alipay_root_cert"
+                disabled
+                addonAfter={
+                  <UploadFile name="alipay_root_cert" uploadSuccess={onUploadDone}>
+                    <CloudUploadOutlined />
+                  </UploadFile>
+                }
+              />
+            </Form.Item>
+          </Col>
+        </CustomForm>
+      )
     }
   }
 
+  // 微信支付
   const wechatFormRender = () => {
-    const { channel, current } = payAppConfigure
+    const { channel, current, isEdit } = payAppConfigure
     if (current == 1 && channel == 'wechat') {
-      return <CustomForm columns={payappCustomerWechatForm} />
+      return (
+        <CustomForm isEdit={isEdit} columns={payappCustomerWechatForm}>
+          <Col span={24}>
+            <Form.Item
+              name="apiclient_cert"
+              label="微信证书"
+              tooltip="apiclient_cert.crt"
+              rules={[{ required: true, message: '微信证书' }]}
+            >
+              <Input
+                placeholder="微信证书 apiclient_cert"
+                disabled
+                addonAfter={
+                  <UploadFile name="apiclient_cert" uploadSuccess={onUploadDone}>
+                    <CloudUploadOutlined />
+                  </UploadFile>
+                }
+              />
+            </Form.Item>
+          </Col>
+        </CustomForm>
+      )
     }
   }
 
   // 基础配置项渲染
   const baseFormRender = () => {
-    const { current } = payAppConfigure
+    const { current, isEdit } = payAppConfigure
     if (current == 0) {
-      return <CustomForm columns={payappCustomerForm} />
+      return <CustomForm isEdit={isEdit} columns={payappCustomerForm} />
     }
   }
 

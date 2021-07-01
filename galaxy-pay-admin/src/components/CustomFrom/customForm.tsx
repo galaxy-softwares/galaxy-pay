@@ -1,8 +1,8 @@
 import { Row } from 'antd'
 import { FormItemProps } from 'antd/lib/form'
 import React, { FC } from 'react'
-import { CustomFormItem } from './customFormItem'
-export interface CustomFormItemIF {
+import { CustomFormItemRender } from './customFormItem'
+export interface CustomFormItem {
   label: string
   valueType: string
   col: number
@@ -18,23 +18,22 @@ export interface CustomSelectOption {
   text: string
 }
 
-export type Columns = Array<CustomFormItemIF>
+export type CustomerFormColumns = Array<CustomFormItem>
 
 interface CustomFormProps {
-  columns: Columns
+  columns: CustomerFormColumns
   isEdit?: boolean
 }
 
-export const CustomForm: FC<CustomFormProps> = ({ columns, isEdit }) => {
+export const CustomForm: FC<CustomFormProps> = ({ columns, isEdit, children }) => {
   return (
     <>
       <Row gutter={[16, 0]}>
         {columns.map((item, index) => {
-          return <CustomFormItem isEdit={isEdit} customFormItem={item} key={index}></CustomFormItem>
+          return <CustomFormItemRender isEdit={isEdit} customFormItem={item} key={index}></CustomFormItemRender>
         })}
+        {children}
       </Row>
     </>
   )
 }
-
-export interface CustomFormItemIFT {}
