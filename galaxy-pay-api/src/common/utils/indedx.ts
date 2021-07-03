@@ -38,8 +38,22 @@ export const sortByKey = (obj: Object) => {
  * @param chars
  * @returns
  */
-export const randomString = (chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'): string => {
+export const randomString = (chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') => {
   let result = ''
   for (let i = 32; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)]
   return result
+}
+
+/**
+ * 给证书添加前后缀，一般用于支付宝证书
+ * @param key string
+ * @param type string
+ * @returns
+ */
+export const transformationCertificate = (key: string, type = 'private') => {
+  if (type == 'public') {
+    return `-----BEGIN PUBLIC KEY-----\r\n${key}\r\n-----END PUBLIC KEY-----`
+  } else {
+    return `-----BEGIN RSA PRIVATE KEY-----\r\n${key}\r\n-----END RSA PRIVATE KEY-----`
+  }
 }

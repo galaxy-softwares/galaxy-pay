@@ -20,7 +20,12 @@ const PayAppPageModifyPage: FC = () => {
   const [form] = useForm()
   const [formData, setFormData] = useState({})
   const history = useHistory()
-  const [payAppConfigure, setPayAppConfigure] = useState({
+  const [payAppConfigure, setPayAppConfigure] = useState<{
+    current: number
+    channel: string
+    certificate: number
+    isEdit: boolean
+  }>({
     current: 0,
     channel: '',
     certificate: 0,
@@ -41,8 +46,7 @@ const PayAppPageModifyPage: FC = () => {
       })
     }
     setPayappCustomerForm(payappCustomerBasicForm)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [payAppConfigure])
 
   useEffect(() => {
     initCustomerFormData()
@@ -59,15 +63,14 @@ const PayAppPageModifyPage: FC = () => {
       })
       form.setFieldsValue({ ...data })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params.id])
+  }, [form, params.id])
 
   useEffect(() => {
     initPayappData()
   }, [initPayappData])
 
   // step 切换
-  const stepChange = (type: string) => {
+  const onStepChange = (type: string) => {
     const current = type === 'next' ? payAppConfigure.current + 1 : payAppConfigure.current - 1
     if (type == 'next') {
       formValidateFields(() => {
@@ -105,7 +108,7 @@ const PayAppPageModifyPage: FC = () => {
   }
 
   // 校验表单
-  const formValidateFields = (callback): void => {
+  const formValidateFields = (callback: (...value: any) => void): void => {
     form
       .validateFields()
       .then(async (values: any) => {
@@ -287,12 +290,12 @@ const PayAppPageModifyPage: FC = () => {
                     <Button onClick={onSubmit} type="primary">
                       提交
                     </Button>
-                    <Button type="primary" onClick={() => stepChange('pre')}>
+                    <Button type="primary" onClick={() => onStepChange('pre')}>
                       上一个
                     </Button>
                   </>
                 ) : (
-                  <Button type="primary" onClick={() => stepChange('next')}>
+                  <Button type="primary" onClick={() => onStepChange('next')}>
                     下一个
                   </Button>
                 )}

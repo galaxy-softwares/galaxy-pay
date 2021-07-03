@@ -18,7 +18,7 @@ export interface CustomSelectOption {
   text: string
 }
 
-export type CustomerFormColumns = Array<CustomFormItem>
+export type CustomerFormColumns = ReadonlyArray<CustomFormItem>
 
 interface CustomFormProps {
   columns: CustomerFormColumns

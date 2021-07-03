@@ -15,14 +15,6 @@ export class SoftwareService extends BaseService<Software> {
   }
 
   /**
-   * 仅限给支付时使用
-   * @param appid string
-   */
-  async findSoftwarePayConfig(appid = '') {
-    return null
-  }
-
-  /**
    * 查询项目（因为不会有太多的项目索性不做分页查询!）
    */
   find() {
@@ -30,7 +22,7 @@ export class SoftwareService extends BaseService<Software> {
   }
 
   /**
-   * 创建项目
+   * 创建应用
    * @param data SoftwareDto
    */
   async createSoftware(data: SoftwareDto): Promise<Software> {

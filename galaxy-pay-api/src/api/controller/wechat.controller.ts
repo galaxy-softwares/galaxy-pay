@@ -44,7 +44,6 @@ export class WechatController {
   @Post('applet')
   async appletpay(@Body() body: WechatPayDto, @PayConfig() wechat_config: WechatConfig) {
     await this.apiTradeService.generateOrder(body, wechat_config)
-    console.log(wechat_config, '-----------------')
     const result = await this.wechatAppletPayService.pay(
       {
         trade_type: WeChatTradeType.APP,

@@ -1,9 +1,9 @@
-import { Controller, Get, UsePipes, UseGuards, Post, Body, Request, Param, Put } from '@nestjs/common'
+import { Controller, Get, UsePipes, UseGuards, Post, Body, Param, Put } from '@nestjs/common'
 import { JwtAuthGuard } from '../service'
 import { ValidationPipe } from 'src/common/pipe/validation.pipe'
 import { PayappService } from '../service/payapp.service'
-import { PayappDto } from '../dtos/pay.dto'
 import { Payapp } from '../entities'
+import { PayappDto } from '../dtos/payapp.dto'
 
 @Controller('payapp')
 @UsePipes(new ValidationPipe())
@@ -23,12 +23,12 @@ export class PayappController {
   }
 
   @Post()
-  async create(@Body() data: PayappDto): Promise<Payapp> {
-    return await this.payappService.createPayapp(data)
+  async create(@Body() payapp: PayappDto): Promise<Payapp> {
+    return await this.payappService.createPayapp(payapp)
   }
 
   @Put()
-  async update(@Body() data: PayappDto): Promise<Payapp> {
-    return await this.payappService.updatePayapp(data)
+  async update(@Body() payapp: PayappDto): Promise<Payapp> {
+    return await this.payappService.updatePayapp(payapp)
   }
 }

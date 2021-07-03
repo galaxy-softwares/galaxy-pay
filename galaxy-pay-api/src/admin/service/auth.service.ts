@@ -2,6 +2,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { UserService } from './user.service'
 import { JwtService } from '@nestjs/jwt'
 import * as crypto from 'crypto-js'
+import { LoginBody } from '../dtos/auth.dto'
 // export function Test() {
 //   return (target, _, descriptor: PropertyDescriptor) => {
 //     const method = descriptor.value
@@ -24,11 +25,10 @@ export class AuthService {
 
   constructor(private readonly userService: UserService, private readonly jwtService: JwtService) {}
 
-  async login(data) {
-    const { username, password } = data
-    console.log(username, password, '被修改了！')
-    const user = await this.userService.findUserByWhere({ username: username })
+  async login(login_body: LoginBody) {
+    const { username, password } = login_body
 
+    const user = await this.userService.findUserByWhere({ username: username })
     if (!user) {
       throw new HttpException('用户名不存在！', HttpStatus.BAD_REQUEST)
     }
@@ -37,9 +37,10 @@ export class AuthService {
       throw new HttpException('密码错误！', HttpStatus.BAD_REQUEST)
     }
 
-    const { id } = user
-    const payload = { id, username }
-    const token = this.signToken(payload)
+    const token = this.signToken({
+      id: user.id,
+      username: user.username
+    })
     return {
       token
     }

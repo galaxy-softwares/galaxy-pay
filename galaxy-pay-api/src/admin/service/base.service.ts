@@ -1,3 +1,4 @@
+import { FindWhere } from 'src/common/interfaces/common.interface'
 import { Repository } from 'typeorm'
 
 export abstract class BaseService<T> {
@@ -14,7 +15,7 @@ export abstract class BaseService<T> {
     return await this.repository.findOne(where)
   }
 
-  async findOneByWhere(where: { [key: string]: string | number | boolean }): Promise<T> {
+  async findOneByWhere(where: FindWhere): Promise<T> {
     return await this.repository.findOne(where)
   }
 
