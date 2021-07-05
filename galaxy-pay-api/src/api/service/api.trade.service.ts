@@ -3,14 +3,15 @@ import { TradeService } from 'src/admin/service/trade.service'
 import { TradeChannel, TradeStatus, TradeType } from 'src/common/enum/trade.enum'
 import { AliPayDto, WechatPayDto } from 'src/admin/dtos/pay.dto'
 import { AliPayRefundDto, WechatRefundPayDto } from 'src/admin/dtos/refund.dto'
-
 import { Trade } from 'src/admin/entities'
 import { AlipayConfig, WechatConfig } from 'galaxy-pay-config'
+import { RefundService } from 'src/admin/service/refund.service'
+import { Refund } from 'src/admin/entities/refund.entity'
 
 @Injectable()
 export class ApiTradeSerivce {
   private channel: TradeChannel
-  constructor(private readonly tradeService: TradeService) {}
+  constructor(private readonly tradeService: TradeService, private readonly refundService: RefundService) {}
 
   /**
    * 支付账单生成
@@ -18,7 +19,8 @@ export class ApiTradeSerivce {
    * @param payConfig WechatConfig | AlipayConfig
    *
    */
-  public async generateOrder(body: WechatPayDto | AliPayDto, pay_config: WechatConfig | AlipayConfig) {
+  public async createTrade(body: WechatPayDto | AliPayDto, pay_config: WechatConfig | AlipayConfig) {
+    // 这里有点问题
     if (pay_config.appid.substring(0, 2) == 'wx') {
       this.channel = TradeChannel.wechat
     } else {
@@ -41,47 +43,44 @@ export class ApiTradeSerivce {
   }
 
   /**
-   * 退款账单生成
-   * @param body WechatRefundPayDto | AliPayRefundDto
-   * @param pay_config WechatConfig | AlipayConfig
+   * 创建退款
+   * @param body
+   * @param pay_config WechatRefundPayDto | AliPayRefundDto,
+   * @param trade_channel WechatConfig | AlipayConfig,
    */
-  public async generateRefundOrder(
+  public async createRefund(
     body: WechatRefundPayDto | AliPayRefundDto,
-    pay_config: WechatConfig | AlipayConfig,
-    trade_channel: TradeChannel
-  ) {
-    if (
-      this.tradeService.findOneByWhere({
-        sys_transaction_no: body.sys_transaction_no,
-        trade_status: TradeStatus.Success
-      })
-    ) {
-      await this.tradeService.createTrade({
+    pay_config: WechatConfig | AlipayConfig
+  ): Promise<Trade> {
+    const trade = await this.tradeService.findOneByWhere({
+      sys_trade_no: body.sys_trade_no,
+      trade_status: TradeStatus.Success
+    })
+    if (trade) {
+      await this.refundService.createRefund({
         pay_app_id: body.pay_app_id,
-        sys_trade_no: body.sys_trade_no,
-        trade_type: TradeType.Refund,
-        refund_trade_no: body.sys_transaction_no, // 只能用 支付订单的 sys_transaction_no ！
-        trade_status: TradeStatus.UnPaid,
+        sys_refund_no: trade.sys_trade_no,
+        refund_body: body.body,
         callback_url: pay_config.callback_url,
         return_url: pay_config.return_url,
         notify_url: pay_config.notify_url,
-        trade_amount: body.money,
-        trade_channel: trade_channel,
-        trade_body: body.body,
-        sys_transaction_no: ''
+        refund_amount: body.money,
+        total_amount: trade.trade_amount,
+        refund_channel: trade.trade_channel,
+        status: TradeStatus.UnPaid
       })
     } else {
-      throw new HttpException('没有查询到能够退款得订单', HttpStatus.BAD_REQUEST)
+      throw new HttpException('未查询到能够退款得订单，请仔细检查退款订单号！', HttpStatus.BAD_REQUEST)
     }
+    return trade
   }
 
   /**
    * 判断订单是否退款成功！
    * @param sys_trade_no
-   * @param channel
    * @param sys_transaction_no
    */
-  async refundSuccess(sys_trade_no: string, channel: TradeChannel, sys_transaction_no: string): Promise<Trade> {
-    return await this.tradeService.refundSuccess(sys_trade_no, channel, sys_transaction_no)
+  async isRefundSuccessful(sys_trade_no: string, sys_transaction_no: string): Promise<Refund> {
+    return await this.refundService.isRefundSuccessful(sys_trade_no, sys_transaction_no)
   }
 }

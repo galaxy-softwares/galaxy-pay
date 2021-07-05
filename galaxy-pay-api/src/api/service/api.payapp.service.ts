@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { AliCertUtil, AlipayConfig, AlipayPublic, AlipayPublicCert, WechatConfig } from 'galaxy-pay-config'
-import { Payapp } from 'src/admin/entities'
 import { PayappService } from 'src/admin/service/payapp.service'
 import { TradeChannel } from 'src/common/enum/trade.enum'
 import { PayAlipayConfig, PayAppConfig, PayWechatConfig } from 'src/common/interfaces/common.interface'

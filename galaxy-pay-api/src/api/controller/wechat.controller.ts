@@ -21,6 +21,7 @@ import {
   WeChatWapPayService
 } from 'galaxy-pay-config'
 import { TradeChannel } from 'src/common/enum/trade.enum'
+import { Refund } from 'src/admin/entities/refund.entity'
 
 @Controller('wechat')
 @UseGuards(PayGuard)
@@ -43,7 +44,7 @@ export class WechatController {
    */
   @Post('applet')
   async appletpay(@Body() body: WechatPayDto, @PayConfig() wechat_config: WechatConfig) {
-    await this.apiTradeService.generateOrder(body, wechat_config)
+    await this.apiTradeService.createTrade(body, wechat_config)
     const result = await this.wechatAppletPayService.pay(
       {
         trade_type: WeChatTradeType.APP,
@@ -65,7 +66,7 @@ export class WechatController {
    */
   @Post('app')
   async app(@Body() body: WechatPayDto, @PayConfig() wechat_config: WechatConfig) {
-    await this.apiTradeService.generateOrder(body, wechat_config)
+    await this.apiTradeService.createTrade(body, wechat_config)
     return await this.wechatAppPayService.pay(
       {
         trade_type: WeChatTradeType.APP,
@@ -85,25 +86,21 @@ export class WechatController {
    * @param wechat_config WechatConfig
    */
   @Post('refund')
-  async refund(@Body() body: WechatRefundPayDto, @PayConfig() wechat_config: WechatConfig): Promise<string> {
-    await this.apiTradeService.generateRefundOrder(body, wechat_config, TradeChannel.wechat)
+  async refund(@Body() body: WechatRefundPayDto, @PayConfig() wechat_config: WechatConfig): Promise<Refund> {
+    const trade = await this.apiTradeService.createRefund(body, wechat_config)
     const refund_result = await this.wechatBaseservice.refund(
       {
-        out_refund_no: body.sys_trade_no,
-        transaction_id: body.sys_transaction_no,
-        total_fee: parseInt(body.money),
-        refund_fee: parseInt(body.refund_money),
+        out_refund_no: trade.sys_trade_no,
+        transaction_id: trade.sys_transaction_no,
+        total_fee: parseInt(trade.trade_amount),
+        refund_fee: parseInt(body.money),
         refund_desc: body.body,
         notify_url: wechat_config.notify_url
       },
       wechat_config
     )
     if (refund_result.return_code == 'SUCCESS') {
-      if (
-        await this.apiTradeService.refundSuccess(body.sys_trade_no, TradeChannel.wechat, refund_result.transaction_id)
-      ) {
-        return '退款成功！'
-      }
+      return await this.apiTradeService.isRefundSuccessful(refund_result.out_trade_no, refund_result.transaction_id)
     } else {
       throw new HttpException(refund_result.err_code_des, HttpStatus.BAD_REQUEST)
     }
@@ -116,7 +113,7 @@ export class WechatController {
    */
   @Post('jsapi')
   async jsapi(@Body() body: WechatPayDto, @PayConfig() wechat_config: WechatConfig): Promise<WeChatOtherPayOrderRes> {
-    await this.apiTradeService.generateOrder(body, wechat_config)
+    await this.apiTradeService.createTrade(body, wechat_config)
     return await this.wechatJSAPIPayService.pay(
       {
         trade_type: WeChatTradeType.JSAPI,
@@ -137,7 +134,7 @@ export class WechatController {
    */
   @Post('native')
   async native(@Body() body: WechatPayDto, @PayConfig() wechat_config: WechatConfig): Promise<WeChatOtherPayOrderRes> {
-    await this.apiTradeService.generateOrder(body, wechat_config)
+    await this.apiTradeService.createTrade(body, wechat_config)
     return await this.wechatNativePayService.pay(
       {
         trade_type: WeChatTradeType.NATIVE,
@@ -158,7 +155,7 @@ export class WechatController {
    */
   @Post('h5')
   async h5pay(@Body() body: WechatPayDto, @PayConfig() wechat_config: WechatConfig): Promise<WeChatOtherPayOrderRes> {
-    await this.apiTradeService.generateOrder(body, wechat_config)
+    await this.apiTradeService.createTrade(body, wechat_config)
     return await this.wechatWapPayService.pay(
       {
         trade_type: WeChatTradeType.MWEB,
@@ -179,7 +176,7 @@ export class WechatController {
    */
   @Post('micro')
   async micro(@Body() body: WechatPayDto, @PayConfig() wechat_config: WechatConfig): Promise<WeChatMicroPayOrderRes> {
-    await this.apiTradeService.generateOrder(body, wechat_config)
+    await this.apiTradeService.createTrade(body, wechat_config)
     const request_param = {
       trade_type: WeChatTradeType.MWEB,
       notify_url: wechat_config.notify_url,

@@ -17,6 +17,7 @@ import {
   AliTradePayService,
   AliWapPayService
 } from 'galaxy-pay-config'
+import { Refund } from 'src/admin/entities/refund.entity'
 
 @Controller('alipay')
 @UseGuards(PayGuard)
@@ -42,7 +43,7 @@ export class AlipayController {
    */
   @Post('app')
   async appPay(@Body() body: AliPayDto, @PayConfig() alipay_config: AlipayConfig) {
-    await this.apiTradeService.generateOrder(body, alipay_config)
+    await this.apiTradeService.createTrade(body, alipay_config)
     return this.aliAppPayService.pay(
       {
         product_code: 'QUICK_MSECURITY_PAY',
@@ -62,7 +63,7 @@ export class AlipayController {
    */
   @Post('page')
   async pagePay(@Body() body: AliPayDto, @PayConfig() alipay_config: AlipayConfig): Promise<string> {
-    await this.apiTradeService.generateOrder(body, alipay_config)
+    await this.apiTradeService.createTrade(body, alipay_config)
     return this.aliPagePaySerice.pay(
       {
         product_code: 'FAST_INSTANT_TRADE_PAY',
@@ -100,6 +101,7 @@ export class AlipayController {
     @Body() body: AlipayQuery,
     @PayConfig() alipay_config: AlipayConfig
   ): Promise<AlipayTradeQueryRefundRes> {
+    // await this.apiTradeService.createrTrade(body, alipay_config)
     return await this.aliTradePayService.fastpayRefundQuery(
       {
         out_trade_no: body.out_trade_no,
@@ -116,7 +118,7 @@ export class AlipayController {
    */
   @Post('precreate')
   async precreate(@Body() body: AliPayDto, @PayConfig() alipay_config: AlipayConfig): Promise<AlipayTradePrecreateRes> {
-    await this.apiTradeService.generateOrder(body, alipay_config)
+    await this.apiTradeService.createTrade(body, alipay_config)
     return await this.aliTradePayService.precreate(
       {
         product_code: 'FACE_TO_FACE_PAYMENT',
@@ -136,7 +138,7 @@ export class AlipayController {
    */
   @Post('wap')
   async wap(@Body() body: AliPayDto, @PayConfig() alipay_config: AlipayConfig): Promise<string> {
-    await this.apiTradeService.generateOrder(body, alipay_config)
+    await this.apiTradeService.createTrade(body, alipay_config)
     return this.aliWapPayService.pay(
       {
         product_code: 'FACE_TO_FACE_PAYMENT',
@@ -155,23 +157,19 @@ export class AlipayController {
    * @param body
    */
   @Post('refund')
-  async refund(@Body() body: AliPayRefundDto, @PayConfig() alipay_config: AlipayConfig): Promise<string> {
-    await this.apiTradeService.generateRefundOrder(body, alipay_config, TradeChannel.alipay)
+  async refund(@Body() body: AliPayRefundDto, @PayConfig() alipay_config: AlipayConfig): Promise<Refund> {
+    const trade = await this.apiTradeService.createRefund(body, alipay_config)
     const refund_result = await this.aliTradePayService.refund(
       {
-        trade_no: body.sys_transaction_no,
-        out_request_no: body.sys_trade_no,
+        out_trade_no: trade.sys_trade_no,
+        out_request_no: trade.sys_transaction_no + '123123',
         refund_amount: body.money,
         refund_reason: body.body
-      },
+      } as any,
       alipay_config
     )
     if (refund_result.code == '10000') {
-      if (await this.apiTradeService.refundSuccess(body.sys_trade_no, TradeChannel.alipay, refund_result.trade_no)) {
-        return '退款成功！'
-      } else {
-        return '退款失败！'
-      }
+      return await this.apiTradeService.isRefundSuccessful(refund_result.out_trade_no, refund_result.trade_no)
     } else {
       throw new HttpException(refund_result.sub_msg, HttpStatus.BAD_REQUEST)
     }
@@ -184,7 +182,7 @@ export class AlipayController {
    */
   @Post('create')
   async create(@Body() body: AliPayDto, @PayConfig() alipay_config: AlipayConfig): Promise<AlipayTradeCreateRes> {
-    await this.apiTradeService.generateOrder(body, alipay_config)
+    await this.apiTradeService.createTrade(body, alipay_config)
     return await this.aliTradePayService.create(
       {
         product_code: 'FACE_TO_FACE_PAYMENT',
