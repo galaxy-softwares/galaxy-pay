@@ -152,8 +152,8 @@ const PayAppPageModifyPage: FC = () => {
           rules={[{ required: true, message: '请选择支付宝证书模式' }]}
         >
           <Select disabled={isEdit} placeholder="请选择支付宝证书模式" onChange={certificateChange}>
-            <Option value={10}>公钥</Option>
-            <Option value={20}>公钥证书</Option>
+            <Option value={'10'}>公钥</Option>
+            <Option value={'20'}>公钥证书</Option>
           </Select>
         </Form.Item>
       )
@@ -180,7 +180,7 @@ const PayAppPageModifyPage: FC = () => {
         <CustomForm isEdit={isEdit} columns={payappCustomerAlipayCertificateForm}>
           <Col span={24}>
             <Form.Item
-              name="app_cert_public_key"
+              name="app_cert_sn"
               label="应用公钥证书"
               tooltip="appCertPublicKey_xxxx.crt"
               rules={[{ required: true, message: '应用公钥证书' }]}
@@ -189,7 +189,7 @@ const PayAppPageModifyPage: FC = () => {
                 placeholder="应用公钥证书 app_cert_public_key"
                 disabled={isEdit}
                 addonAfter={
-                  <UploadFile name="app_cert_public_key" uploadSuccess={onUploadDone}>
+                  <UploadFile name="app_cert_sn" uploadSuccess={onUploadDone}>
                     <CloudUploadOutlined />
                   </UploadFile>
                 }
@@ -198,7 +198,7 @@ const PayAppPageModifyPage: FC = () => {
           </Col>
           <Col span={24}>
             <Form.Item
-              name="alipay_cert_public_key_rsa2"
+              name="public_key"
               label="支付宝公钥证书"
               tooltip="alipayCertPublicKey_RSA2.crt"
               rules={[{ required: true, message: '支付宝公钥证书' }]}
@@ -207,7 +207,7 @@ const PayAppPageModifyPage: FC = () => {
                 placeholder="应用公钥证书 alipay_cert_public_key_rsa2"
                 disabled
                 addonAfter={
-                  <UploadFile name="alipay_cert_public_key_rsa2" uploadSuccess={onUploadDone}>
+                  <UploadFile name="public_key" uploadSuccess={onUploadDone}>
                     <CloudUploadOutlined />
                   </UploadFile>
                 }
@@ -216,16 +216,16 @@ const PayAppPageModifyPage: FC = () => {
           </Col>
           <Col span={24}>
             <Form.Item
-              name="alipay_root_cert"
+              name="alipay_root_cert_sn"
               label="支付宝根证书"
               tooltip="alipayRootCert.crt"
               rules={[{ required: true, message: '支付宝根证书' }]}
             >
               <Input
-                placeholder="支付宝根证书 alipay_root_cert"
+                placeholder="支付宝根证书 alipayRootCert"
                 disabled
                 addonAfter={
-                  <UploadFile name="alipay_root_cert" uploadSuccess={onUploadDone}>
+                  <UploadFile name="alipay_root_cert_sn" uploadSuccess={onUploadDone}>
                     <CloudUploadOutlined />
                   </UploadFile>
                 }
