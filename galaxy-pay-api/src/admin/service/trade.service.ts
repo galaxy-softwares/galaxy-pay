@@ -3,7 +3,7 @@ import { BaseService } from './base.service'
 import { Trade } from 'src/admin/entities/trade.entity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { TradeChannel, TradeStatus, TradeType } from 'src/common/enum/trade.enum'
+import { TradeChannel, TradeStatus } from 'src/common/enum/trade.enum'
 import { CreateTrade } from 'src/common/interfaces/trade.interfaces'
 import { Payapp } from '../entities'
 
@@ -80,7 +80,7 @@ export class TradeService extends BaseService<Trade> {
    * @param trade_no string 支付宝或者微信的支付订单号
    *
    */
-  async paySuccess(sys_trade_no: string, channel: TradeChannel, sys_transaction_no: string): Promise<Trade> {
+  async editPayStatus(sys_trade_no: string, channel: TradeChannel, sys_transaction_no: string): Promise<Trade> {
     try {
       const trade = await this.tradeRepository.findOne({
         sys_trade_no,

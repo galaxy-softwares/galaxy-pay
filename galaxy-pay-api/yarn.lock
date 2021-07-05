@@ -3903,10 +3903,10 @@ functional-red-black-tree@^1.0.1:
   resolved "https://registry.yarnpkg.com/functional-red-black-tree/-/functional-red-black-tree-1.0.1.tgz#1b0ab3bd553b2a0d6399d29c0e3ea0b252078327"
   integrity sha1-GwqzvVU7Kg1jmdKcDj6gslIHgyc=
 
-galaxy-pay-config@^0.0.12:
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/galaxy-pay-config/-/galaxy-pay-config-0.0.12.tgz#119d6e38c6ddec10f28fed8d4b63dffbf5047276"
-  integrity sha512-C/X/EjZoX5Fvn0R5dVr8fPDVHkgWdr4uCXJm9y4DSmZPtnNGeFGZRjW/a7z1TSqejrWvOLeRcxcRF17rc0lGBA==
+galaxy-pay-config@^0.0.14:
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/galaxy-pay-config/-/galaxy-pay-config-0.0.14.tgz#7e1b7f4cb9b7e3b071f39c2921426aced8c427bb"
+  integrity sha512-s8T31hJz1W1b1eowtNJSzCAi7DlnCiRikJxww7mR6mwo8wsyL9C4A9uhZsXsDeTjudjhVhjBfxzkW3KB636V8g==
   dependencies:
     "@fidm/x509" "^1.2.1"
     "@nestjs/common" "^7.4.4"

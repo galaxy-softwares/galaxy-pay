@@ -3,8 +3,9 @@ import { TradeService } from 'src/admin/service/trade.service'
 import { TradeChannel, TradeStatus, TradeType } from 'src/common/enum/trade.enum'
 import { AliPayDto, WechatPayDto } from 'src/admin/dtos/pay.dto'
 import { AliPayRefundDto, WechatRefundPayDto } from 'src/admin/dtos/refund.dto'
-import { AlipayConfig, WechatConfig } from 'galaxy-pay-config'
+
 import { Trade } from 'src/admin/entities'
+import { AlipayConfig, WechatConfig } from 'galaxy-pay-config'
 
 @Injectable()
 export class ApiTradeSerivce {

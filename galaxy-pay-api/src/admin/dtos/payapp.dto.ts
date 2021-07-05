@@ -28,7 +28,6 @@ export class PayappDto {
   @IsNotEmpty({ message: '请选择支付通道' })
   channel: TradeChannel
 
-  @IsNotEmpty({ message: '用户名称不能为空' })
   config: string
 
   appid: string

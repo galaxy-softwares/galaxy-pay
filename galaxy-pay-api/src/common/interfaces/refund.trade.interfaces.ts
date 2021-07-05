@@ -40,24 +40,3 @@ export interface AlipayBodyData extends AlipayConfig {
   domain_url: string
   channel: TradeChannel
 }
-
-// const tet: AlipayBodyData = {
-//   name: '',
-//   software_id: 1,
-//   pay_app_id: 'number',
-//   pay_secret_key: 'number',
-//   domain_url: 'number',
-//   channel: TradeChannel.alipay,
-//   appid: '',
-//   return_url: '',
-//   notify_url: '',
-//   certificate: '',
-//   private_key: '',
-//   public_key: '',
-//   app_cert_public_key: '',
-//   alipay_cert_public_key_rsa2: '',
-//   alipay_root_cert: ''
-//   // config: {
-
-//   // }
-// }

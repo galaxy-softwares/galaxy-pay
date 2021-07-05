@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Request, Res, Inject, Req, HttpService } from '@nestjs/common'
-import { AliCertUtil, AliSignUtil, WeChatNotifyParserUtil, WeChatPayNotifyRes, WeChatSignUtil } from 'galaxy-pay-config'
+import { AliSignUtil, WeChatNotifyParserUtil, WeChatPayNotifyRes, WeChatSignUtil } from 'galaxy-pay-config'
 import { TradeService } from './admin/service'
-import { PayappService } from './admin/service/payapp.service'
+import { ApiPayappSerivce } from './api/service/api.payapp.service'
 import { TradeChannel } from './common/enum/trade.enum'
 import { LoggerService } from './common/service/logger.service'
 import { makeSignStr } from './common/utils/indedx'
@@ -9,7 +9,7 @@ import { makeSignStr } from './common/utils/indedx'
 @Controller()
 export class AppController {
   constructor(
-    private readonly payappService: PayappService,
+    private readonly apiPayappService: ApiPayappSerivce,
     private readonly aliSignUtil: AliSignUtil,
     private readonly tradeService: TradeService,
     @Inject(WeChatSignUtil) protected readonly signUtil: WeChatSignUtil,
@@ -28,14 +28,15 @@ export class AppController {
     const data = req.body
     this.loggerService.info(`支付宝异步通知:${JSON.stringify(data)}`)
     const trade = await this.tradeService.findOrder(data.out_trade_no)
-    const pay_config = await this.payappService.findPayappConfig(trade.pay_app_id)
+    const { pay_secret_key } = await this.apiPayappService.findPayappConfig(trade.pay_app_id)
+
     delete data.pay_app_type
 
-    const sign_result = this.aliSignUtil.responSignVerify(data, pay_config.public_key)
+    const sign_result = this.aliSignUtil.responSignVerify(data, pay_secret_key)
     if (sign_result) {
-      const status = await this.tradeService.paySuccess(data.out_trade_no, TradeChannel.alipay, data.trade_no)
+      const status = await this.tradeService.editPayStatus(data.out_trade_no, TradeChannel.alipay, data.trade_no)
       if (status) {
-        const callback_result = await this.callbackRequest(trade.callback_url, data, pay_config.pay_secret_key)
+        const callback_result = await this.callbackRequest(trade.callback_url, data, pay_secret_key)
         console.log(callback_result, '支付callback 回调状态！')
       }
     }
@@ -46,34 +47,42 @@ export class AppController {
     res.set('Content-Type', 'text/html')
     res.status(200)
     try {
-      const data = await this.weChatNotifyParserUtil.receiveReqData<WeChatPayNotifyRes>(req, 'pay')
-      this.loggerService.info(`微信异步通知:${JSON.stringify(data)}`)
-      const trade = await this.tradeService.findOrder(data.out_trade_no)
+      const wechat_notify_res = await this.weChatNotifyParserUtil.receiveReqData<WeChatPayNotifyRes>(req, 'pay')
+      this.loggerService.info(`微信异步通知:${JSON.stringify(wechat_notify_res)}`)
+      const trade = await this.tradeService.findOrder(wechat_notify_res.out_trade_no)
       // 因为已经在支付查询的时候已经做了错误抛出所以不用再去判断是否存在账单。
       if (trade.trade_status == '1') {
         res.end(this.weChatNotifyParserUtil.generateSuccessMessage())
       }
-      const pay_config = await this.payappService.findPayappConfig(trade.pay_app_id)
+      const { pay_secret_key, config } = await this.apiPayappService.findPayappByWechat(trade.pay_app_id)
       // 先拿到微信得签名
-      const data_sign = data.sign
+      const wechat_notify_res_sign = wechat_notify_res.sign
       // 不进行签名验证
-      delete data.sign
-      const sign = this.signUtil.sign(data, pay_config.mch_key)
+      delete wechat_notify_res.sign
+      const sign = this.signUtil.sign(wechat_notify_res, config.mch_key)
       //  还要判断是支付类型！！！！！！！
-      if (sign !== data_sign || data.return_code !== 'SUCCESS' || data.result_code !== 'SUCCESS') {
+      if (
+        sign !== wechat_notify_res_sign ||
+        wechat_notify_res.return_code !== 'SUCCESS' ||
+        wechat_notify_res.result_code !== 'SUCCESS'
+      ) {
         res.end(this.weChatNotifyParserUtil.generateFailMessage('签名验证失败'))
       }
-      const status = await this.tradeService.paySuccess(data.out_trade_no, TradeChannel.wechat, data.transaction_id)
+      const status = await this.tradeService.editPayStatus(
+        wechat_notify_res.out_trade_no,
+        TradeChannel.wechat,
+        wechat_notify_res.transaction_id
+      )
       if (status) {
         const callback_result = await this.callbackRequest(
           trade.callback_url,
           {
-            out_trade_no: data.out_trade_no,
-            trade_no: data.transaction_id
+            out_trade_no: wechat_notify_res.out_trade_no,
+            trade_no: wechat_notify_res.transaction_id
           },
-          pay_config.pay_secret_key
+          pay_secret_key
         )
-        console.log(callback_result, '微信支付callback回调状态')
+        this.loggerService.info(`微信异步通知:${JSON.stringify(callback_result)}`)
         res.end(this.weChatNotifyParserUtil.generateSuccessMessage())
       }
     } catch (e) {
@@ -106,13 +115,12 @@ export class AppController {
         app_secret
       )
     }
-    const callback_result = await this.httpService
+    return await this.httpService
       .request({
         url: callback_url,
         params: callback_param,
         method: 'get'
       })
       .toPromise()
-    return callback_result
   }
 }

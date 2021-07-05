@@ -1,42 +1,38 @@
+import { AlipayConfig, WechatConfig } from 'galaxy-pay-config'
 import { TradeChannel } from '../enum/trade.enum'
 
 export interface FindWhere {
   readonly [key: string]: string | number | boolean
 }
 
-// 支付宝基础信息
-type AlipayBaseConfig = Record<'appid' | 'certificate', string>
+type BasePayParams = Record<'pay_secret_key' | 'domain_url' | 'callback_url', string>
 
-// 支付宝公钥
-export type AlipayPublic = Record<'private_key' | 'public_key', string>
+export type PayAppConfig = AlipayConfig | WechatConfig
 
-// 支付宝公钥证书
-export type AlipayPublicCert = AlipayPublic & Record<'app_cert_sn' | 'alipay_root_cert_sn', string>
-
-export type AlipayConfig = AlipayBaseConfig & AlipayPublicCert & AlipayPublic
-
-// 公用参数
-type BaseNotifyReturnUrl = Record<'notify_url' | 'return_url', string>
-
-// 微信支付参数
-export type WechatConfig = Record<'appid' | 'mch_id' | 'mch_key' | 'app_secret' | 'apiclient_cert', string>
-
-//  通过 & 合并 支付宝和微信的支付参数，最后在合并俩公用参数 notify_url 和 return_url
-type PayAppBaseConfig = AlipayConfig & WechatConfig & BaseNotifyReturnUrl
-
-export interface PayappEntity extends PayAppBaseConfig {
+export interface PayappEntity {
   id?: number
-  readonly name: string
+  name: string
   software_id: number
-  readonly certificate: string
   pay_app_id: string
   pay_secret_key: string
-  readonly callback_url: string
-  readonly domain_url: string
-  readonly channel: TradeChannel
+  callback_url: string
+  domain_url: string
+  notify_url: string
+  return_url: string
+  channel: TradeChannel
   config: string
 }
 
 export interface PayappData extends Omit<PayappEntity, 'config'> {
-  config: WechatConfig | Omit<AlipayConfig, 'return_url' | 'notify_url'>
+  config:
+    | Omit<WechatConfig, 'return_url' | 'notify_url' | 'callback_url'>
+    | Omit<AlipayConfig, 'return_url' | 'notify_url' | 'callback_url'>
 }
+
+// 微信支付配置
+export type PayWechatConfig = BasePayParams & Record<'config', WechatConfig>
+
+// 支付宝支付配置
+export type PayAlipayConfig = BasePayParams & Record<'config', AlipayConfig>
+
+export type PayConfig = PayWechatConfig | PayAlipayConfig
