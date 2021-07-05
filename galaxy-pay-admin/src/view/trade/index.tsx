@@ -5,7 +5,7 @@ import { WechatOutlined, AlipayCircleOutlined } from '@ant-design/icons'
 import { CardTable } from '../../components/CardTable/cardTable'
 import { getTradeList } from '../../request/trade'
 
-const Trade: FC = () => {
+export const TradePage: FC = () => {
   const [taradeList, setTradeList] = useState([])
 
   const initTradeList = useCallback(async () => {
@@ -80,4 +80,3 @@ const Trade: FC = () => {
     </div>
   )
 }
-export default Trade

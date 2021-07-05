@@ -5,17 +5,19 @@ import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import BaseLayout from './layouts/baseLayout'
 import { PayAppPage } from './view/payapp/payAppPage'
 import Login from './view/login'
-import Trade from './view/trade'
+import { TradePage } from './view/trade'
 import PayAppPageModifyPage from './view/payapp/payAppModifyPage'
 import { SoftwarePage } from './view/software/softwarePage'
 import { HomePage } from './view/home/HomePage'
+import { RefundPage } from './view/refund/refundPage'
 
 const Routers = [
   { path: '/', name: 'Home', component: HomePage, auth: true },
   { path: '/softwares', name: 'Sotfware', component: SoftwarePage, auth: true },
   { path: '/payapps', name: 'AppPay', component: PayAppPage, auth: true },
   { path: '/payapps/modify/:id?', name: 'AppPayModify', component: PayAppPageModifyPage, auth: true },
-  { path: '/trades', name: 'Trade', component: Trade, auth: true }
+  { path: '/trades', name: 'Trade', component: TradePage, auth: true },
+  { path: '/refunds', name: 'Refund', component: RefundPage, auth: true }
 ]
 
 const App: FC = () => {

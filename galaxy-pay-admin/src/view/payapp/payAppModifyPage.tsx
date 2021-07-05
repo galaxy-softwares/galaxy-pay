@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { FC } from 'react'
+import React, { FC, useCallback, useEffect, useState } from 'react'
 import { Card, Steps, Form, Input, Button, message, Space, Select, Col } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import { createPayapp, getPayapp, updatePayapp } from '../../request/payapp'
@@ -63,6 +62,7 @@ const PayAppPageModifyPage: FC = () => {
       })
       form.setFieldsValue({ ...data })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, params.id])
 
   useEffect(() => {

@@ -30,9 +30,9 @@ const menuList = [
     path: '/trades'
   },
   {
-    title: '打款账单',
+    title: '退款账单',
     icon: <CopyOutlined />,
-    path: '/payments'
+    path: '/refunds'
   }
 ]
 
