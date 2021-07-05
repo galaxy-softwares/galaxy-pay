@@ -69,7 +69,8 @@ export class ApiPayappSerivce {
    * @param payapp
    * @returns
    */
-  async findPayappByAlipay(payapp: Payapp): Promise<PayAlipayConfig> {
+  async findPayappByAlipay(pay_app_id: string): Promise<PayAlipayConfig> {
+    const payapp = await this.payappService.findOneByPayappId(pay_app_id)
     return {
       pay_secret_key: payapp.pay_secret_key,
       domain_url: payapp.domain_url,

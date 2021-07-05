@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Request, Res, Inject, Req, HttpService } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Post,
+  Request,
+  Res,
+  Inject,
+  Req,
+  HttpService,
+  HttpException,
+  HttpStatus
+} from '@nestjs/common'
 import { AliSignUtil, WeChatNotifyParserUtil, WeChatPayNotifyRes, WeChatSignUtil } from 'galaxy-pay-config'
 import { TradeService } from './admin/service'
 import { ApiPayappSerivce } from './api/service/api.payapp.service'
@@ -25,20 +36,24 @@ export class AppController {
 
   @Post('alipay_notify_url')
   async alipay_notify_url(@Request() req) {
-    const data = req.body
-    this.loggerService.info(`支付宝异步通知:${JSON.stringify(data)}`)
-    const trade = await this.tradeService.findOrder(data.out_trade_no)
-    const { pay_secret_key } = await this.apiPayappService.findPayappConfig(trade.pay_app_id)
-
-    delete data.pay_app_type
-
-    const sign_result = this.aliSignUtil.responSignVerify(data, pay_secret_key)
-    if (sign_result) {
-      const status = await this.tradeService.editPayStatus(data.out_trade_no, TradeChannel.alipay, data.trade_no)
-      if (status) {
-        const callback_result = await this.callbackRequest(trade.callback_url, data, pay_secret_key)
-        console.log(callback_result, '支付callback 回调状态！')
+    try {
+      const data = req.body
+      this.loggerService.info(`支付宝异步通知:${JSON.stringify(data)}`)
+      const trade = await this.tradeService.findOrder(data.out_trade_no)
+      const { pay_secret_key, config } = await this.apiPayappService.findPayappByAlipay(trade.pay_app_id)
+      delete data.pay_app_type
+      const sign_result = this.aliSignUtil.responSignVerify(data, config.public_key)
+      if (sign_result) {
+        const status = await this.tradeService.editPayStatus(data.out_trade_no, TradeChannel.alipay, data.trade_no)
+        if (status) {
+          const callback_result = await this.callbackRequest(trade.callback_url, data, pay_secret_key)
+          console.log(callback_result, '支付callback 回调状态！')
+        }
+      } else {
+        throw new HttpException('支付签名校验不通过！', HttpStatus.BAD_REQUEST)
       }
+    } catch (e) {
+      throw new HttpException(e.toString(), HttpStatus.BAD_REQUEST)
     }
   }
 
