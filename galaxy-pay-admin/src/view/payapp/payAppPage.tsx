@@ -6,6 +6,8 @@ import { CardTable } from '../../components/CardTable/cardTable'
 import { Link, useHistory } from 'react-router-dom'
 import { getPayapps } from '../../request/payapp'
 import { useCopyToClipboard } from 'react-use'
+import { payappParamsForm } from './payAppCustomerForm'
+import { FormPopoverContent } from '../../components/FormPopover/formPopover'
 
 type dataType = {
   id: number
@@ -20,13 +22,14 @@ type dataType = {
 export const PayAppPage: FC = () => {
   const [payAppList, setPayAppList] = useState()
   const history = useHistory()
-
-  const [payAppId, copyPayAppId] = useCopyToClipboard()
+  const [payappParams, setPayappParams] = useState({ name: '', channel: '' })
+  const [, copyPayAppId] = useCopyToClipboard()
 
   const initPayappData = useCallback(async () => {
-    const { data } = await getPayapps()
+    const { data } = await getPayapps(payappParams)
+    console.log(data)
     setPayAppList(data)
-  }, [])
+  }, [payappParams])
 
   useEffect(() => {
     initPayappData()
@@ -56,7 +59,7 @@ export const PayAppPage: FC = () => {
       render: (value: number, record: any) => (
         <div>
           {value}
-          <span className="small_desc">{record.software?.name}</span>
+          <span className="small_desc">{record.software_name}</span>
         </div>
       )
     },
@@ -95,13 +98,6 @@ export const PayAppPage: FC = () => {
       )
     },
     {
-      title: '创建于',
-      dataIndex: 'create_at',
-      key: 'create_at',
-      align: 'center',
-      width: 200
-    },
-    {
       title: '操作',
       key: 'action',
       align: 'center',
@@ -131,7 +127,23 @@ export const PayAppPage: FC = () => {
           </Button>
         </div>
       </div>
-      <CardTable columns={columns} data={payAppList} title="" />
+      <CardTable
+        filter={true}
+        formContent={
+          <FormPopoverContent
+            columns={payappParamsForm}
+            callback={value => {
+              setPayappParams({
+                name: value.name,
+                channel: value.channel
+              })
+            }}
+          />
+        }
+        columns={columns}
+        data={payAppList}
+        title=""
+      />
     </div>
   )
 }

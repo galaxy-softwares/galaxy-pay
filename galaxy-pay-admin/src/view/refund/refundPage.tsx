@@ -4,6 +4,8 @@ import { CardTable } from '../../components/CardTable/cardTable'
 import { ColumnsType } from 'antd/lib/table'
 import { getRefundList } from '../../request/refund'
 import moment from 'moment'
+import { FormPopoverContent } from '../../components/FormPopover/formPopover'
+import { CustomerFormColumns } from '../../components/CustomFrom/customForm'
 
 type dataType = {
   id: number
@@ -15,13 +17,49 @@ type dataType = {
   create_at: string
 }
 
+export const tradeParamsForm: CustomerFormColumns = [
+  {
+    label: '账单号',
+    valueType: 'Input',
+    placeholder: '请输入账单号',
+    col: 24,
+    customformItemPros: {
+      name: 'sys_trade_no',
+      prefixCls: ''
+    }
+  },
+  {
+    label: '支付通道',
+    valueType: 'Select',
+    editDisable: true,
+    placeholder: '请选择归属项目',
+    col: 24,
+    options: [
+      {
+        value: 'wechat',
+        text: '微信支付'
+      },
+      {
+        value: 'alipay',
+        text: '支付宝'
+      }
+    ],
+    customformItemPros: {
+      name: 'channel'
+    }
+  }
+]
+
 export const RefundPage: FC = () => {
   const [refundList, setRefundList] = useState([])
-  const [refundParams] = useState({})
+  const [refundParams, setRefundParams] = useState({
+    sys_trade_no: '',
+    channel: ''
+  })
 
   const initTradeList = useCallback(async () => {
     const { data } = await getRefundList(refundParams)
-    setRefundList(data.data)
+    setRefundList(data)
   }, [refundParams])
 
   useEffect(() => {
@@ -41,9 +79,14 @@ export const RefundPage: FC = () => {
     },
     {
       title: '项目名称',
-      dataIndex: 'payapp',
-      key: 'payapp',
-      render: (payapp: any) => <span className="small_desc">{payapp.name}</span>
+      dataIndex: 'pay_app_name',
+      key: 'pay_app_name',
+      render: (value: string, record: any) => (
+        <div>
+          {value}
+          <span className="small_desc">{record.software_name}</span>
+        </div>
+      )
     },
     {
       title: '退款状态',
@@ -75,7 +118,27 @@ export const RefundPage: FC = () => {
 
   return (
     <div>
-      <CardTable columns={columns} data={refundList} title="" />
+      <div className="page__title_warp">
+        <div className="title">退款账单</div>
+        <div className="create"></div>
+      </div>
+      <CardTable
+        filter={true}
+        formContent={
+          <FormPopoverContent
+            columns={tradeParamsForm}
+            callback={value => {
+              setRefundParams({
+                sys_trade_no: value.sys_trade_no,
+                channel: value.channel
+              })
+            }}
+          />
+        }
+        columns={columns}
+        data={refundList}
+        title=""
+      />
     </div>
   )
 }

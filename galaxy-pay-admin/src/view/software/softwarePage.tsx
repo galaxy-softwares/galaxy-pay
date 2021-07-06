@@ -1,14 +1,14 @@
-import { Avatar, Button, Form, message, Space } from 'antd'
-import { ColumnsType } from 'antd/lib/table'
 import React, { FC, useEffect, useState, useCallback } from 'react'
-import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons'
+import { Button, Form, message, Space } from 'antd'
+import { ColumnsType } from 'antd/lib/table'
+import { PlusOutlined } from '@ant-design/icons'
 import { CardTable } from '../../components/CardTable/cardTable'
 import { FormModal } from '../../components/FormModel/formModel'
 import { SoftwareForm } from '../../components/softwareForm'
 import { useDispatch } from 'react-redux'
 import { setVisible } from '../../stores/app.store'
-import {} from 'react'
 import { createSoftware, getSoftwares } from '../../request/software'
+import moment from 'moment'
 type dataType = {
   id: number
   name: string
@@ -21,11 +21,11 @@ export const SoftwarePage: FC = () => {
   const handleOpenModal = () => {
     dispatch(setVisible(true))
   }
-  const [data, setData] = useState()
+  const [softwareList, setSoftwareList] = useState()
 
   const initSoftwareList = useCallback(async () => {
     const { data } = await getSoftwares()
-    setData(data)
+    setSoftwareList(data)
   }, [])
 
   useEffect(() => {
@@ -37,57 +37,31 @@ export const SoftwarePage: FC = () => {
       title: '#',
       dataIndex: 'id',
       key: 'id',
-      width: 80,
-      align: 'center',
-      sorter: {
-        compare: (a, b) => a.id - b.id
-      }
+      width: 80
     },
     {
       title: '项目名称',
       dataIndex: 'name',
       key: 'name',
-      render: (record: number) => (
-        <Space size={10}>
-          <Avatar size={30} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"></Avatar>
-          {record}
-        </Space>
-      )
-    },
-    {
-      title: 'return_url',
-      dataIndex: 'return_url',
-      key: 'return_url',
-      align: 'center'
-    },
-    {
-      title: 'callback_url',
-      dataIndex: 'callback_url',
-      key: 'callback_url',
-      align: 'center'
+      render: (record: number) => <Space size={10}>{record}</Space>
     },
     {
       title: '创建于',
       dataIndex: 'create_at',
       key: 'create_at',
       align: 'center',
-      width: 140
+      render: (value: string) => <span>{moment(value).format('YYYY-MM-DD HH:mm:DD')}</span>
     },
     {
       title: '操作',
       key: 'action',
       align: 'center',
-      width: 100,
-      render: () => (
-        <div className="table_action">
-          <EllipsisOutlined />
-        </div>
-      )
+      render: () => <Space>删除</Space>
     }
   ]
 
-  const create = async form => {
-    const res = await createSoftware(form)
+  const create = async value => {
+    const res = await createSoftware(value)
     if (res.status == 201) {
       message.success('创建成功！')
       dispatch(setVisible(false))
@@ -123,7 +97,7 @@ export const SoftwarePage: FC = () => {
           </Button>
         </div>
       </div>
-      <CardTable columns={columns} data={data} title="" />
+      <CardTable columns={columns} data={softwareList} title="" />
     </div>
   )
 }

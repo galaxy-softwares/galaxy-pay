@@ -207,3 +207,36 @@ export const payappCustomerAlipayCertificateForm: CustomerFormColumns = [
     }
   }
 ]
+
+export const payappParamsForm: CustomerFormColumns = [
+  {
+    label: '应用名称',
+    valueType: 'Input',
+    placeholder: '请输入应用名称',
+    col: 24,
+    customformItemPros: {
+      name: 'name',
+      prefixCls: ''
+    }
+  },
+  {
+    label: '支付通道',
+    valueType: 'Select',
+    editDisable: true,
+    placeholder: '请选择归属项目',
+    col: 24,
+    options: [
+      {
+        value: 'wechat',
+        text: '微信支付'
+      },
+      {
+        value: 'alipay',
+        text: '支付宝'
+      }
+    ],
+    customformItemPros: {
+      name: 'channel'
+    }
+  }
+]

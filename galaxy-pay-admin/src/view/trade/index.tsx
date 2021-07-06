@@ -5,14 +5,19 @@ import { WechatOutlined, AlipayCircleOutlined } from '@ant-design/icons'
 import { CardTable } from '../../components/CardTable/cardTable'
 import { getTradeList } from '../../request/trade'
 import moment from 'moment'
+import { FormPopoverContent } from '../../components/FormPopover/formPopover'
+import { tradeParamsForm } from '../refund/refundPage'
 
 export const TradePage: FC = () => {
   const [taradeList, setTradeList] = useState([])
-  const [tradeParams] = useState({})
+  const [tradeParams, setTradeParams] = useState({
+    sys_trade_no: '',
+    channel: ''
+  })
 
   const initTradeList = useCallback(async () => {
     const { data } = await getTradeList(tradeParams)
-    setTradeList(data.data)
+    setTradeList(data)
   }, [tradeParams])
 
   useEffect(() => {
@@ -32,9 +37,14 @@ export const TradePage: FC = () => {
     },
     {
       title: '项目名称',
-      dataIndex: 'payapp',
-      key: 'payapp',
-      render: (payapp: any) => <span>{payapp.name}</span>
+      dataIndex: 'pay_app_name',
+      key: 'pay_app_name',
+      render: (value: string, record: any) => (
+        <div>
+          {value}
+          <span className="small_desc">{record.software_name}</span>
+        </div>
+      )
     },
     {
       title: '支付金额',
@@ -78,7 +88,28 @@ export const TradePage: FC = () => {
 
   return (
     <div>
-      <CardTable columns={columns} data={taradeList} title="支付账单" />
+      <div className="page__title_warp">
+        <div className="title">支付账单</div>
+        <div className="create"></div>
+      </div>
+      <CardTable
+        filter={true}
+        formContent={
+          <FormPopoverContent
+            columns={tradeParamsForm}
+            callback={value => {
+              console.log(value, 'value')
+              setTradeParams({
+                sys_trade_no: value.sys_trade_no ? value.sys_trade_no : '',
+                channel: value.channel ? value.channel : ''
+              })
+            }}
+          />
+        }
+        columns={columns}
+        data={taradeList}
+        title=""
+      />
     </div>
   )
 }

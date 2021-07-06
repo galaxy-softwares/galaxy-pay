@@ -6,4 +6,4 @@ export const getPayapp = (id: number) => request('get', `/payapp/${id}`)
 
 export const updatePayapp = data => request('put', '/payapp', data)
 
-export const getPayapps = () => request('get', '/payapp')
+export const getPayapps = params => request('get', '/payapp', params)

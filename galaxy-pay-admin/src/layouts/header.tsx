@@ -8,7 +8,8 @@ const breadcrumbNameMap = {
   softwares: '项目管理',
   payapps: '支付应用',
   trades: '支付账单',
-  modify: '支付应用操作'
+  modify: '支付应用操作',
+  refunds: '退款账单'
 }
 const Headers: FC = () => {
   const { menuBreadcrumb } = useAppState(state => state.appsotre)
