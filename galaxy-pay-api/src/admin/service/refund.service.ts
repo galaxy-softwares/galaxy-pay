@@ -52,7 +52,7 @@ export class RefundService extends BaseService<Refund> {
         return refund
       }
       refund.sys_transaction_no = sys_transaction_no
-      refund.status = TradeStatus.UnPaid
+      refund.status = TradeStatus.Success
       return await this.repository.save(refund)
     } else {
       throw new HttpException(`未查询到退款账单!`, HttpStatus.BAD_REQUEST)

@@ -4,7 +4,8 @@ import { PayGuard } from 'src/common/guard/pay.guard'
 import { AliPayDto, AlipayQuery } from 'src/admin/dtos/pay.dto'
 import { AliPayRefundDto } from 'src/admin/dtos/refund.dto'
 import { ApiTradeSerivce } from '../service/api.trade.service'
-import { TradeChannel } from 'src/common/enum/trade.enum'
+import { Refund } from 'src/admin/entities/refund.entity'
+
 import {
   AliAppPayService,
   AliPagePayService,
@@ -17,7 +18,6 @@ import {
   AliTradePayService,
   AliWapPayService
 } from 'galaxy-pay-config'
-import { Refund } from 'src/admin/entities/refund.entity'
 
 @Controller('alipay')
 @UseGuards(PayGuard)
@@ -101,7 +101,6 @@ export class AlipayController {
     @Body() body: AlipayQuery,
     @PayConfig() alipay_config: AlipayConfig
   ): Promise<AlipayTradeQueryRefundRes> {
-    // await this.apiTradeService.createrTrade(body, alipay_config)
     return await this.aliTradePayService.fastpayRefundQuery(
       {
         out_trade_no: body.out_trade_no,
@@ -162,7 +161,7 @@ export class AlipayController {
     const refund_result = await this.aliTradePayService.refund(
       {
         out_trade_no: trade.sys_trade_no,
-        out_request_no: trade.sys_transaction_no + '123123',
+        out_request_no: trade.sys_transaction_no,
         refund_amount: body.money,
         refund_reason: body.body
       } as any,

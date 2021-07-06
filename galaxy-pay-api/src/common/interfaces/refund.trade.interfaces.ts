@@ -11,6 +11,6 @@ export interface CreateRefund {
   notify_url: string
   refund_amount: string
   total_amount: string
-  refund_channel: TradeChannel
+  channel: TradeChannel
   status: TradeStatus
 }

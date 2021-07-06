@@ -58,7 +58,7 @@ export class Refund extends Base {
     type: 'enum',
     enum: TradeChannel
   })
-  refund_channel: TradeChannel
+  channel: TradeChannel
 
   @Column({
     comment: '退款状态',

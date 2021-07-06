@@ -52,11 +52,11 @@ export class ApiTradeSerivce {
     body: WechatRefundPayDto | AliPayRefundDto,
     pay_config: WechatConfig | AlipayConfig
   ): Promise<Trade> {
+    // 先去查询是否有这个订单
     const trade = await this.tradeService.findOneByWhere({
-      sys_trade_no: body.sys_trade_no,
-      trade_status: TradeStatus.Success
+      sys_trade_no: body.sys_trade_no
     })
-    if (trade) {
+    if (trade.trade_status == TradeStatus.Success) {
       await this.refundService.createRefund({
         pay_app_id: body.pay_app_id,
         sys_refund_no: trade.sys_trade_no,
@@ -66,11 +66,11 @@ export class ApiTradeSerivce {
         notify_url: pay_config.notify_url,
         refund_amount: body.money,
         total_amount: trade.trade_amount,
-        refund_channel: trade.trade_channel,
+        channel: trade.trade_channel,
         status: TradeStatus.UnPaid
       })
     } else {
-      throw new HttpException('未查询到能够退款得订单，请仔细检查退款订单号！', HttpStatus.BAD_REQUEST)
+      throw new HttpException('未查询到能够退款得订单，请仔细检查订单号！', HttpStatus.BAD_REQUEST)
     }
     return trade
   }

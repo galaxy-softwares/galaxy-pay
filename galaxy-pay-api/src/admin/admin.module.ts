@@ -11,6 +11,7 @@ import { PayappService } from './service/payapp.service'
 import { PayModule } from 'galaxy-pay-config'
 import { RefundService } from './service/refund.service'
 import { Refund } from './entities/refund.entity'
+import { RefundController } from './controller/refund.controller'
 
 @Module({
   imports: [
@@ -24,7 +25,14 @@ import { Refund } from './entities/refund.entity'
     PassportModule.register({ defaultStrategy: 'jwt' }),
     PayModule
   ],
-  controllers: [AuthController, SoftwareController, PayappController, TradeController, FileController],
+  controllers: [
+    AuthController,
+    SoftwareController,
+    PayappController,
+    TradeController,
+    RefundController,
+    FileController
+  ],
   providers: [
     AuthService,
     SoftwareService,

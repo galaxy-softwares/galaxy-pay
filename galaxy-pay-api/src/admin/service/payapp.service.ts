@@ -3,7 +3,7 @@ import { BaseService } from './base.service'
 import { InjectRepository } from '@nestjs/typeorm'
 import { createQueryBuilder, Repository } from 'typeorm'
 import { Payapp, Software } from '../entities'
-import { randomString } from 'src/common/utils/indedx'
+import { joinPath, randomString } from 'src/common/utils/indedx'
 import { PayappDto } from '../dtos/payapp.dto'
 import { TradeChannel } from 'src/common/enum/trade.enum'
 import { PayappData, PayappEntity } from 'src/common/interfaces'
@@ -43,7 +43,7 @@ export class PayappService extends BaseService<Payapp> {
         mch_id: payappData.mch_id,
         mch_key: payappData.mch_key,
         app_secret: payappData.app_secret,
-        apiclient_cert: payappData.apiclient_cert
+        apiclient_cert: joinPath(payappData.apiclient_cert)
       }
     } else {
       payapp.config = {

@@ -20,7 +20,6 @@ import {
   WeChatTradeType,
   WeChatWapPayService
 } from 'galaxy-pay-config'
-import { TradeChannel } from 'src/common/enum/trade.enum'
 import { Refund } from 'src/admin/entities/refund.entity'
 
 @Controller('wechat')
