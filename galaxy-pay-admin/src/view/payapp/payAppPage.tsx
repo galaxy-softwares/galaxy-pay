@@ -8,26 +8,17 @@ import { getPayapps } from '../../request/payapp'
 import { useCopyToClipboard } from 'react-use'
 import { payappParamsForm } from './payAppCustomerForm'
 import { FormPopoverContent } from '../../components/FormPopover/formPopover'
-
-type dataType = {
-  id: number
-  name: string
-  amount: number
-  order: number
-  paid: number
-  software: string
-  create_at: string
-}
+import { BaseIF } from '../../interface/base.interface'
+import { PayappIF } from '../../interface/payapp.interface'
 
 export const PayAppPage: FC = () => {
-  const [payAppList, setPayAppList] = useState()
+  const [payAppList, setPayAppList] = useState<PayappIF.PayappList>([])
   const history = useHistory()
-  const [payappParams, setPayappParams] = useState({ name: '', channel: '' })
+  const [payappParams, setPayappParams] = useState<PayappIF.PayappParams>({ name: '', channel: '' })
   const [, copyPayAppId] = useCopyToClipboard()
 
   const initPayappData = useCallback(async () => {
     const { data } = await getPayapps(payappParams)
-    console.log(data)
     setPayAppList(data)
   }, [payappParams])
 
@@ -40,7 +31,7 @@ export const PayAppPage: FC = () => {
     message.success(`已复制 ${name} 到剪切板`)
   }
 
-  const columns: ColumnsType<dataType> = [
+  const columns: ColumnsType<Required<PayappIF.Payapp>> = [
     {
       title: '#',
       dataIndex: 'id',
@@ -56,7 +47,7 @@ export const PayAppPage: FC = () => {
       dataIndex: 'name',
       key: 'name',
       width: 200,
-      render: (value: number, record: any) => (
+      render: (value: number, record: PayappIF.Payapp) => (
         <div>
           {value}
           <span className="small_desc">{record.software_name}</span>
@@ -94,7 +85,9 @@ export const PayAppPage: FC = () => {
       width: 120,
       align: 'center',
       render: (value: string) => (
-        <Tag color={value === 'wechat' ? '#87d068' : '#2db7f5'}>{value === 'wechat' ? '微信' : '支付宝'}</Tag>
+        <Tag color={value === BaseIF.Channel.wechat ? '#87d068' : '#2db7f5'}>
+          {value === BaseIF.Channel.wechat ? '微信' : '支付宝'}
+        </Tag>
       )
     },
     {

@@ -15,6 +15,8 @@ import { UploadFile } from '../../components/uploadFile'
 import { useEffectOnce } from 'react-use'
 import { ComponentCustomFormIF } from '../../interface/components.interface'
 import { CustomForm } from '../../components/CustomFrom/customForm'
+import { BaseIF } from '../../interface/base.interface'
+import { PayappIF } from '../../interface/payapp.interface'
 
 const { Step } = Steps
 const { Option } = Select
@@ -22,15 +24,10 @@ const PayAppPageModifyPage: FC = () => {
   const [form] = useForm()
   const [formData, setFormData] = useState({})
   const history = useHistory()
-  const [payAppConfigure, setPayAppConfigure] = useState<{
-    current: number
-    channel: string
-    certificate: number
-    isEdit: boolean
-  }>({
+  const [payAppConfigure, setPayAppConfigure] = useState<PayappIF.PayappConfigure>({
     current: 0,
     channel: '',
-    certificate: 0,
+    certificate: '',
     isEdit: false
   })
 
@@ -91,7 +88,7 @@ const PayAppPageModifyPage: FC = () => {
   }
 
   // 支付宝证书模式选择
-  const certificateChange = (value: number) => {
+  const certificateChange = (value: string) => {
     setPayAppConfigure({
       ...payAppConfigure,
       certificate: value
@@ -99,7 +96,6 @@ const PayAppPageModifyPage: FC = () => {
   }
   // 上传支付宝/微信证书
   const onUploadDone = ({ name, path }) => {
-    console.log(name, path)
     form.setFieldsValue({
       [name]: path
     })
@@ -142,7 +138,7 @@ const PayAppPageModifyPage: FC = () => {
   // 支付宝证书模式渲染
   const alipayCertificateRender = (): JSX.Element => {
     const { current, isEdit, channel } = payAppConfigure
-    if (current == 1 && channel == 'alipay') {
+    if (current == 1 && channel == BaseIF.Channel.alipay) {
       return (
         <Form.Item
           name="certificate"
@@ -161,10 +157,10 @@ const PayAppPageModifyPage: FC = () => {
   // 支付宝渲染
   const alipayFormRender = () => {
     const { channel, current, certificate, isEdit } = payAppConfigure
-    if (channel == 'alipay' && current == 1) {
-      if (certificate == 10) {
+    if (current == 1 && channel == BaseIF.Channel.alipay) {
+      if (certificate == '10') {
         return certificate10()
-      } else if (certificate == 20) {
+      } else if (certificate == '20') {
         return certificate20()
       }
     }

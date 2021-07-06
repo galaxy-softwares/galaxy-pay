@@ -7,10 +7,11 @@ import { getTradeList } from '../../request/trade'
 import moment from 'moment'
 import { FormPopoverContent } from '../../components/FormPopover/formPopover'
 import { tradeParamsForm } from '../refund/refundPage'
+import { TradeIF } from '../../interface/trade.interface'
 
 export const TradePage: FC = () => {
-  const [taradeList, setTradeList] = useState([])
-  const [tradeParams, setTradeParams] = useState({
+  const [taradeList, setTradeList] = useState<TradeIF.TradeList>([])
+  const [tradeParams, setTradeParams] = useState<TradeIF.TradeParams>({
     sys_trade_no: '',
     channel: ''
   })

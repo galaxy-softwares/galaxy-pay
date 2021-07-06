@@ -1,9 +1,10 @@
+import { PayappIF } from '../interface/payapp.interface'
 import { request } from '../utils/request'
 
-export const createPayapp = data => request('post', '/payapp', data)
+export const createPayapp = (data: PayappIF.Payapp) => request('post', '/payapp', data)
 
-export const getPayapp = (id: number) => request('get', `/payapp/${id}`)
+export const getPayapp = (id: number) => request<Required<PayappIF.Payapp>>('get', `/payapp/${id}`)
 
-export const updatePayapp = data => request('put', '/payapp', data)
+export const updatePayapp = (data: Required<PayappIF.Payapp>) => request('put', '/payapp', data)
 
-export const getPayapps = params => request('get', '/payapp', params)
+export const getPayapps = (params: PayappIF.PayappParams) => request<PayappIF.PayappList>('get', '/payapp', params)
