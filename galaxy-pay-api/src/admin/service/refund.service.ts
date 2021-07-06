@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { TradeStatus } from 'src/common/enum/trade.enum'
 import { CreateRefund } from 'src/common/interfaces'
 import { Repository } from 'typeorm'
-import { Payapp } from '../entities'
+import { FindTradeParamDto } from '../dtos/base.dto'
 import { Refund } from '../entities/refund.entity'
 import { BaseService } from './base.service'
 
@@ -16,17 +16,21 @@ export class RefundService extends BaseService<Refund> {
     super(refundRepository)
   }
 
-  async find(): Promise<any> {
+  async find(query: FindTradeParamDto): Promise<any> {
     try {
-      const data = await this.refundRepository
-        .createQueryBuilder('trade')
-        .leftJoinAndMapOne('trade.payapp', Payapp, 'payapp', 'trade.pay_app_id = payapp.pay_app_id')
-        .orderBy('trade.id', 'ASC')
-        .getManyAndCount()
-      return {
-        data: data[0],
-        count: data[1]
+      let whereAndSql = ''
+      if (query.sys_trade_no) {
+        whereAndSql += `and refund.sys_refund_no = '${query.sys_trade_no}'`
       }
+      if (query.channel) {
+        whereAndSql += `and refund.channel = '${query.channel}'`
+      }
+      return this.refundRepository.query(
+        `select refund.id,  refund.channel, app.name as pay_app_name, refund.refund_amount, refund.sys_refund_no, refund.sys_transaction_no, refund.status,  software.name as software_name from refund refund ` +
+          ` left join payapp app on refund.pay_app_id = app.pay_app_id ` +
+          ` left join software software on app.software_id = software.id ` +
+          ` where 1=1 ${whereAndSql}`
+      )
     } catch (e) {
       throw new HttpException(`退款账单获取失败！${e}`, HttpStatus.BAD_REQUEST)
     }

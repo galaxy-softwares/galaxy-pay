@@ -1,9 +1,10 @@
-import { Controller, Get, UsePipes, UseGuards, Post, Body, Param, Put } from '@nestjs/common'
+import { Controller, Get, UsePipes, UseGuards, Post, Body, Param, Put, Query } from '@nestjs/common'
 import { JwtAuthGuard } from '../service'
 import { ValidationPipe } from 'src/common/pipe/validation.pipe'
 import { PayappService } from '../service/payapp.service'
 import { Payapp } from '../entities'
 import { PayappDto } from '../dtos/payapp.dto'
+import { FindPayappParamDto } from '../dtos/base.dto'
 
 @Controller('payapp')
 @UsePipes(new ValidationPipe())
@@ -12,8 +13,8 @@ export class PayappController {
   constructor(private readonly payappService: PayappService) {}
 
   @Get()
-  get() {
-    return this.payappService.findPayapp()
+  get(@Query() query: FindPayappParamDto) {
+    return this.payappService.findPayapp(query)
   }
 
   @Get(':id')

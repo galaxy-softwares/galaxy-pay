@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { TradeChannel, TradeStatus } from 'src/common/enum/trade.enum'
 import { CreateTrade } from 'src/common/interfaces/trade.interfaces'
-import { Payapp } from '../entities'
+import { FindTradeParamDto } from '../dtos/base.dto'
 
 @Injectable()
 export class TradeService extends BaseService<Trade> {
@@ -19,18 +19,22 @@ export class TradeService extends BaseService<Trade> {
   /**
    * 查询账单
    */
-  async find(): Promise<any> {
+  async find(query: FindTradeParamDto): Promise<any> {
     try {
-      const data = await this.tradeRepository
-        .createQueryBuilder('trade')
-        .leftJoinAndMapOne('trade.payapp', Payapp, 'payapp', 'trade.pay_app_id = payapp.pay_app_id')
-        .orderBy('trade.id', 'ASC')
-        .getManyAndCount()
-
-      return {
-        data: data[0],
-        count: data[1]
+      let whereAndSql = ''
+      if (query.sys_trade_no) {
+        whereAndSql += `and trade.sys_refund_no = '${query.sys_trade_no}'`
       }
+      if (query.channel) {
+        whereAndSql += `and trade.trade_channel = '${query.channel}'`
+      }
+
+      return this.tradeRepository.query(
+        `select trade.sys_trade_no, trade.sys_transaction_no, trade.trade_status, trade_amount, trade.trade_channel, app.name as pay_app_name, software.name as software_name from trade trade ` +
+          `left join payapp app on trade.pay_app_id = app.pay_app_id ` +
+          `left join software software on app.software_id = software.id ` +
+          `where 1=1 ${whereAndSql}`
+      )
     } catch (e) {
       throw new HttpException(`支付账单获取失败！${e}`, HttpStatus.BAD_REQUEST)
     }

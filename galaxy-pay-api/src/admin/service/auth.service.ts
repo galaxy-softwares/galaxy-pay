@@ -2,7 +2,8 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { UserService } from './user.service'
 import { JwtService } from '@nestjs/jwt'
 import * as crypto from 'crypto-js'
-import { LoginBody } from '../dtos/auth.dto'
+import { LoginBody } from '../dtos/base.dto'
+
 // export function Test() {
 //   return (target, _, descriptor: PropertyDescriptor) => {
 //     const method = descriptor.value

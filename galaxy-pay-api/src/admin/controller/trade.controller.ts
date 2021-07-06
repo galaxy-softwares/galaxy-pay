@@ -1,4 +1,6 @@
-import { Controller, ValidationPipe, UseGuards, UsePipes, Get } from '@nestjs/common'
+import { Controller, ValidationPipe, UseGuards, UsePipes, Get, Query } from '@nestjs/common'
+import { FindTradeParamDto } from '../dtos/base.dto'
+
 import { TradeService, JwtAuthGuard } from '../service'
 
 @Controller('trade')
@@ -8,7 +10,7 @@ export class TradeController {
   constructor(private readonly tradeService: TradeService) {}
 
   @Get()
-  async find() {
-    return this.tradeService.find()
+  async find(@Query() query: FindTradeParamDto) {
+    return this.tradeService.find(query)
   }
 }

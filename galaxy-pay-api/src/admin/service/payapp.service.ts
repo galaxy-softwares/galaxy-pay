@@ -75,10 +75,16 @@ export class PayappService extends BaseService<Payapp> {
     return await this.payappRepository.save(payapp)
   }
 
-  async findPayapp() {
-    const user = await createQueryBuilder(Payapp, 'payapp')
-      .leftJoinAndMapOne('payapp.software', Software, 'software', 'software.id = payapp.software_id')
-      .getMany()
-    return user
+  async findPayapp(query: { name: string; channel: TradeChannel }) {
+    let whereAndSql = ''
+    if (query.name) {
+      whereAndSql += `and app.name = '${query.name}'`
+    }
+    if (query.channel) {
+      whereAndSql += `and app.channel = '${query.channel}'`
+    }
+    return this.payappRepository.query(
+      `select app.id, app.name, app.pay_app_id, app.pay_secret_key, app.channel, software.name as software_name from payapp app left join software software on app.software_id = software.id where 1=1 ${whereAndSql}`
+    )
   }
 }

@@ -1,4 +1,5 @@
-import { Controller, ValidationPipe, UseGuards, UsePipes, Get } from '@nestjs/common'
+import { Controller, ValidationPipe, UseGuards, UsePipes, Get, Query } from '@nestjs/common'
+import { FindTradeParamDto } from '../dtos/base.dto'
 import { JwtAuthGuard } from '../service'
 import { RefundService } from '../service/refund.service'
 
@@ -9,7 +10,7 @@ export class RefundController {
   constructor(private readonly refundService: RefundService) {}
 
   @Get()
-  async find() {
-    return this.refundService.find()
+  async find(@Query() query: FindTradeParamDto) {
+    return this.refundService.find(query)
   }
 }

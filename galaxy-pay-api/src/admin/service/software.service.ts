@@ -3,7 +3,7 @@ import { BaseService } from './base.service'
 import { Software } from 'src/admin/entities/software.entity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { SoftwareDto } from '../dtos/software.dto'
+import { SoftwareDto } from '../dtos/base.dto'
 
 @Injectable()
 export class SoftwareService extends BaseService<Software> {

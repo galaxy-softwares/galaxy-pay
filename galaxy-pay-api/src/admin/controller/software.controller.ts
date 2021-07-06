@@ -1,7 +1,7 @@
-import { Controller, Get, UsePipes, UseGuards, Post, Body, Request } from '@nestjs/common'
+import { Controller, Get, UsePipes, UseGuards, Post, Body } from '@nestjs/common'
 import { SoftwareService, JwtAuthGuard } from '../service'
 import { ValidationPipe } from 'src/common/pipe/validation.pipe'
-import { SoftwareDto } from '../dtos/software.dto'
+import { SoftwareDto } from '../dtos/base.dto'
 
 @Controller('software')
 @UsePipes(new ValidationPipe())
@@ -15,7 +15,7 @@ export class SoftwareController {
   }
 
   @Post()
-  async create(@Request() request, @Body() data: SoftwareDto): Promise<any> {
+  async create(@Body() data: SoftwareDto): Promise<any> {
     return await this.softwareService.createSoftware(data)
   }
 }
