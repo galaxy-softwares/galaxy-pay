@@ -1,11 +1,14 @@
 import { Button, Form } from 'antd'
 import React, { FC } from 'react'
-import { CustomerFormColumns, CustomForm } from '../CustomFrom/customForm'
+import { ComponentCustomFormIF } from '../../interface/components.interface'
+import { CustomForm } from '../CustomFrom/customForm'
 
-export const FormPopoverContent: FC<{
-  columns: CustomerFormColumns
+interface FormPopoverContentProps {
+  columns: ComponentCustomFormIF.CustomerFormColumns
   callback: (values) => void
-}> = ({ columns, callback }) => {
+}
+
+export const FormPopoverContent: FC<FormPopoverContentProps> = ({ columns, callback }) => {
   const [form] = Form.useForm()
 
   const onSubmit = () => {

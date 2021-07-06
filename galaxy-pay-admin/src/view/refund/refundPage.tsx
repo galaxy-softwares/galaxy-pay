@@ -5,7 +5,7 @@ import { ColumnsType } from 'antd/lib/table'
 import { getRefundList } from '../../request/refund'
 import moment from 'moment'
 import { FormPopoverContent } from '../../components/FormPopover/formPopover'
-import { CustomerFormColumns } from '../../components/CustomFrom/customForm'
+import { ComponentCustomFormIF } from '../../interface/components.interface'
 
 type dataType = {
   id: number
@@ -17,7 +17,7 @@ type dataType = {
   create_at: string
 }
 
-export const tradeParamsForm: CustomerFormColumns = [
+export const tradeParamsForm: ComponentCustomFormIF.CustomerFormColumns = [
   {
     label: '账单号',
     valueType: 'Input',

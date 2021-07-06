@@ -1,31 +1,10 @@
 import { Row } from 'antd'
-import { FormItemProps } from 'antd/lib/form'
+
 import React, { FC } from 'react'
+import { ComponentCustomFormIF } from '../../interface/components.interface'
 import { CustomFormItemRender } from './customFormItem'
-export interface CustomFormItem {
-  label: string
-  valueType: string
-  col: number
-  placeholder: string
-  editDisable?: boolean
-  onChange?: (...value: any) => void
-  options?: Array<CustomSelectOption>
-  customformItemPros: FormItemProps
-}
 
-export interface CustomSelectOption {
-  value: string | number
-  text: string
-}
-
-export type CustomerFormColumns = ReadonlyArray<CustomFormItem>
-
-interface CustomFormProps {
-  columns: CustomerFormColumns
-  isEdit?: boolean
-}
-
-export const CustomForm: FC<CustomFormProps> = ({ columns, isEdit, children }) => {
+export const CustomForm: FC<ComponentCustomFormIF.CustomFormProps> = ({ columns, isEdit, children }) => {
   return (
     <>
       <Row gutter={[16, 0]}>

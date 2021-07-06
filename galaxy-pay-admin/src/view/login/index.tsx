@@ -4,12 +4,12 @@ import { useHistory } from 'react-router-dom'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import './index.less'
 import { login } from '../../request/user'
-import { LoginParams } from '../../interface/user/login'
+import { UserIF } from '../../interface/user.interface'
 
 const Login: FC = () => {
   const history = useHistory()
 
-  const handleUserLogin = async (form: LoginParams) => {
+  const handleUserLogin = async (form: UserIF.LoginParams) => {
     const { data, status } = await login(form)
     if (status) {
       localStorage.setItem('token', data.token)

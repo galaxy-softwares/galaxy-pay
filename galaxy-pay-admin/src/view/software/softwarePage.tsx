@@ -9,11 +9,7 @@ import { useDispatch } from 'react-redux'
 import { setVisible } from '../../stores/app.store'
 import { createSoftware, getSoftwares } from '../../request/software'
 import moment from 'moment'
-type dataType = {
-  id: number
-  name: string
-  create_at: string
-}
+import { SoftwareIF } from '../../interface/software.interface'
 
 export const SoftwarePage: FC = () => {
   const [form] = Form.useForm()
@@ -21,7 +17,7 @@ export const SoftwarePage: FC = () => {
   const handleOpenModal = () => {
     dispatch(setVisible(true))
   }
-  const [softwareList, setSoftwareList] = useState()
+  const [softwareList, setSoftwareList] = useState<SoftwareIF.SoftwareList>([])
 
   const initSoftwareList = useCallback(async () => {
     const { data } = await getSoftwares()
@@ -32,7 +28,7 @@ export const SoftwarePage: FC = () => {
     initSoftwareList()
   }, [initSoftwareList])
 
-  const columns: ColumnsType<dataType> = [
+  const columns: ColumnsType<SoftwareIF.Software> = [
     {
       title: '#',
       dataIndex: 'id',
@@ -43,7 +39,7 @@ export const SoftwarePage: FC = () => {
       title: '项目名称',
       dataIndex: 'name',
       key: 'name',
-      render: (record: number) => <Space size={10}>{record}</Space>
+      render: (value: number) => <Space size={10}>{value}</Space>
     },
     {
       title: '创建于',
@@ -60,7 +56,7 @@ export const SoftwarePage: FC = () => {
     }
   ]
 
-  const create = async value => {
+  const create = async (value: SoftwareIF.Software) => {
     const res = await createSoftware(value)
     if (res.status == 201) {
       message.success('创建成功！')
@@ -78,7 +74,7 @@ export const SoftwarePage: FC = () => {
         onCreate={() => {
           form
             .validateFields()
-            .then((values: any) => {
+            .then((values: SoftwareIF.Software) => {
               create(values)
               form.resetFields()
             })

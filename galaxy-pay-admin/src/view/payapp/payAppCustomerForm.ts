@@ -1,8 +1,8 @@
-import { CustomerFormColumns } from '../../components/CustomFrom/customForm'
+import { ComponentCustomFormIF } from '../../interface/components.interface'
 import { getSoftwares } from '../../request/software'
 
 // 初始化自定义表单数据
-export const initPayappCustomerBasicForm = async (): Promise<CustomerFormColumns> => {
+export const initPayappCustomerBasicForm = async (): Promise<ComponentCustomFormIF.CustomerFormColumns> => {
   const { data } = await getSoftwares()
   payappCustomerBasicForm[1].options = data.map(({ id, name }) => {
     return { value: id, text: name }
@@ -10,7 +10,7 @@ export const initPayappCustomerBasicForm = async (): Promise<CustomerFormColumns
   return payappCustomerBasicForm
 }
 
-export const payappCustomerBasicForm: CustomerFormColumns = [
+export const payappCustomerBasicForm: ComponentCustomFormIF.CustomerFormColumns = [
   {
     label: '应用名称',
     valueType: 'Input',
@@ -100,7 +100,7 @@ export const payappCustomerBasicForm: CustomerFormColumns = [
   }
 ]
 
-export const payappCustomerWechatForm: CustomerFormColumns = [
+export const payappCustomerWechatForm: ComponentCustomFormIF.CustomerFormColumns = [
   {
     label: 'appid',
     valueType: 'Input',
@@ -148,7 +148,7 @@ export const payappCustomerWechatForm: CustomerFormColumns = [
 ]
 
 // 支付宝公钥
-export const payappCustomerAlipayForm: CustomerFormColumns = [
+export const payappCustomerAlipayForm: ComponentCustomFormIF.CustomerFormColumns = [
   {
     label: 'appid',
     valueType: 'Input',
@@ -183,7 +183,7 @@ export const payappCustomerAlipayForm: CustomerFormColumns = [
 ]
 
 // 支付宝公钥证书
-export const payappCustomerAlipayCertificateForm: CustomerFormColumns = [
+export const payappCustomerAlipayCertificateForm: ComponentCustomFormIF.CustomerFormColumns = [
   {
     label: 'appid',
     valueType: 'Input',
@@ -208,7 +208,7 @@ export const payappCustomerAlipayCertificateForm: CustomerFormColumns = [
   }
 ]
 
-export const payappParamsForm: CustomerFormColumns = [
+export const payappParamsForm: ComponentCustomFormIF.CustomerFormColumns = [
   {
     label: '应用名称',
     valueType: 'Input',

@@ -3,7 +3,7 @@ import { Card, Steps, Form, Input, Button, message, Space, Select, Col } from 'a
 import { useForm } from 'antd/es/form/Form'
 import { createPayapp, getPayapp, updatePayapp } from '../../request/payapp'
 import { useHistory, useParams } from 'react-router-dom'
-import { CustomerFormColumns, CustomForm } from '../../components/CustomFrom/customForm'
+
 import { CloudUploadOutlined } from '@ant-design/icons'
 import {
   initPayappCustomerBasicForm,
@@ -13,6 +13,8 @@ import {
 } from './payAppCustomerForm'
 import { UploadFile } from '../../components/uploadFile'
 import { useEffectOnce } from 'react-use'
+import { ComponentCustomFormIF } from '../../interface/components.interface'
+import { CustomForm } from '../../components/CustomFrom/customForm'
 
 const { Step } = Steps
 const { Option } = Select
@@ -32,7 +34,7 @@ const PayAppPageModifyPage: FC = () => {
     isEdit: false
   })
 
-  const [payappCustomerForm, setPayappCustomerForm] = useState<CustomerFormColumns>([])
+  const [payappCustomerForm, setPayappCustomerForm] = useState<ComponentCustomFormIF.CustomerFormColumns>([])
   const params = useParams<{ id: string }>()
 
   useEffectOnce(() => {

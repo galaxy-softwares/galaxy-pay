@@ -1,17 +1,18 @@
 import React, { FC } from 'react'
 import { Col, Form, Input, Select } from 'antd'
-import { CustomFormItem, CustomSelectOption } from './customForm'
+import { ComponentCustomFormIF } from '../../interface/components.interface'
 const { Option } = Select
 
 interface FormItemProps {
-  customFormItem: CustomFormItem
+  customFormItem: ComponentCustomFormIF.CustomFormItem
   isEdit?: boolean
 }
+
 export const CustomFormItemRender: FC<FormItemProps> = ({ customFormItem, isEdit }) => {
   const { label } = customFormItem
   customFormItem.customformItemPros.label = label
 
-  function InputRender(customFormItem: CustomFormItem): JSX.Element {
+  function InputRender(customFormItem: ComponentCustomFormIF.CustomFormItem): JSX.Element {
     return (
       <Form.Item {...customFormItem.customformItemPros}>
         <Input
@@ -22,8 +23,8 @@ export const CustomFormItemRender: FC<FormItemProps> = ({ customFormItem, isEdit
     )
   }
 
-  function selectRender(customFormItem: CustomFormItem): JSX.Element {
-    const selectOptionRender = (options: Array<CustomSelectOption>) => {
+  function selectRender(customFormItem: ComponentCustomFormIF.CustomFormItem): JSX.Element {
+    const selectOptionRender = (options: Array<ComponentCustomFormIF.CustomSelectOption>) => {
       return (
         <>
           {options.map((item, key) => {
