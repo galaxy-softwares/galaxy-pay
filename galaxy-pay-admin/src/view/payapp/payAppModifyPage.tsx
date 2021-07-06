@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from 'react'
+import React, { FC, useState } from 'react'
 import { Card, Steps, Form, Input, Button, message, Space, Select, Col } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import { createPayapp, getPayapp, updatePayapp } from '../../request/payapp'
@@ -12,6 +12,7 @@ import {
   payappCustomerAlipayCertificateForm
 } from './payAppCustomerForm'
 import { UploadFile } from '../../components/uploadFile'
+import { useEffectOnce } from 'react-use'
 
 const { Step } = Steps
 const { Option } = Select
@@ -34,40 +35,35 @@ const PayAppPageModifyPage: FC = () => {
   const [payappCustomerForm, setPayappCustomerForm] = useState<CustomerFormColumns>([])
   const params = useParams<{ id: string }>()
 
-  const initCustomerFormData = useCallback(async () => {
-    const payappCustomerBasicForm = await initPayappCustomerBasicForm()
-    // 后期打算放到redux 中
-    const customerFormChannel = payappCustomerBasicForm.find(({ label }) => label === '支付通道')
-    customerFormChannel.onChange = (value: string) => {
-      setPayAppConfigure({
-        ...payAppConfigure,
-        channel: value
-      })
-    }
-    setPayappCustomerForm(payappCustomerBasicForm)
-  }, [payAppConfigure])
+  useEffectOnce(() => {
+    ;(async () => {
+      const payappCustomerBasicForm = await initPayappCustomerBasicForm()
+      // 后期打算放到redux 中
+      const customerFormChannel = payappCustomerBasicForm.find(({ label }) => label === '支付通道')
+      customerFormChannel.onChange = (value: string) => {
+        setPayAppConfigure({
+          ...payAppConfigure,
+          channel: value
+        })
+      }
+      setPayappCustomerForm(payappCustomerBasicForm)
+    })()
+  })
 
-  useEffect(() => {
-    initCustomerFormData()
-  }, [initCustomerFormData])
-
-  const initPayappData = useCallback(async () => {
-    if (params.id) {
-      const { data } = await getPayapp(+params.id)
-      setPayAppConfigure({
-        ...payAppConfigure,
-        isEdit: true,
-        certificate: data.certificate,
-        channel: data.channel
-      })
-      form.setFieldsValue({ ...data })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form, params.id])
-
-  useEffect(() => {
-    initPayappData()
-  }, [initPayappData])
+  useEffectOnce(() => {
+    ;(async () => {
+      if (params.id) {
+        const { data } = await getPayapp(+params.id)
+        setPayAppConfigure({
+          ...payAppConfigure,
+          isEdit: true,
+          certificate: data.certificate,
+          channel: data.channel
+        })
+        form.setFieldsValue({ ...data })
+      }
+    })()
+  })
 
   // step 切换
   const onStepChange = (type: string) => {

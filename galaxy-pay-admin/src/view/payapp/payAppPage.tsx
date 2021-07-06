@@ -1,10 +1,11 @@
 import React, { FC, useCallback, useEffect, useState } from 'react'
-import { Button, Space, Tag } from 'antd'
-import { PlusOutlined } from '@ant-design/icons'
+import { Button, message, Space, Tag } from 'antd'
+import { PlusOutlined, CopyOutlined } from '@ant-design/icons'
 import { ColumnsType } from 'antd/lib/table'
 import { CardTable } from '../../components/CardTable/cardTable'
 import { Link, useHistory } from 'react-router-dom'
 import { getPayapps } from '../../request/payapp'
+import { useCopyToClipboard } from 'react-use'
 
 type dataType = {
   id: number
@@ -19,6 +20,9 @@ type dataType = {
 export const PayAppPage: FC = () => {
   const [payAppList, setPayAppList] = useState()
   const history = useHistory()
+
+  const [payAppId, copyPayAppId] = useCopyToClipboard()
+
   const initPayappData = useCallback(async () => {
     const { data } = await getPayapps()
     setPayAppList(data)
@@ -27,6 +31,11 @@ export const PayAppPage: FC = () => {
   useEffect(() => {
     initPayappData()
   }, [initPayappData])
+
+  const copyString = (name: string, value: string) => {
+    copyPayAppId(value)
+    message.success(`已复制 ${name} 到剪切板`)
+  }
 
   const columns: ColumnsType<dataType> = [
     {
@@ -55,13 +64,25 @@ export const PayAppPage: FC = () => {
       title: 'pay_app_id',
       dataIndex: 'pay_app_id',
       key: 'pay_app_id',
-      width: 200
+      width: 200,
+      render: (value: string) => (
+        <span onClick={() => copyString('pay_app_id', value)}>
+          {value}
+          <CopyOutlined />
+        </span>
+      )
     },
     {
       title: '密钥',
       dataIndex: 'pay_secret_key',
       key: 'pay_secret_key',
-      width: 200
+      width: 200,
+      render: (value: string) => (
+        <span onClick={() => copyString('秘钥', value)}>
+          {value}
+          <CopyOutlined />
+        </span>
+      )
     },
     {
       title: '支付通道',

@@ -1,9 +1,9 @@
-import { Space, Tag } from 'antd'
-
-import React, { FC } from 'react'
-import { Link } from 'react-router-dom'
+import { Tag } from 'antd'
+import React, { FC, useCallback, useEffect, useState } from 'react'
 import { CardTable } from '../../components/CardTable/cardTable'
 import { ColumnsType } from 'antd/lib/table'
+import { getRefundList } from '../../request/refund'
+import moment from 'moment'
 
 type dataType = {
   id: number
@@ -16,75 +16,66 @@ type dataType = {
 }
 
 export const RefundPage: FC = () => {
+  const [refundList, setRefundList] = useState([])
+  const [refundParams] = useState({})
+
+  const initTradeList = useCallback(async () => {
+    const { data } = await getRefundList(refundParams)
+    setRefundList(data.data)
+  }, [refundParams])
+
+  useEffect(() => {
+    initTradeList()
+  }, [initTradeList])
+
   const columns: ColumnsType<dataType> = [
     {
-      title: '#',
-      dataIndex: 'id',
-      key: 'id',
-      width: 80,
+      title: '退款账单号',
+      dataIndex: 'sys_refund_no',
+      key: 'sys_refund_no'
+    },
+    {
+      title: '退款内部交易号',
+      dataIndex: 'sys_transaction_no',
+      key: 'sys_transaction_no'
+    },
+    {
+      title: '项目名称',
+      dataIndex: 'payapp',
+      key: 'payapp',
+      render: (payapp: any) => <span className="small_desc">{payapp.name}</span>
+    },
+    {
+      title: '退款状态',
+      dataIndex: 'status',
+      key: 'status',
       align: 'center',
-      sorter: {
-        compare: (a, b) => a.id - b.id
-      }
-    },
-    {
-      title: '应用名称',
-      dataIndex: 'name',
-      key: 'name',
-      width: 200,
-      render: (value: number, record: any) => (
-        <div>
-          {value}
-          <span className="small_desc">{record.software?.name}</span>
-        </div>
+      render: (value: string) => (
+        <Tag color={value === '1' ? '#87d068' : '#f50'}>{value === '1' ? '完成' : '未完成'}</Tag>
       )
-    },
-    {
-      title: 'pay_app_id',
-      dataIndex: 'pay_app_id',
-      key: 'pay_app_id',
-      width: 200
-    },
-    {
-      title: '密钥',
-      dataIndex: 'pay_secret_key',
-      key: 'pay_secret_key',
-      width: 200
     },
     {
       title: '支付通道',
       dataIndex: 'channel',
       key: 'channel',
-      width: 120,
       align: 'center',
       render: (value: string) => (
         <Tag color={value === 'wechat' ? '#87d068' : '#2db7f5'}>{value === 'wechat' ? '微信' : '支付宝'}</Tag>
       )
     },
     {
-      title: '创建于',
+      title: '创建时间',
       dataIndex: 'create_at',
       key: 'create_at',
-      align: 'center',
-      width: 200
-    },
-    {
-      title: '操作',
-      key: 'action',
-      align: 'center',
       width: 200,
-      render: (value, record) => (
-        <Space>
-          <Link to={`/payapps/modify/${record.id}`}>修改</Link>
-          <Link to="">删除</Link>
-        </Space>
-      )
+      align: 'center',
+      render: value => <span>{moment(value).format('YYYY-MM-DD HH:mm:DD')}</span>
     }
   ]
 
   return (
     <div>
-      <CardTable columns={columns} data={[]} title="" />
+      <CardTable columns={columns} data={refundList} title="" />
     </div>
   )
 }

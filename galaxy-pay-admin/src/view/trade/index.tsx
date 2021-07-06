@@ -4,14 +4,16 @@ import { Tag } from 'antd'
 import { WechatOutlined, AlipayCircleOutlined } from '@ant-design/icons'
 import { CardTable } from '../../components/CardTable/cardTable'
 import { getTradeList } from '../../request/trade'
+import moment from 'moment'
 
 export const TradePage: FC = () => {
   const [taradeList, setTradeList] = useState([])
+  const [tradeParams] = useState({})
 
   const initTradeList = useCallback(async () => {
-    const { data } = await getTradeList()
+    const { data } = await getTradeList(tradeParams)
     setTradeList(data.data)
-  }, [])
+  }, [tradeParams])
 
   useEffect(() => {
     initTradeList()
@@ -32,7 +34,7 @@ export const TradePage: FC = () => {
       title: '项目名称',
       dataIndex: 'payapp',
       key: 'payapp',
-      render: (payapp: any) => <Tag color="#108ee9">{payapp.name}</Tag>
+      render: (payapp: any) => <span>{payapp.name}</span>
     },
     {
       title: '支付金额',
@@ -47,7 +49,7 @@ export const TradePage: FC = () => {
       dataIndex: 'trade_status',
       key: 'trade_status',
       render: (text: string) => {
-        return text === '1' ? <Tag color="#87d068">已完成</Tag> : <Tag color="#108ee9">未完成</Tag>
+        return text === '1' ? <Tag color="#87d068">已支付</Tag> : <Tag color="#f50">未支付</Tag>
       }
     },
     {
@@ -70,7 +72,7 @@ export const TradePage: FC = () => {
       title: '创建时间',
       dataIndex: 'create_at',
       key: 'create_at',
-      width: 100
+      render: (value: string) => <span>{moment(value).format('YYYY-MM-DD HH:mm:DD')}</span>
     }
   ]
 
