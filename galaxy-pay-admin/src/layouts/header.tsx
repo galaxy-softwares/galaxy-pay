@@ -3,6 +3,8 @@ import './index.less'
 import { Avatar, Breadcrumb, Layout } from 'antd'
 import { Link } from 'react-router-dom'
 import { useAppState } from '../stores'
+import PatrickStar from '../assets/patrick_star.jpg'
+
 const { Header } = Layout
 const breadcrumbNameMap = {
   softwares: '项目管理',
@@ -35,7 +37,7 @@ const Headers: FC = () => {
         </Breadcrumb>
       </div>
       <div className="flex-grow-0 flex-align-items-center">
-        <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+        <Avatar src={PatrickStar} />
       </div>
     </Header>
   )

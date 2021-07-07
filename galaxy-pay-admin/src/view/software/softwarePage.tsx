@@ -85,6 +85,7 @@ export const SoftwarePage: FC = () => {
       message.success('操作成功！')
       dispatch(setVisible(false))
     }
+    initSoftwareList()
   }
 
   return (

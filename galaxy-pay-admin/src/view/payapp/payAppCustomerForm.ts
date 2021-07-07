@@ -74,7 +74,7 @@ export const payappCustomerBasicForm: ComponentCustomFormIF.CustomerFormColumns 
     customformItemPros: {
       name: 'callback_url',
       tooltip: '支付完成时, 本系统回调地址',
-      rules: [{ required: true, message: '请输入notify_url' }]
+      rules: [{ required: true, message: '请输入callback_url' }]
     }
   },
   {

@@ -5,6 +5,7 @@ import { Layout } from 'antd'
 import { Link, useHistory } from 'react-router-dom'
 import { useAppState } from '../stores'
 import { setMenu, setMenuBreadcrumb } from '../stores/app.store'
+import Logo from '../assets/logo.png'
 
 const { Sider } = Layout
 
@@ -61,7 +62,9 @@ const LeftSider: FC = () => {
 
   return (
     <Sider width={190} className="slider">
-      <div className="app__logo">logo</div>
+      <div className="app__logo">
+        <img src={Logo} />
+      </div>
       <div id="menu__list">
         {menuList.map((item, index) => {
           return (

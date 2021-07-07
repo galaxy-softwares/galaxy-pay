@@ -176,12 +176,12 @@ const PayAppPageModifyPage: FC = () => {
             <Form.Item
               name="app_cert_sn"
               label="应用公钥证书"
-              tooltip="appCertPublicKey_xxxx.crt"
+              tooltip="appCertPublicKey_xxxxx.crt"
               rules={[{ required: true, message: '应用公钥证书' }]}
             >
               <Input
-                placeholder="应用公钥证书 app_cert_public_key"
-                disabled={isEdit}
+                placeholder="应用公钥证书 appCertPublicKey_xxxxx.cert"
+                disabled
                 addonAfter={
                   <UploadFile disabled={isEdit} name="app_cert_sn" uploadSuccess={onUploadDone}>
                     <CloudUploadOutlined />
@@ -198,7 +198,7 @@ const PayAppPageModifyPage: FC = () => {
               rules={[{ required: true, message: '支付宝公钥证书' }]}
             >
               <Input
-                placeholder="应用公钥证书 alipay_cert_public_key_rsa2"
+                placeholder="支付宝公钥证书 alipayCertPublicKey_RSA2.cert"
                 disabled
                 addonAfter={
                   <UploadFile disabled={isEdit} name="public_key" uploadSuccess={onUploadDone}>

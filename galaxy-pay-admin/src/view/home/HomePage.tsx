@@ -1,4 +1,4 @@
 import React, { FC } from 'react'
 export const HomePage: FC = () => {
-  return <div>HomePage</div>
+  return <div>首页！</div>
 }
