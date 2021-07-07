@@ -4,20 +4,26 @@ import React, { FC } from 'react'
 interface UploadFileProps {
   accept?: string
   name: string
+  disabled?: boolean
   uploadSuccess: (data: { name: string; path: string }) => void
 }
 
-export const UploadFile: FC<UploadFileProps> = ({ name, accept = '.crt', uploadSuccess, children }) => {
+export const UploadFile: FC<UploadFileProps> = ({
+  name,
+  disabled = false,
+  accept = '.crt',
+  uploadSuccess,
+  children
+}) => {
   const props: UploadProps = {
     name: 'file',
     action: 'http://127.0.0.1:3200/file/uploadFile',
-    headers: {
-      authorization: 'authorization-text'
-    },
     accept: accept,
     showUploadList: false,
+    disabled: disabled,
     data: {
-      fileName: name
+      fileName: name,
+      accept: accept
     },
     onChange(info: UploadChangeParam) {
       if (info.file.status === 'done') {

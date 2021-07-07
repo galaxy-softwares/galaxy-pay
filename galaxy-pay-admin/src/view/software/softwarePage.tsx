@@ -7,7 +7,7 @@ import { FormModal } from '../../components/FormModel/formModel'
 import { SoftwareForm } from '../../components/softwareForm'
 import { useDispatch } from 'react-redux'
 import { setVisible } from '../../stores/app.store'
-import { createSoftware, getSoftwares } from '../../request/software'
+import { createSoftware, getSoftwares, deleteSoftware } from '../../request/software'
 import moment from 'moment'
 import { SoftwareIF } from '../../interface/software.interface'
 
@@ -28,6 +28,22 @@ export const SoftwarePage: FC = () => {
     initSoftwareList()
   }, [initSoftwareList])
 
+  const editSoftware = (software: SoftwareIF.Software) => {
+    form.setFieldsValue({
+      id: software.id,
+      name: software.name
+    })
+    dispatch(setVisible(true))
+  }
+
+  const delSoftware = async (id: number) => {
+    const { status, data } = await deleteSoftware(id)
+    if (status == 200) {
+      message.success(data.message)
+      initSoftwareList()
+    }
+  }
+
   const columns: ColumnsType<SoftwareIF.Software> = [
     {
       title: '#',
@@ -46,20 +62,27 @@ export const SoftwarePage: FC = () => {
       dataIndex: 'create_at',
       key: 'create_at',
       align: 'center',
+      width: 200,
       render: (value: string) => <span>{moment(value).format('YYYY-MM-DD HH:mm:DD')}</span>
     },
     {
       title: '操作',
       key: 'action',
       align: 'center',
-      render: () => <Space>删除</Space>
+      width: 100,
+      render: (value, record: Required<SoftwareIF.Software>) => (
+        <Space>
+          <a onClick={() => editSoftware(record)}>修改</a>
+          <a onClick={() => delSoftware(record.id)}>删除</a>
+        </Space>
+      )
     }
   ]
 
   const create = async (value: SoftwareIF.Software) => {
     const res = await createSoftware(value)
     if (res.status == 201) {
-      message.success('创建成功！')
+      message.success('操作成功！')
       dispatch(setVisible(false))
     }
   }

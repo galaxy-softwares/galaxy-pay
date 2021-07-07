@@ -1,10 +1,10 @@
 import React, { FC, useCallback, useEffect, useState } from 'react'
-import { Button, message, Space, Tag } from 'antd'
+import { Button, message, Popconfirm, Space, Tag } from 'antd'
 import { PlusOutlined, CopyOutlined } from '@ant-design/icons'
 import { ColumnsType } from 'antd/lib/table'
 import { CardTable } from '../../components/CardTable/cardTable'
 import { Link, useHistory } from 'react-router-dom'
-import { getPayapps } from '../../request/payapp'
+import { deletePayapp, getPayapps } from '../../request/payapp'
 import { useCopyToClipboard } from 'react-use'
 import { payappParamsForm } from './payAppCustomerForm'
 import { FormPopoverContent } from '../../components/FormPopover/formPopover'
@@ -29,6 +29,14 @@ export const PayAppPage: FC = () => {
   const copyString = (name: string, value: string) => {
     copyPayAppId(value)
     message.success(`已复制 ${name} 到剪切板`)
+  }
+
+  const delPayapp = async (pay_app_id: string) => {
+    const { status, data } = await deletePayapp(pay_app_id)
+    if (status == 200) {
+      message.success(data.message)
+      initPayappData()
+    }
   }
 
   const columns: ColumnsType<Required<PayappIF.Payapp>> = [
@@ -95,10 +103,20 @@ export const PayAppPage: FC = () => {
       key: 'action',
       align: 'center',
       width: 200,
-      render: (value, record) => (
+      render: (value, record: PayappIF.Payapp) => (
         <Space>
           <Link to={`/payapps/modify/${record.id}`}>修改</Link>
-          <Link to="">删除</Link>
+          <Popconfirm
+            title="确定要删除该支付应用么?"
+            onConfirm={() => delPayapp(record.pay_app_id)}
+            onCancel={() => {
+              console.log(1)
+            }}
+            okText="删除"
+            cancelText="取消"
+          >
+            <a>删除</a>
+          </Popconfirm>
         </Space>
       )
     }

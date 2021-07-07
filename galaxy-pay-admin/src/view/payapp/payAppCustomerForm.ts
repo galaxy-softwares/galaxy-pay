@@ -69,11 +69,12 @@ export const payappCustomerBasicForm: ComponentCustomFormIF.CustomerFormColumns 
   {
     label: '回调地址',
     valueType: 'Input',
-    placeholder: '支付完成后跳转页面,PC端 支付必填！',
+    placeholder: '支付完成后,此系统会调用此url发送支付信息',
     col: 12,
     customformItemPros: {
       name: 'callback_url',
-      tooltip: '支付完成时, 本系统回调地址'
+      tooltip: '支付完成时, 本系统回调地址',
+      rules: [{ required: true, message: '请输入notify_url' }]
     }
   },
   {
