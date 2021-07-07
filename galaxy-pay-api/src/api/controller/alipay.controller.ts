@@ -64,6 +64,7 @@ export class AlipayController {
   @Post('page')
   async pagePay(@Body() body: AliPayDto, @PayConfig() alipay_config: AlipayConfig): Promise<string> {
     await this.apiTradeService.createTrade(body, alipay_config)
+    console.log(alipay_config, 'alipay_config')
     return this.aliPagePaySerice.pay(
       {
         product_code: 'FAST_INSTANT_TRADE_PAY',

@@ -15,7 +15,4 @@ export class User extends Base {
     length: 60
   })
   password: string
-
-  @Column()
-  email: string
 }

@@ -6,10 +6,6 @@ import { LoginBody } from '../dtos/base.dto'
 
 @Injectable()
 export class AuthService {
-  validateUser() {
-    throw new Error('Method not implemented.')
-  }
-
   constructor(private readonly userService: UserService, private readonly jwtService: JwtService) {}
 
   async login(login_body: LoginBody) {
