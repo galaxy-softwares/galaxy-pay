@@ -1,4 +1,4 @@
-import { Controller, Get, UsePipes, UseGuards, Post, Body, Param, Put, Query } from '@nestjs/common'
+import { Controller, Get, UsePipes, UseGuards, Post, Body, Param, Put, Query, Delete } from '@nestjs/common'
 import { JwtAuthGuard } from '../service'
 import { ValidationPipe } from 'src/common/pipe/validation.pipe'
 import { PayappService } from '../service/payapp.service'
@@ -21,6 +21,13 @@ export class PayappController {
   async getPayapp(@Param() params) {
     const payapp = await this.payappService.findOneById(params.id)
     return { ...payapp, ...JSON.parse(payapp.config) }
+  }
+
+  @Delete(':pay_app_id')
+  async deletePayapp(@Param() params) {
+    if (await this.payappService.deletePayapp(params.pay_app_id)) {
+      return { message: '删除成功！' }
+    }
   }
 
   @Post()

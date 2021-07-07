@@ -105,32 +105,4 @@ export class TradeService extends BaseService<Trade> {
       throw new HttpException('订单支付状态修改失败！', HttpStatus.BAD_REQUEST)
     }
   }
-
-  /**
-   * 判断退款是否成功
-   * @param sys_trade_no
-   * @param channel
-   * @param sys_transaction_no 支付宝同步返回的 trade_no
-   */
-  async refundSuccess(sys_trade_no: string, channel: TradeChannel, sys_transaction_no: string): Promise<Trade> {
-    try {
-      // const trade = await this.tradeRepository.findOne({
-      //   sys_trade_no,
-      //   trade_type: TradeType.Refund,
-      //   trade_channel: channel
-      // })
-      // if (trade && trade.trade_status === TradeStatus.Success) {
-      //   return trade
-      // } else if (trade) {
-      //   trade.sys_transaction_no = sys_transaction_no
-      //   trade.trade_status = TradeStatus.Success
-      //   if (await this.tradeRepository.save(trade)) {
-      //     return trade
-      //   }
-      // }
-      return null
-    } catch (e) {
-      throw new HttpException('订单支付状态修改失败！', HttpStatus.BAD_REQUEST)
-    }
-  }
 }

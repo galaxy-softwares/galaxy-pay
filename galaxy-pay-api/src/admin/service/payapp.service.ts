@@ -1,18 +1,20 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { BaseService } from './base.service'
 import { InjectRepository } from '@nestjs/typeorm'
-import { createQueryBuilder, Repository } from 'typeorm'
-import { Payapp, Software } from '../entities'
-import { joinPath, randomString } from 'src/common/utils/indedx'
+import { Repository } from 'typeorm'
+import { Payapp } from '../entities'
+import { randomString } from 'src/common/utils/indedx'
 import { PayappDto } from '../dtos/payapp.dto'
 import { TradeChannel } from 'src/common/enum/trade.enum'
 import { PayappData, PayappEntity } from 'src/common/interfaces'
+import { TradeService } from './trade.service'
 
 @Injectable()
 export class PayappService extends BaseService<Payapp> {
   constructor(
     @InjectRepository(Payapp)
-    private readonly payappRepository: Repository<Payapp>
+    private readonly payappRepository: Repository<Payapp>,
+    private readonly tradeService: TradeService
   ) {
     super(payappRepository)
   }
@@ -43,7 +45,7 @@ export class PayappService extends BaseService<Payapp> {
         mch_id: payappData.mch_id,
         mch_key: payappData.mch_key,
         app_secret: payappData.app_secret,
-        apiclient_cert: joinPath(payappData.apiclient_cert)
+        apiclient_cert: payappData.apiclient_cert
       }
     } else {
       payapp.config = {
@@ -73,6 +75,15 @@ export class PayappService extends BaseService<Payapp> {
   async updatePayapp(data: PayappDto): Promise<Payapp> {
     const payapp = this.payappRepository.create(this.generatePayapp(data))
     return await this.payappRepository.save(payapp)
+  }
+
+  async deletePayapp(pay_app_id: string) {
+    const trade = await this.tradeService.findOneByWhere({ pay_app_id })
+    if (trade) {
+      throw new HttpException(`该支付应用已生产订单，禁止删除！`, HttpStatus.BAD_REQUEST)
+    } else {
+      return await this.payappRepository.delete({ pay_app_id })
+    }
   }
 
   async findPayapp(query: { name: string; channel: TradeChannel }) {

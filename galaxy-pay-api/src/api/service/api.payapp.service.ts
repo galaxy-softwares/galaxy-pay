@@ -103,7 +103,8 @@ export class ApiPayappSerivce {
     return {
       notify_url,
       return_url,
-      ...wechat
+      ...wechat,
+      apiclient_cert: joinPath(wechat.apiclient_cert)
     }
   }
   /**

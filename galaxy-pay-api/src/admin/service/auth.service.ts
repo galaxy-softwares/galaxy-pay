@@ -4,20 +4,6 @@ import { JwtService } from '@nestjs/jwt'
 import * as crypto from 'crypto-js'
 import { LoginBody } from '../dtos/base.dto'
 
-// export function Test() {
-//   return (target, _, descriptor: PropertyDescriptor) => {
-//     const method = descriptor.value
-//     let ret
-//     descriptor.value = async function (...args) {
-//       args[0] = { username: 'admin', password: '123456789' }
-//       console.log(args, '-----------------------')
-//       ret = method.apply(target, args)
-//       return ret
-//     }
-//     return descriptor
-//   }
-// }
-
 @Injectable()
 export class AuthService {
   validateUser() {

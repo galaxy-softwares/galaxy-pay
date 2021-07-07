@@ -47,7 +47,6 @@ export class AppController {
         const status = await this.tradeService.editPayStatus(data.out_trade_no, TradeChannel.alipay, data.trade_no)
         if (status) {
           const callback_result = await this.callbackRequest(trade.callback_url, data, pay_secret_key)
-          console.log(callback_result, '支付callback 回调状态！')
         }
       } else {
         throw new HttpException('支付签名校验不通过！', HttpStatus.BAD_REQUEST)

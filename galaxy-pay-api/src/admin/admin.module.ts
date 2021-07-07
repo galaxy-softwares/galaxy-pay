@@ -35,10 +35,10 @@ import { RefundController } from './controller/refund.controller'
   ],
   providers: [
     AuthService,
-    SoftwareService,
     PayappService,
     RefundService,
     UserService,
+    SoftwareService,
     TradeService,
     JwtAuthGuard,
     JwtStrategy

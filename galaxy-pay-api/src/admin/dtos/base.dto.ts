@@ -10,14 +10,10 @@ export class LoginBody {
 }
 
 export class SoftwareDto {
-  appid: string
+  id?: number
 
   @IsNotEmpty({ message: '项目名称不可或缺' })
   name: string
-
-  callback_url: string
-
-  return_url: string
 }
 
 // 因为生成退款账单的时候sys_refund_no 用的就是 sys_trade_no 所以这里直接用了 sys_trade_no
